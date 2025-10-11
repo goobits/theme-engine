@@ -1,0 +1,30 @@
+{
+  "name": "@goobits/themes",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./core": "./core/index.ts",
+    "./svelte": "./svelte/index.ts",
+    "./svelte/*": "./svelte/*",
+    "./server": "./server/index.ts",
+    "./utils": "./utils/index.ts",
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0",
+    "@sveltejs/kit": "^2.0.0"
+  },
+  "scripts": {
+    "package": "svelte-package",
+    "build": "svelte-package && tsc",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@sveltejs/package": "^2.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0",
+    "svelte": "^5.0.0"
+  }
+}
