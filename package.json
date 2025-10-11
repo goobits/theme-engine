@@ -11,12 +11,15 @@
     "./svelte/*": "./svelte/*",
     "./server": "./server/index.ts",
     "./utils": "./utils/index.ts",
+    "./themes/default.css": "./themes/default.css",
+    "./themes/spells.css": "./themes/spells.css",
     "./package.json": "./package.json"
   },
   "files": [
     "core",
     "svelte",
     "server",
+    "themes",
     "utils",
     "index.ts",
     "README.md",

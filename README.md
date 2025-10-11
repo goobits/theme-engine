@@ -76,6 +76,48 @@ import { themeConfig } from '$lib/config/theme';
 </html>
 ```
 
+### Using Preset Themes (Optional)
+
+The package includes 2 preset color schemes that work out of the box:
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script>
+  // Option 1: Import preset themes (recommended for quick start)
+  import '@goobits/themes/themes/default.css';
+  import '@goobits/themes/themes/spells.css';
+
+  import { ThemeProvider } from '@goobits/themes/svelte';
+  import { themeConfig } from '$lib/config/theme';
+</script>
+
+<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+  {@render children?.()}
+</ThemeProvider>
+```
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script>
+  // Option 2: Use custom themes only (advanced)
+  // Skip the preset imports and provide your own CSS
+  import '../styles/my-custom-theme.css';
+
+  import { ThemeProvider } from '@goobits/themes/svelte';
+  import { themeConfig } from '$lib/config/theme';
+</script>
+
+<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+  {@render children?.()}
+</ThemeProvider>
+```
+
+**Included Presets:**
+- **default** - Clean, professional design system with subtle effects
+- **spells** - Magical purple theme with enhanced animations and glow effects
+
+See [themes/README.md](./themes/README.md) for creating custom color schemes.
+
 ## 📚 Components
 
 ### ThemeToggle
