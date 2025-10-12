@@ -2,12 +2,16 @@
   import { onMount, setContext } from 'svelte';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
-  import { createThemeStore, type ThemeStore } from '../stores/theme.svelte';
+  import { createThemeStore } from '../stores/theme';
   import { initializeTheme, applyRouteTheme } from '../../core/theme-manager';
   import type { ThemeMode, ThemeScheme } from '../../core/types';
   import type { ThemeConfig } from '../../core/config';
 
-  const { children, config, serverPreferences }: {
+  const {
+    children,
+    config,
+    serverPreferences,
+  }: {
     children: import('svelte').Snippet;
     config: ThemeConfig;
     serverPreferences: { theme: ThemeMode; themeScheme: ThemeScheme };
@@ -34,12 +38,7 @@
       const currentScheme = themeStore.scheme;
 
       if (currentTheme !== lastAppliedTheme || currentScheme !== lastAppliedScheme) {
-        applyRouteTheme(
-          $page.url.pathname,
-          currentTheme,
-          currentScheme,
-          config.routeThemes || {}
-        );
+        applyRouteTheme($page.url.pathname, currentTheme, currentScheme, config.routeThemes || {});
 
         lastAppliedTheme = currentTheme;
         lastAppliedScheme = currentScheme;

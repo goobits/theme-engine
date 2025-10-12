@@ -18,7 +18,7 @@ export const PREFERENCE_COOKIE_NAMES = {
   themeScheme: 'themeScheme',
   language: 'language',
   languageTheme: 'languageTheme',
-  showSidebar: 'showSidebar'
+  showSidebar: 'showSidebar',
 } as const;
 
 export const COOKIE_OPTIONS = {
@@ -45,7 +45,8 @@ export function readPreferenceCookies(): Partial<UserPreferences> {
     if (key === 'theme') preferences.theme = value as UserPreferences['theme'];
     if (key === 'themeScheme') preferences.themeScheme = value as UserPreferences['themeScheme'];
     if (key === 'language') preferences.language = value;
-    if (key === 'languageTheme') preferences.languageTheme = value as UserPreferences['languageTheme'];
+    if (key === 'languageTheme')
+      preferences.languageTheme = value as UserPreferences['languageTheme'];
     if (key === 'showSidebar') preferences.showSidebar = value === 'true';
   }
 

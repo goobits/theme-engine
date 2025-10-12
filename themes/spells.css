@@ -14,12 +14,12 @@ html.scheme-spells {
   --accent-primary: #7c3aed;
   --accent-glow: #a78bfa;
   --accent-secondary: #8b5cf6;
-  
+
   /* Override brand colors for magical theme */
   --brand-gradient-start: #7c3aed;
   --brand-gradient-end: #a78bfa;
   --brand-gradient: linear-gradient(135deg, var(--brand-gradient-start), var(--brand-gradient-end));
-  
+
   /* Primary color scale - magical purple */
   --color-primary-50: #faf5ff;
   --color-primary-100: #f3e8ff;
@@ -37,7 +37,7 @@ html.scheme-spells {
   --color-magic-orb: var(--accent-glow);
   --color-magic-border: rgba(124, 58, 237, 0.3);
   --color-magic-glow: rgba(167, 139, 250, 0.4);
-  
+
   /* Light mode specific overrides */
   --bg-card: #faf5ff;
   --border-primary: rgba(124, 58, 237, 0.2);
@@ -80,40 +80,48 @@ html.scheme-spells {
 
 /* Magical keyframe animations */
 @keyframes magical-float {
-  0%, 100% { 
-    transform: translateY(0px) rotate(0deg); 
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
   }
-  33% { 
-    transform: translateY(-5px) rotate(0.5deg); 
+  33% {
+    transform: translateY(-5px) rotate(0.5deg);
   }
-  66% { 
-    transform: translateY(-2px) rotate(-0.5deg); 
+  66% {
+    transform: translateY(-2px) rotate(-0.5deg);
   }
 }
 
 @keyframes magical-pulse {
-  0% { 
+  0% {
     box-shadow: 0 0 5px rgba(124, 58, 237, 0.3);
     filter: drop-shadow(0 0 3px rgba(124, 58, 237, 0.2));
   }
-  100% { 
+  100% {
     box-shadow: 0 0 20px rgba(124, 58, 237, 0.6);
     filter: drop-shadow(0 0 10px rgba(124, 58, 237, 0.5));
   }
 }
 
 @keyframes fx-magical-bounce {
-  0% { transform: scale(1) rotate(0deg); }
-  50% { transform: scale(1.05) rotate(2deg); }
-  100% { transform: scale(1) rotate(0deg); }
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.05) rotate(2deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 @keyframes magical-sparkle {
-  0%, 100% { 
+  0%,
+  100% {
     opacity: 0.7;
     transform: scale(1) rotate(0deg);
   }
-  50% { 
+  50% {
     opacity: 1;
     transform: scale(1.1) rotate(5deg);
   }
@@ -168,18 +176,10 @@ html.theme-system-dark.scheme-spells {
 
   /* Enhanced shadows with magical glow */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.9);
-  --shadow-base: 
-    0 1px 3px 0 rgba(0, 0, 0, 0.8), 
-    0 1px 2px -1px rgba(124, 58, 237, 0.1);
-  --shadow-md:
-    0 4px 6px -1px rgba(0, 0, 0, 0.8), 
-    0 2px 4px -1px rgba(124, 58, 237, 0.2);
-  --shadow-lg:
-    0 10px 15px -3px rgba(0, 0, 0, 0.9), 
-    0 4px 6px -2px rgba(124, 58, 237, 0.3);
-  --shadow-xl:
-    0 20px 25px -5px rgba(0, 0, 0, 0.9), 
-    0 8px 10px -6px rgba(124, 58, 237, 0.4);
+  --shadow-base: 0 1px 3px 0 rgba(0, 0, 0, 0.8), 0 1px 2px -1px rgba(124, 58, 237, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.8), 0 2px 4px -1px rgba(124, 58, 237, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.9), 0 4px 6px -2px rgba(124, 58, 237, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.9), 0 8px 10px -6px rgba(124, 58, 237, 0.4);
 
   /* Magical success/error colors that work with purple theme */
   --success: #10b981;
@@ -217,14 +217,16 @@ html.scheme-spells {
 
   /* Card hover effects */
   --card-hover-transform: none;
-  --card-hover-shadow:
-    0 0 30px 10px rgba(124, 58, 237, 0.3),
-    0 10px 25px rgba(124, 58, 237, 0.2);
+  --card-hover-shadow: 0 0 30px 10px rgba(124, 58, 237, 0.3), 0 10px 25px rgba(124, 58, 237, 0.2);
   --card-hover-filter: brightness(1.05);
   --card-hover-border-color: hsl(270 97% 72%);
 
   /* Card glow overlay */
-  --card-glow-overlay-bg: radial-gradient(circle at center, rgba(124, 58, 237, 0.1) 0%, transparent 70%);
+  --card-glow-overlay-bg: radial-gradient(
+    circle at center,
+    rgba(124, 58, 237, 0.1) 0%,
+    transparent 70%
+  );
   --card-glow-overlay-opacity-idle: 0;
   --card-glow-overlay-opacity-hover: 1;
   --card-glow-overlay-transition: opacity 400ms;
@@ -248,16 +250,21 @@ html.scheme-spells {
  * ======================================== */
 
 @keyframes magical-float {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-5px); }
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 @keyframes magical-glow {
-  0% { 
+  0% {
     box-shadow: 0 0 5px var(--accent-glow);
     filter: drop-shadow(0 0 5px var(--accent-glow));
   }
-  100% { 
+  100% {
     box-shadow: 0 0 20px var(--accent-glow);
     filter: drop-shadow(0 0 10px var(--accent-glow));
   }

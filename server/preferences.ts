@@ -10,7 +10,10 @@ import type { ThemeConfig } from '../core/config';
 /**
  * Read theme preferences from cookies (server-side)
  */
-export function loadThemePreferences(cookies: Cookies, config: ThemeConfig): { theme: ThemeMode, themeScheme: ThemeScheme } {
+export function loadThemePreferences(
+  cookies: Cookies,
+  config: ThemeConfig
+): { theme: ThemeMode; themeScheme: ThemeScheme } {
   const defaults = {
     theme: 'system',
     themeScheme: Object.keys(config.schemes)[0] || 'default',

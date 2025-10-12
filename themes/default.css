@@ -25,8 +25,7 @@
   --fx-hover-easing: ease-out;
 
   /* Professional focus effects */
-  --fx-focus-ring: 0 0 0 3px
-    rgba(var(--color-primary-500-rgb, 59, 130, 246), 0.3);
+  --fx-focus-ring: 0 0 0 3px rgba(var(--color-primary-500-rgb, 59, 130, 246), 0.3);
   --fx-focus-glow: none;
   --fx-focus-transform: none;
 

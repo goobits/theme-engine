@@ -1,7 +1,9 @@
 # 🎨 @goobits/themes
+
 Theme management system for SvelteKit applications with Svelte 5 runes support.
 
 ## ✨ Key Features
+
 - **🌓 Light/Dark/System Modes** - Automatic theme switching based on user preference or system settings
 - **🎨 Custom Color Schemes** - Extensible scheme registry for brand-specific color palettes
 - **⚡ SSR Support** - Server-side theme detection with zero flash of unstyled content
@@ -10,6 +12,7 @@ Theme management system for SvelteKit applications with Svelte 5 runes support.
 - **🧩 Modular Architecture** - Separate core, Svelte, server, and utility modules
 
 ## 🚀 Quick Start
+
 ```bash
 # npm
 npm install @goobits/themes
@@ -22,6 +25,7 @@ pnpm add @goobits/themes
 ```
 
 ### Basic Setup
+
 ```typescript
 // 1. Configure your theme (src/lib/config/theme.ts)
 import { createThemeConfig } from '@goobits/themes/core';
@@ -61,6 +65,7 @@ import { themeConfig } from '$lib/config/theme';
 ```
 
 ### Update Your HTML Template
+
 ```html
 <!-- src/app.html -->
 <html lang="en" class="%sveltekit.theme%">
@@ -113,6 +118,7 @@ The package includes 2 preset color schemes that work out of the box:
 ```
 
 **Included Presets:**
+
 - **default** - Clean, professional design system with subtle effects
 - **spells** - Magical purple theme with enhanced animations and glow effects
 
@@ -121,6 +127,7 @@ See [themes/README.md](./themes/README.md) for creating custom color schemes.
 ## 📚 Components
 
 ### ThemeToggle
+
 ```svelte
 <!-- Quick theme mode switcher -->
 <script>
@@ -131,6 +138,7 @@ See [themes/README.md](./themes/README.md) for creating custom color schemes.
 ```
 
 ### SchemeSelector
+
 ```svelte
 <!-- Dropdown for color scheme selection -->
 <script>
@@ -141,6 +149,7 @@ See [themes/README.md](./themes/README.md) for creating custom color schemes.
 ```
 
 ### Custom Theme Controls
+
 ```svelte
 <script>
   import { useTheme } from '@goobits/themes/svelte';
@@ -173,6 +182,7 @@ See [themes/README.md](./themes/README.md) for creating custom color schemes.
 ## ⚙️ Configuration
 
 ### Custom Color Schemes
+
 ```typescript
 // core/scheme-registry.ts
 import { SchemeRegistry } from '@goobits/themes/core';
@@ -187,20 +197,21 @@ registry.register({
   preview: {
     primary: '#0066cc',
     accent: '#00ccff',
-    background: '#f0f9ff'
+    background: '#f0f9ff',
   },
-  cssFile: '/themes/ocean.css' // Optional: custom CSS file
+  cssFile: '/themes/ocean.css', // Optional: custom CSS file
 });
 
 export const schemeConfig = createThemeConfig({
   defaultMode: 'system',
   defaultScheme: 'ocean',
   schemes: ['default', 'ocean', 'sunset'],
-  enableSystemDetection: true
+  enableSystemDetection: true,
 });
 ```
 
 ### Route-Specific Themes
+
 ```typescript
 // utils/route-themes.ts
 import { getRouteTheme } from '@goobits/themes/utils';
@@ -208,7 +219,7 @@ import { getRouteTheme } from '@goobits/themes/utils';
 // Apply different themes based on route
 const routeTheme = getRouteTheme('/admin', {
   '/admin': { mode: 'dark', scheme: 'default' },
-  '/public': { mode: 'light', scheme: 'default' }
+  '/public': { mode: 'light', scheme: 'default' },
 });
 ```
 
@@ -220,32 +231,20 @@ import { createThemeConfig, SchemeRegistry } from '@goobits/themes/core';
 import type { ThemeMode, ThemeScheme, FullTheme } from '@goobits/themes/core';
 
 // Svelte - Components and reactive state
-import {
-  ThemeProvider,
-  ThemeToggle,
-  SchemeSelector,
-  useTheme
-} from '@goobits/themes/svelte';
+import { ThemeProvider, ThemeToggle, SchemeSelector, useTheme } from '@goobits/themes/svelte';
 
 // Server - SvelteKit server hooks and SSR
-import {
-  createThemeHooks,
-  loadThemePreferences
-} from '@goobits/themes/server';
+import { createThemeHooks, loadThemePreferences } from '@goobits/themes/server';
 
 // Utils - Cookie management and helpers
-import {
-  setThemeCookie,
-  getThemeCookie,
-  getRouteTheme
-} from '@goobits/themes/utils';
+import { setThemeCookie, getThemeCookie, getRouteTheme } from '@goobits/themes/utils';
 ```
 
 ## 🎯 TypeScript Types
 
 ```typescript
-type ThemeMode = "light" | "dark" | "system";
-type ThemeScheme = "default" | string; // Extensible
+type ThemeMode = 'light' | 'dark' | 'system';
+type ThemeScheme = 'default' | string; // Extensible
 
 interface FullTheme {
   base: ThemeMode;
@@ -284,8 +283,10 @@ bun run package
 ```
 
 ## 📝 License
+
 MIT - see [LICENSE](LICENSE) for details
 
 ## 💡 Support
+
 - **Issues**: [github.com/goobits/goobits-themes/issues](https://github.com/goobits/goobits-themes/issues)
 - **Discussions**: [github.com/goobits/goobits-themes/discussions](https://github.com/goobits/goobits-themes/discussions)

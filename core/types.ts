@@ -1,6 +1,6 @@
-export type ThemeMode = "light" | "dark" | "system";
+export type ThemeMode = 'light' | 'dark' | 'system';
 
-export type ThemeScheme = "default" | "spells";
+export type ThemeScheme = 'default' | 'spells';
 
 export interface FullTheme {
   base: ThemeMode;

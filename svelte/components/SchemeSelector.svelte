@@ -8,7 +8,7 @@
 </script>
 
 <select value={currentScheme} onchange={(e) => theme.setScheme(e.currentTarget.value)}>
-  {#each availableSchemes as scheme}
+  {#each availableSchemes as scheme (scheme.name)}
     <option value={scheme.name}>{scheme.displayName}</option>
   {/each}
 </select>

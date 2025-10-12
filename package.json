@@ -26,19 +26,29 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "svelte": "^5.0.0",
-    "@sveltejs/kit": "^2.0.0"
+    "@sveltejs/kit": "^2.0.0",
+    "svelte": "^5.0.0"
   },
   "scripts": {
     "package": "svelte-package",
     "build": "svelte-package && tsc",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "devDependencies": {
     "@sveltejs/package": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.46.0",
+    "@typescript-eslint/parser": "^8.46.0",
+    "eslint": "^9.37.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-svelte": "^3.12.4",
+    "prettier": "^3.6.2",
+    "prettier-plugin-svelte": "^3.4.0",
+    "svelte": "^5.0.0",
     "typescript": "^5.0.0",
-    "vitest": "^1.0.0",
-    "svelte": "^5.0.0"
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^1.0.0"
   },
   "keywords": [
     "svelte",

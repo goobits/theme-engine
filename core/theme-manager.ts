@@ -5,15 +5,11 @@
  * to apply theme classes and handle system theme preference changes.
  */
 
-import { browser } from "$app/environment";
-import { logger } from "../utils/logger";
-import {
-  applyFullTheme,
-  applyThemeScheme,
-  getCurrentScheme,
-} from "./scheme-registry";
-import { getRouteTheme, type RouteThemeConfig } from "../utils/route-themes";
-import type { ThemeMode, FullTheme, ThemeScheme } from "./types";
+import { browser } from '$app/environment';
+import { logger } from '../utils/logger';
+import { applyFullTheme, getCurrentScheme } from './scheme-registry';
+import { getRouteTheme, type RouteThemeConfig } from '../utils/route-themes';
+import type { ThemeMode, FullTheme, ThemeScheme } from './types';
 
 /**
  * Apply theme to the HTML element based on theme mode (legacy function)
@@ -27,10 +23,7 @@ export function applyTheme(theme: ThemeMode): void {
 /**
  * Apply theme with scheme support
  */
-export function applyThemeWithScheme(
-  theme: ThemeMode,
-  scheme: ThemeScheme,
-): void {
+export function applyThemeWithScheme(theme: ThemeMode, scheme: ThemeScheme): void {
   const fullTheme: FullTheme = { base: theme, scheme };
   applyFullTheme(fullTheme);
 }
@@ -39,60 +32,52 @@ export function applyThemeWithScheme(
  * Apply the resolved system theme preference
  */
 function applySystemTheme(): void {
-  if (
-    !browser ||
-    typeof document === "undefined" ||
-    typeof window === "undefined"
-  )
-    return;
+  if (!browser || typeof document === 'undefined' || typeof window === 'undefined') return;
 
   const html = document.documentElement;
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   // Add resolved system theme class for immediate styling
-  html.classList.remove("theme-system-light", "theme-system-dark");
-  html.classList.add(prefersDark ? "theme-system-dark" : "theme-system-light");
+  html.classList.remove('theme-system-light', 'theme-system-dark');
+  html.classList.add(prefersDark ? 'theme-system-dark' : 'theme-system-light');
 }
 
 /**
  * Watch for system theme preference changes and call callback
  */
-export function watchSystemTheme(
-  callback: (systemTheme: "light" | "dark") => void,
-): () => void {
-  if (!browser || typeof window === "undefined") return () => {};
+export function watchSystemTheme(callback: (systemTheme: 'light' | 'dark') => void): () => void {
+  if (!browser || typeof window === 'undefined') return () => {};
 
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
   const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-    const matches =
-      "matches" in e ? e.matches : (e as MediaQueryListEvent).matches;
-    const systemTheme = matches ? "dark" : "light";
+    const matches = 'matches' in e ? e.matches : (e as MediaQueryListEvent).matches;
+    const systemTheme = matches ? 'dark' : 'light';
     callback(systemTheme);
 
     // If system theme is currently active, update the resolved class
     if (
-      typeof document !== "undefined" &&
-      document.documentElement.classList.contains("theme-system")
+      typeof document !== 'undefined' &&
+      document.documentElement.classList.contains('theme-system')
     ) {
       applySystemTheme();
     }
   };
 
   // Defensive programming: check if addEventListener is available, fallback to addListener
-  if (typeof mediaQuery.addEventListener === "function") {
-    mediaQuery.addEventListener("change", handleChange);
+  if (typeof mediaQuery.addEventListener === 'function') {
+    mediaQuery.addEventListener('change', handleChange);
     return () => {
-      if (typeof mediaQuery.removeEventListener === "function") {
-        mediaQuery.removeEventListener("change", handleChange);
+      if (typeof mediaQuery.removeEventListener === 'function') {
+        mediaQuery.removeEventListener('change', handleChange);
       }
     };
-  } else if (typeof (mediaQuery as any).addListener === "function") {
+  } else if (typeof (mediaQuery as MediaQueryList).addListener === 'function') {
     // Legacy API fallback
-    (mediaQuery as any).addListener(handleChange);
+    (mediaQuery as MediaQueryList).addListener(handleChange);
     return () => {
-      if (typeof (mediaQuery as any).removeListener === "function") {
-        (mediaQuery as any).removeListener(handleChange);
+      if (typeof (mediaQuery as MediaQueryList).removeListener === 'function') {
+        (mediaQuery as MediaQueryList).removeListener(handleChange);
       }
     };
   } else {
@@ -106,14 +91,9 @@ export function watchSystemTheme(
  */
 export function initializeTheme(
   storedTheme: ThemeMode,
-  storedScheme: ThemeScheme = "default",
+  storedScheme: ThemeScheme = 'default'
 ): () => void {
-  if (
-    !browser ||
-    typeof document === "undefined" ||
-    typeof window === "undefined"
-  )
-    return () => {};
+  if (!browser || typeof document === 'undefined' || typeof window === 'undefined') return () => {};
 
   // All scheme CSS is statically imported - no preloading needed
 
@@ -121,11 +101,11 @@ export function initializeTheme(
   applyThemeWithScheme(storedTheme, storedScheme);
 
   // Set up system theme watching for when system mode is active
-  const cleanup = watchSystemTheme((systemTheme) => {
+  const cleanup = watchSystemTheme(() => {
     // Only react if system theme is currently active
     if (
-      typeof document !== "undefined" &&
-      document.documentElement.classList.contains("theme-system")
+      typeof document !== 'undefined' &&
+      document.documentElement.classList.contains('theme-system')
     ) {
       applySystemTheme();
     }
@@ -138,14 +118,14 @@ export function initializeTheme(
  * Apply theme based on route configuration
  */
 export function applyRouteTheme(
-    pathname: string,
-    userTheme: ThemeMode,
-    userScheme: ThemeScheme,
-    routeThemes: Record<string, RouteThemeConfig>,
+  pathname: string,
+  userTheme: ThemeMode,
+  userScheme: ThemeScheme,
+  routeThemes: Record<string, RouteThemeConfig>
 ): FullTheme {
   const routeConfig = getRouteTheme(pathname, routeThemes);
 
-  logger.info("Route theme check", {
+  logger.info('Route theme check', {
     pathname,
     routeConfig: routeConfig
       ? {
@@ -161,7 +141,7 @@ export function applyRouteTheme(
   if (routeConfig) {
     if (routeConfig.override) {
       // Route overrides user preferences
-      logger.info("Applying route theme override", {
+      logger.info('Applying route theme override', {
         pathname,
         routeTheme: routeConfig.theme,
         userTheme: { base: userTheme, scheme: userScheme },
@@ -174,7 +154,7 @@ export function applyRouteTheme(
         base: userTheme,
         scheme: routeConfig.theme.scheme,
       };
-      logger.info("Applying route theme suggestion", {
+      logger.info('Applying route theme suggestion', {
         pathname,
         suggestedTheme,
         userTheme: { base: userTheme, scheme: userScheme },
@@ -184,7 +164,7 @@ export function applyRouteTheme(
     }
   } else {
     // No route theme, use user preferences
-    logger.debug("No route theme found, using user preferences", { pathname });
+    logger.debug('No route theme found, using user preferences', { pathname });
     const userFullTheme: FullTheme = { base: userTheme, scheme: userScheme };
     applyFullTheme(userFullTheme);
     return userFullTheme;
