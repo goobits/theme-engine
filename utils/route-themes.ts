@@ -16,7 +16,10 @@ export interface RouteThemeConfig {
 }
 
 /**
- * Get theme configuration for a route
+ * Gets the theme configuration for a specific route.
+ * @param pathname The route's pathname.
+ * @param routeThemes A record of route-specific theme configurations.
+ * @returns The theme configuration for the route, or null if not found.
  */
 export function getRouteTheme(pathname:string, routeThemes: Record<string, RouteThemeConfig>): RouteThemeConfig | null {
     // Direct match first
@@ -39,14 +42,20 @@ export function getRouteTheme(pathname:string, routeThemes: Record<string, Route
 }
 
 /**
- * Check if a route has a specific theme
+ * Checks if a route has a specific theme configuration.
+ * @param pathname The route's pathname.
+ * @param routeThemes A record of route-specific theme configurations.
+ * @returns True if the route has a theme, false otherwise.
  */
 export function routeHasTheme(pathname: string, routeThemes: Record<string, RouteThemeConfig>): boolean {
     return getRouteTheme(pathname, routeThemes) !== null;
 }
 
 /**
- * Get all routes that use a specific scheme
+ * Gets all routes that use a specific theme scheme.
+ * @param scheme The theme scheme to search for.
+ * @param routeThemes A record of route-specific theme configurations.
+ * @returns An array of routes that use the specified scheme.
  */
 export function getRoutesForScheme(scheme: ThemeScheme, routeThemes: Record<string, RouteThemeConfig>): string[] {
     return Object.entries(routeThemes)
@@ -55,7 +64,10 @@ export function getRoutesForScheme(scheme: ThemeScheme, routeThemes: Record<stri
 }
 
 /**
- * Check if route theme should override user preferences
+ * Checks if a route's theme should override user preferences.
+ * @param pathname The route's pathname.
+ * @param routeThemes A record of route-specific theme configurations.
+ * @returns True if the route theme overrides user preferences, false otherwise.
  */
 export function routeThemeOverrides(pathname: string, routeThemes: Record<string, RouteThemeConfig>): boolean {
     const config = getRouteTheme(pathname, routeThemes);

@@ -25,12 +25,33 @@ pnpm add @goobits/themes
 ```typescript
 // 1. Configure your theme (src/lib/config/theme.ts)
 import { createThemeConfig } from '@goobits/themes/core';
+import type { SchemeConfig } from '@goobits/themes/core';
 
 export const themeConfig = createThemeConfig({
-  defaultMode: 'system',
-  defaultScheme: 'default',
-  schemes: ['default', 'spells'], // Your custom schemes
-  enableSystemDetection: true
+  schemes: {
+    default: {
+      name: 'default',
+      displayName: 'Default',
+      description: 'Clean, minimal design system',
+      icon: '🤖',
+      preview: {
+        primary: '#007aff',
+        accent: '#5856d6',
+        background: '#ffffff'
+      }
+    },
+    spells: {
+      name: 'spells',
+      displayName: 'Grimoire',
+      description: 'Magical purple theme for enchanted experiences',
+      icon: '✨',
+      preview: {
+        primary: '#7c3aed',
+        accent: '#a78bfa',
+        background: '#0a0a0f'
+      }
+    }
+  }
 });
 
 // 2. Add server hooks (src/hooks.server.ts)
@@ -174,29 +195,35 @@ See [themes/README.md](./themes/README.md) for creating custom color schemes.
 
 ### Custom Color Schemes
 ```typescript
-// core/scheme-registry.ts
-import { SchemeRegistry } from '@goobits/themes/core';
+// src/lib/config/theme.ts
+import { createThemeConfig } from '@goobits/themes/core';
+import type { SchemeConfig } from '@goobits/themes/core';
 
-const registry = new SchemeRegistry();
-
-registry.register({
-  name: 'ocean',
-  displayName: 'Ocean',
-  description: 'Cool blue tones inspired by the sea',
-  icon: '🌊',
-  preview: {
-    primary: '#0066cc',
-    accent: '#00ccff',
-    background: '#f0f9ff'
-  },
-  cssFile: '/themes/ocean.css' // Optional: custom CSS file
-});
-
-export const schemeConfig = createThemeConfig({
-  defaultMode: 'system',
-  defaultScheme: 'ocean',
-  schemes: ['default', 'ocean', 'sunset'],
-  enableSystemDetection: true
+export const themeConfig = createThemeConfig({
+  schemes: {
+    default: {
+      name: 'default',
+      displayName: 'Default',
+      description: 'Clean, minimal design system',
+      icon: '🤖',
+      preview: {
+        primary: '#007aff',
+        accent: '#5856d6',
+        background: '#ffffff'
+      }
+    },
+    ocean: {
+      name: 'ocean',
+      displayName: 'Ocean',
+      description: 'Cool blue tones inspired by the sea',
+      icon: '🌊',
+      preview: {
+        primary: '#0066cc',
+        accent: '#00ccff',
+        background: '#f0f9ff'
+      }
+    }
+  }
 });
 ```
 
@@ -216,15 +243,17 @@ const routeTheme = getRouteTheme('/admin', {
 
 ```typescript
 // Core - Framework-agnostic theme logic
-import { createThemeConfig, SchemeRegistry } from '@goobits/themes/core';
-import type { ThemeMode, ThemeScheme, FullTheme } from '@goobits/themes/core';
+import { createThemeConfig } from '@goobits/themes/core';
+import type { ThemeMode, ThemeScheme, FullTheme, SchemeConfig } from '@goobits/themes/core';
 
 // Svelte - Components and reactive state
 import {
   ThemeProvider,
   ThemeToggle,
   SchemeSelector,
-  useTheme
+  useTheme,
+  createThemeStore,
+  type ThemeStore
 } from '@goobits/themes/svelte';
 
 // Server - SvelteKit server hooks and SSR
@@ -235,8 +264,8 @@ import {
 
 // Utils - Cookie management and helpers
 import {
-  setThemeCookie,
-  getThemeCookie,
+  readPreferenceCookies,
+  writePreferenceCookies,
   getRouteTheme
 } from '@goobits/themes/utils';
 ```

@@ -16,7 +16,9 @@ import { getRouteTheme, type RouteThemeConfig } from "../utils/route-themes";
 import type { ThemeMode, FullTheme, ThemeScheme } from "./types";
 
 /**
- * Apply theme to the HTML element based on theme mode (legacy function)
+ * Applies the theme to the HTML element based on the theme mode.
+ * @param theme The theme mode to apply.
+ * @deprecated This function is a legacy function. Use `applyThemeWithScheme` instead.
  */
 export function applyTheme(theme: ThemeMode): void {
   const currentScheme = getCurrentScheme();
@@ -25,7 +27,9 @@ export function applyTheme(theme: ThemeMode): void {
 }
 
 /**
- * Apply theme with scheme support
+ * Applies the theme with scheme support.
+ * @param theme The theme mode to apply.
+ * @param scheme The theme scheme to apply.
  */
 export function applyThemeWithScheme(
   theme: ThemeMode,
@@ -36,7 +40,7 @@ export function applyThemeWithScheme(
 }
 
 /**
- * Apply the resolved system theme preference
+ * Applies the resolved system theme preference.
  */
 function applySystemTheme(): void {
   if (
@@ -55,7 +59,9 @@ function applySystemTheme(): void {
 }
 
 /**
- * Watch for system theme preference changes and call callback
+ * Watches for system theme preference changes and calls a callback.
+ * @param callback The callback to call when the system theme changes.
+ * @returns A function to stop watching for changes.
  */
 export function watchSystemTheme(
   callback: (systemTheme: "light" | "dark") => void,
@@ -102,7 +108,10 @@ export function watchSystemTheme(
 }
 
 /**
- * Initialize theme system - apply stored theme and set up system watching
+ * Initializes the theme system by applying the stored theme and setting up system watching.
+ * @param storedTheme The stored theme mode.
+ * @param storedScheme The stored theme scheme.
+ * @returns A function to clean up the system theme watcher.
  */
 export function initializeTheme(
   storedTheme: ThemeMode,
@@ -135,7 +144,12 @@ export function initializeTheme(
 }
 
 /**
- * Apply theme based on route configuration
+ * Applies a theme based on the route configuration.
+ * @param pathname The current route's pathname.
+ * @param userTheme The user's preferred theme mode.
+ * @param userScheme The user's preferred theme scheme.
+ * @param routeThemes A record of route-specific theme configurations.
+ * @returns The full theme applied to the route.
  */
 export function applyRouteTheme(
     pathname: string,

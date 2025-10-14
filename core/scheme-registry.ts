@@ -9,7 +9,9 @@ import { browser } from "$app/environment";
 import { logger } from "$lib/utils/logger";
 import type { ThemeScheme, SchemeConfig, FullTheme } from "./types";
 
-// Available theme schemes
+/**
+ * A record of available theme schemes.
+ */
 export const THEME_SCHEMES: Record<ThemeScheme, SchemeConfig> = {
   default: {
     name: "default",
@@ -39,7 +41,8 @@ export const THEME_SCHEMES: Record<ThemeScheme, SchemeConfig> = {
 };
 
 /**
- * Apply theme scheme to the HTML element
+ * Applies a theme scheme to the HTML element by adding a CSS class.
+ * @param scheme The theme scheme to apply.
  */
 export function applyThemeScheme(scheme: ThemeScheme): void {
   if (!browser || typeof document === "undefined") return;
@@ -58,7 +61,8 @@ export function applyThemeScheme(scheme: ThemeScheme): void {
 }
 
 /**
- * Apply full theme (base + scheme) to the HTML element
+ * Applies the full theme (base mode and scheme) to the HTML element.
+ * @param fullTheme The full theme to apply.
  */
 export function applyFullTheme(fullTheme: FullTheme): void {
   if (!browser || typeof document === "undefined") return;
@@ -124,7 +128,8 @@ export function applyFullTheme(fullTheme: FullTheme): void {
 }
 
 /**
- * Get the current scheme from document classes
+ * Gets the current theme scheme from the document's class list.
+ * @returns The current theme scheme.
  */
 export function getCurrentScheme(): ThemeScheme {
   if (!browser || typeof document === "undefined") return "default";
@@ -141,7 +146,9 @@ export function getCurrentScheme(): ThemeScheme {
 }
 
 /**
- * Check if a scheme requires dark mode for optimal appearance
+ * Checks if a scheme prefers a dark mode for optimal appearance.
+ * @param scheme The theme scheme to check.
+ * @returns True if the scheme prefers dark mode, false otherwise.
  */
 function schemePrefersDark(scheme: ThemeScheme): boolean {
   switch (scheme) {

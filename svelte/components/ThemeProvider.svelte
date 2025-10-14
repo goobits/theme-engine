@@ -1,4 +1,11 @@
 <script lang="ts">
+  /**
+   * @component
+   * @description Provides theme context to its children components.
+   * @props {import('svelte').Snippet} children - The slot for child components.
+   * @props {ThemeConfig} config - The theme configuration.
+   * @props {{ theme: ThemeMode; themeScheme: ThemeScheme }} serverPreferences - The theme preferences from the server.
+   */
   import { onMount, setContext } from 'svelte';
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
