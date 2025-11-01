@@ -1,5 +1,5 @@
 <!-- packages/svelte-themes/src/svelte/components/ThemeToggle.svelte -->
-<script lang="ts">
+<script>
 	/**
 	 * A Svelte component for toggling the theme.
 	 * @component
