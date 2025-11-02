@@ -11,6 +11,50 @@
 	const currentTheme = $derived(theme.theme);
 	const currentScheme = $derived(theme.scheme);
 
+	// Track if this is the initial load to prevent announcing on page load
+	let isInitialLoad = $state(true);
+
+	// Announce theme changes to screen readers
+	function announce(message) {
+		if (typeof document !== 'undefined') {
+			const liveRegion = document.getElementById('aria-live-region');
+			if (liveRegion) {
+				liveRegion.textContent = message;
+				// Clear after 3 seconds to avoid cluttering screen reader history
+				setTimeout(() => {
+					if (liveRegion.textContent === message) {
+						liveRegion.textContent = '';
+					}
+				}, 3000);
+			}
+		}
+	}
+
+	// Watch for theme changes and announce to screen readers
+	$effect(() => {
+		// Skip announcement on initial page load
+		if (isInitialLoad) {
+			isInitialLoad = false;
+			return;
+		}
+
+		// Announce the theme change
+		const schemeConfig = theme.availableSchemes.find(s => s.name === currentScheme);
+		const schemeName = schemeConfig?.displayName || 'Default';
+
+		switch (currentTheme) {
+			case 'light':
+				announce(`Switched to light theme${schemeName !== 'Default' ? ` with ${schemeName} colors` : ''}`);
+				break;
+			case 'dark':
+				announce(`Switched to dark theme${schemeName !== 'Default' ? ` with ${schemeName} colors` : ''}`);
+				break;
+			case 'system':
+				announce(`Switched to system theme${schemeName !== 'Default' ? ` with ${schemeName} colors` : ''}`);
+				break;
+		}
+	});
+
 	function cycleTheme() {
 		theme.cycleMode();
 	}
