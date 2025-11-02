@@ -117,6 +117,7 @@
 		background-color: transparent;
 		cursor: pointer;
 		transition: all 0.2s ease;
+		color: currentColor;
 	}
 
 	.theme-toggle:hover {
@@ -126,6 +127,6 @@
 	.theme-toggle-icon {
 		width: 1.25rem;
 		height: 1.25rem;
-		color: #6b7280;
+		color: currentColor;
 	}
 </style>
