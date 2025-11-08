@@ -22,7 +22,7 @@ export interface ThemeStore {
 export function createThemeStore(config: ThemeConfig): ThemeStore {
   const defaultSettings: ThemeSettings = {
     theme: "system",
-    themeScheme: Object.keys(config.schemes)[0] || 'default',
+    themeScheme: (Object.keys(config.schemes)[0] as ThemeScheme) || 'default',
   };
 
   const STORAGE_KEY = "app_theme_v1";
