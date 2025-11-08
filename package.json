@@ -1,6 +1,6 @@
 {
   "name": "@goobits/themes",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A reusable theme system for SvelteKit projects with Svelte 5 runes support",
   "type": "module",
   "main": "index.ts",
