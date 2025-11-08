@@ -1,9 +1,15 @@
 /**
  * Default Theme Scheme
- * 
+ *
  * This file is intentionally minimal - the default scheme uses the base
  * design tokens without any overrides. This file exists for consistency
  * and to provide a clear extension point if needed.
+ *
+ * IMPORTANT: Import base tokens before this file:
+ *   import '@goobits/themes/themes/base/reset.css';
+ *   import '@goobits/themes/themes/base/design-tokens.css';
+ *   import '@goobits/themes/themes/base/fx-tokens.css';
+ *   import '@goobits/themes/themes/presets/default.css';
  */
 
 .scheme-default {

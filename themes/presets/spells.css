@@ -1,8 +1,14 @@
 /**
  * Spells (Grimoire) Theme Scheme
- * 
+ *
  * A magical purple-themed scheme extracted from the spells route.
  * Designed to work with both light and dark base themes but optimized for dark.
+ *
+ * IMPORTANT: Import base tokens before this file:
+ *   import '@goobits/themes/themes/base/reset.css';
+ *   import '@goobits/themes/themes/base/design-tokens.css';
+ *   import '@goobits/themes/themes/base/fx-tokens.css';
+ *   import '@goobits/themes/themes/presets/spells.css';
  */
 
 html.scheme-spells {

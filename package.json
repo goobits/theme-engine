@@ -11,8 +11,13 @@
     "./svelte/*": "./svelte/*",
     "./server": "./server/index.ts",
     "./utils": "./utils/index.ts",
-    "./themes/default.css": "./themes/default.css",
-    "./themes/spells.css": "./themes/spells.css",
+    "./themes": "./themes/index.css",
+    "./themes/base": "./themes/base/index.css",
+    "./themes/base/design-tokens.css": "./themes/base/design-tokens.css",
+    "./themes/base/fx-tokens.css": "./themes/base/fx-tokens.css",
+    "./themes/base/reset.css": "./themes/base/reset.css",
+    "./themes/default.css": "./themes/presets/default.css",
+    "./themes/spells.css": "./themes/presets/spells.css",
     "./package.json": "./package.json"
   },
   "files": [
