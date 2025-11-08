@@ -3,43 +3,22 @@ import type { ThemeMode, ThemeScheme } from '../../core/types';
 import { readPreferenceCookies, writePreferenceCookies } from '../../utils/cookies';
 import type { ThemeConfig } from "../../core/config";
 
-/**
- * Represents the theme settings.
- */
 export interface ThemeSettings {
-  /** The theme mode. */
   theme: ThemeMode;
-  /** The theme scheme. */
   themeScheme: ThemeScheme;
 }
 
-/**
- * Represents the theme store.
- */
 export interface ThemeStore {
-  /** Subscribes to changes in the theme store. */
   subscribe: (fn: (value: any) => void) => () => void;
-  /** The theme settings. */
   readonly settings: ThemeSettings;
-  /** The current theme mode. */
   readonly theme: ThemeMode;
-  /** The current theme scheme. */
   readonly scheme: ThemeScheme;
-  /** The available theme schemes. */
   readonly availableSchemes: any[];
-  /** Sets the theme mode. */
   setTheme(theme: ThemeMode): void;
-  /** Sets the theme scheme. */
   setScheme(scheme: ThemeScheme): void;
-  /** Cycles through the available theme modes. */
   cycleMode(): void;
 }
 
-/**
- * Creates a theme store.
- * @param config The theme configuration.
- * @returns The theme store.
- */
 export function createThemeStore(config: ThemeConfig): ThemeStore {
   const defaultSettings: ThemeSettings = {
     theme: "system",

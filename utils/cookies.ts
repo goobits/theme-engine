@@ -5,25 +5,14 @@
 
 import { browser } from '$app/environment';
 
-/**
- * Represents the user's preferences.
- */
 export interface UserPreferences {
-  /** The theme mode. */
   theme: 'light' | 'dark' | 'system';
-  /** The theme scheme. */
   themeScheme: 'default' | 'spells';
-  /** The user's language. */
   language: string;
-  /** The theme for the language. */
   languageTheme: 'default' | 'spells';
-  /** Whether to show the sidebar. */
   showSidebar: boolean;
 }
 
-/**
- * The names of the preference cookies.
- */
 export const PREFERENCE_COOKIE_NAMES = {
   theme: 'theme',
   themeScheme: 'themeScheme',
@@ -32,9 +21,6 @@ export const PREFERENCE_COOKIE_NAMES = {
   showSidebar: 'showSidebar'
 } as const;
 
-/**
- * The options for the preference cookies.
- */
 export const COOKIE_OPTIONS = {
   path: '/',
   maxAge: 60 * 60 * 24 * 365, // 1 year
@@ -44,8 +30,7 @@ export const COOKIE_OPTIONS = {
 };
 
 /**
- * Reads user preferences from cookies on the client-side.
- * @returns The user's preferences.
+ * Read user preferences from cookies (client-side)
  */
 export function readPreferenceCookies(): Partial<UserPreferences> {
   if (!browser) return {};
@@ -68,8 +53,7 @@ export function readPreferenceCookies(): Partial<UserPreferences> {
 }
 
 /**
- * Writes user preferences to cookies on the client-side.
- * @param preferences The preferences to write.
+ * Write user preferences to cookies (client-side)
  */
 export function writePreferenceCookies(preferences: Partial<UserPreferences>): void {
   if (!browser) return;
@@ -94,8 +78,7 @@ export function writePreferenceCookies(preferences: Partial<UserPreferences>): v
 }
 
 /**
- * Gets the default user preferences.
- * @returns The default user preferences.
+ * Get default preferences
  */
 export function getDefaultPreferences(): UserPreferences {
   return {

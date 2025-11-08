@@ -10,14 +10,16 @@
     "strict": true,
     "moduleResolution": "bundler",
     "verbatimModuleSyntax": false,
-    "rootDir": "src",
-    "outDir": "dist",
     "declaration": true,
     "lib": ["es2020", "DOM", "DOM.Iterable"],
     "module": "esnext"
   },
   "include": [
-    "src/**/*"
+    "*.ts",
+    "core/**/*",
+    "svelte/**/*",
+    "server/**/*",
+    "utils/**/*"
   ],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist", ".svelte-kit"]
 }

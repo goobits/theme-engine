@@ -2,11 +2,6 @@ import type { Handle } from "@sveltejs/kit";
 import { loadThemePreferences } from "./preferences";
 import type { ThemeConfig } from "../core/config";
 
-/**
- * Creates SvelteKit server hooks for handling theme transformations.
- * @param config The theme configuration.
- * @returns An object containing the server hook handle.
- */
 export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
   const themeTransform: Handle = async ({ event, resolve }) => {
     const preferences = loadThemePreferences(event.cookies, config);

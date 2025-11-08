@@ -1,9 +1,5 @@
 <!-- packages/svelte-themes/src/svelte/components/SchemeSelector.svelte -->
 <script lang="ts">
-  /**
-   * A Svelte component for selecting a theme scheme.
-   * @component
-   */
   import { useTheme } from '../hooks/useTheme.svelte';
 
   const theme = useTheme();

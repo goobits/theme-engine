@@ -8,10 +8,7 @@ import type { ThemeMode, ThemeScheme } from '../core/types';
 import type { ThemeConfig } from '../core/config';
 
 /**
- * Reads theme preferences from cookies on the server-side.
- * @param cookies The SvelteKit cookies object.
- * @param config The theme configuration.
- * @returns The theme preferences.
+ * Read theme preferences from cookies (server-side)
  */
 export function loadThemePreferences(cookies: Cookies, config: ThemeConfig): { theme: ThemeMode, themeScheme: ThemeScheme } {
   const defaults = {

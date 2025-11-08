@@ -1,9 +1,5 @@
 <!-- packages/svelte-themes/src/svelte/components/ThemeToggle.svelte -->
 <script>
-	/**
-	 * A Svelte component for toggling the theme.
-	 * @component
-	 */
 	import { Sun, Moon, Monitor } from '@lucide/svelte';
 	import { useTheme } from '../hooks/useTheme.svelte';
 
