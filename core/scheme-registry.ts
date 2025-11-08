@@ -6,7 +6,7 @@
  */
 
 import { browser } from "$app/environment";
-import { logger } from "$lib/utils/logger";
+import { logger } from "../utils/logger";
 import type { ThemeScheme, SchemeConfig, FullTheme } from "./types";
 
 // Available theme schemes
