@@ -16,8 +16,8 @@ Creating a custom theme involves three steps:
 
 | Scheme | Style | Best For |
 |--------|-------|----------|
-| **default** | Clean, professional | Business apps, documentation |
-| **spells** | Magical purple with glow effects | Creative apps, gaming |
+| **default** | Professional design system | Business apps, documentation |
+| **spells** | Purple with enhanced animations | Creative apps, gaming |
 
 ### Using Preset Themes
 

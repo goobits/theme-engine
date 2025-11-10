@@ -67,16 +67,18 @@ We welcome feature suggestions!
 
 **Do not open public issues for security vulnerabilities.**
 
-Email security concerns to: [security contact - update with actual email]
+Report security vulnerabilities via [GitHub Security Advisories](https://github.com/goobits/goobits-themes/security/advisories/new).
 
 ## Response Times
 
-We aim to respond within:
-- **Bugs**: 48 hours
-- **Questions**: 72 hours
-- **Feature requests**: 1 week
+As an open-source project maintained by volunteers, response times vary based on maintainer availability.
 
-Please be patient! This is an open-source project maintained by volunteers.
+Typical response times:
+- **Critical bugs**: 1-2 weeks
+- **General questions**: 2-4 weeks
+- **Feature requests**: 2-4 weeks
+
+Please be patient! We appreciate your understanding.
 
 ## Community Guidelines
 

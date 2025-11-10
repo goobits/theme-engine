@@ -1,4 +1,4 @@
-# 🎨 @goobits/themes
+# @goobits/themes
 
 Theme management for SvelteKit applications with Svelte 5 runes support.
 
@@ -144,8 +144,8 @@ export function load({ cookies }) {
 
 Two color schemes are included:
 
-- **default** - Clean, professional design
-- **spells** - Magical purple theme with glow effects
+- **default** - Professional design system
+- **spells** - Purple theme with glow effects
 
 Import in your layout:
 

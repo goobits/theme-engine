@@ -25,7 +25,7 @@ pnpm add @goobits/themes
 
 ## Quick Setup
 
-Get themes working in your app with three simple steps:
+Get themes working in your app in four steps:
 
 ### Step 1: Create Theme Configuration
 
@@ -180,6 +180,27 @@ Build custom UI with the `useTheme` hook:
 </select>
 ```
 
+## Verify Your Setup
+
+Confirm everything works correctly:
+
+**Check theme classes:**
+```javascript
+// In browser console
+console.log(document.documentElement.className);
+// Should show: theme-system scheme-default (or similar)
+```
+
+**Check for theme flash:**
+1. Toggle to dark mode
+2. Refresh page
+3. Page should load directly in dark mode (no white flash)
+
+**Check persistence:**
+1. Change theme or scheme
+2. Close browser tab
+3. Reopen - settings should be preserved
+
 ## Next Steps
 
 - **[Create custom themes](./custom-themes.md)** - Design your own color schemes
@@ -195,5 +216,5 @@ Ensure you completed Step 2 (server hooks) and Step 3 (HTML template update).
 **TypeScript errors?**
 Verify `@goobits/themes` is in `dependencies`, not `devDependencies`.
 
-**More help needed?**
+**Need additional help?**
 See the [Troubleshooting Guide](./troubleshooting.md) for common issues and solutions.
