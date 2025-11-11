@@ -278,62 +278,11 @@ Use Svelte 5's `$derived` for reactive computations:
 
 ---
 
-## Custom Component Examples
+## Building Custom Components
 
-### Compact Theme Switcher
+Use the `useTheme()` hook to build theme-aware components. See [Recipes](./recipes.md#custom-components) for more examples.
 
-```svelte
-<script>
-  import { useTheme } from '@goobits/themes/svelte';
-
-  const theme = useTheme();
-  const mode = $derived(theme.theme);
-  const scheme = $derived(theme.scheme);
-</script>
-
-<div class="theme-switcher">
-  <button
-    onclick={() => theme.setTheme('light')}
-    class:active={mode === 'light'}
-  >
-    ☀️
-  </button>
-  <button
-    onclick={() => theme.setTheme('dark')}
-    class:active={mode === 'dark'}
-  >
-    🌙
-  </button>
-  <button
-    onclick={() => theme.setTheme('system')}
-    class:active={mode === 'system'}
-  >
-    💻
-  </button>
-</div>
-
-<style>
-  .theme-switcher {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  button {
-    padding: 0.5rem;
-    border: 1px solid var(--border-primary);
-    background: var(--bg-secondary);
-    border-radius: 0.375rem;
-    cursor: pointer;
-  }
-
-  button.active {
-    background: var(--accent-primary);
-    color: white;
-  }
-</style>
-```
-
-### Visual Scheme Picker
+### Example: Visual Scheme Picker
 
 ```svelte
 <script>
@@ -415,72 +364,10 @@ Use Svelte 5's `$derived` for reactive computations:
 </style>
 ```
 
-### Theme Settings Panel
-
-```svelte
-<script>
-  import { useTheme } from '@goobits/themes/svelte';
-
-  const theme = useTheme();
-  const mode = $derived(theme.theme);
-  const scheme = $derived(theme.scheme);
-  const schemes = $derived(theme.availableSchemes);
-</script>
-
-<div class="settings-panel">
-  <section>
-    <h3>Theme Mode</h3>
-    <div class="radio-group">
-      <label>
-        <input
-          type="radio"
-          value="light"
-          checked={mode === 'light'}
-          onchange={() => theme.setTheme('light')}
-        />
-        ☀️ Light
-      </label>
-      <label>
-        <input
-          type="radio"
-          value="dark"
-          checked={mode === 'dark'}
-          onchange={() => theme.setTheme('dark')}
-        />
-        🌙 Dark
-      </label>
-      <label>
-        <input
-          type="radio"
-          value="system"
-          checked={mode === 'system'}
-          onchange={() => theme.setTheme('system')}
-        />
-        💻 System
-      </label>
-    </div>
-  </section>
-
-  <section>
-    <h3>Color Scheme</h3>
-    <div class="scheme-list">
-      {#each schemes as s}
-        <button
-          class="scheme-option"
-          class:active={scheme === s.name}
-          onclick={() => theme.setScheme(s.name)}
-        >
-          <span class="icon">{s.icon}</span>
-          <div class="details">
-            <strong>{s.displayName}</strong>
-            <small>{s.description}</small>
-          </div>
-        </button>
-      {/each}
-    </div>
-  </section>
-</div>
-```
+**More examples:**
+- [Theme Switchers](./recipes.md#theme-switching) - Toggle buttons and dropdowns
+- [Theme Pickers](./recipes.md#custom-components) - Modals and settings panels
+- [Conditional Content](./recipes.md#conditional-content-by-theme) - Show/hide based on theme
 
 ## Accessibility
 

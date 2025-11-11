@@ -6,7 +6,12 @@ Complete documentation for the @goobits/themes package.
 
 ### Getting Started
 - **[Getting Started](./getting-started.md)** - Installation and setup guide
+- **[FAQ](./faq.md)** - Frequently asked questions
 - **[Components](./components.md)** - Theme components and usage
+
+### Quick Reference
+- **[Recipes](./recipes.md)** - Code patterns for common tasks
+- **[Troubleshooting](./troubleshooting.md)** - Common issues and solutions
 
 ### Customization
 - **[Custom Themes](./custom-themes.md)** - Create your own color schemes
@@ -15,15 +20,15 @@ Complete documentation for the @goobits/themes package.
 ### Reference
 - **[API Reference](./api-reference.md)** - Complete API documentation
 - **[Best Practices](./best-practices.md)** - Accessibility and performance
-- **[Troubleshooting](./troubleshooting.md)** - Common issues and solutions
 
 ## Recommended Learning Path
 
 ### For Beginners
 
 1. Start with [Getting Started](./getting-started.md) - Set up themes in your app
-2. Explore [Components](./components.md) - Learn about theme controls
-3. Read [Best Practices](./best-practices.md) - Build accessible themes
+2. Check [FAQ](./faq.md) - Quick answers to common questions
+3. Explore [Components](./components.md) - Learn about theme controls
+4. Browse [Recipes](./recipes.md) - Copy-paste code patterns
 
 ### For Customization
 
@@ -42,6 +47,8 @@ Complete documentation for the @goobits/themes package.
 | File | Purpose | Audience |
 |------|---------|----------|
 | [getting-started.md](./getting-started.md) | Installation and basic setup | Everyone |
+| [faq.md](./faq.md) | Frequently asked questions | Everyone |
+| [recipes.md](./recipes.md) | Code patterns for common tasks | Developers |
 | [api-reference.md](./api-reference.md) | Complete API documentation | Developers |
 | [components.md](./components.md) | Component usage and customization | Developers |
 | [custom-themes.md](./custom-themes.md) | Create custom color schemes | Designers, Developers |
@@ -58,6 +65,7 @@ Complete documentation for the @goobits/themes package.
 
 ## Quick Links
 
+**Quick answers?** → [FAQ](./faq.md) or [Recipes](./recipes.md)
 **Need help?** → [Troubleshooting](./troubleshooting.md) or [Support](../SUPPORT.md)
 **Want to contribute?** → [Contributing Guide](../CONTRIBUTING.md)
 **What's new?** → [Changelog](../CHANGELOG.md)
