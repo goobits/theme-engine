@@ -96,10 +96,17 @@ Theme mode options:
 ### `ThemeScheme`
 
 ```typescript
-type ThemeScheme = "default" | "spells" | string;
+type ThemeScheme = "default" | "spells";
 ```
 
-Extensible color scheme type. Default schemes are "default" and "spells".
+Base color scheme type. Custom schemes are supported at runtime but require type extension:
+
+```typescript
+// Extend the type for custom schemes
+declare module '@goobits/themes/core' {
+  export type ThemeScheme = "default" | "spells" | "ocean" | "forest";
+}
+```
 
 ### `FullTheme`
 
