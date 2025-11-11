@@ -2,6 +2,9 @@
 
 Complete documentation for the @goobits/themes package.
 
+> **🎨 Interactive Demo Available!**
+> Check out the [demo app](../demo) to see these docs with interactive features like code tabs, design token explorer, and live theme showcase.
+
 ## Quick Navigation
 
 ### Getting Started
