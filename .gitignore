@@ -57,6 +57,7 @@ Thumbs.db
 # Package manager
 package-lock.json
 yarn.lock
+pnpm-lock.yaml
 
 # Cache
 .cache/
@@ -64,3 +65,11 @@ yarn.lock
 
 # Local development
 .local/
+
+# Demo app - keep source but ignore build artifacts
+demo/node_modules/
+demo/.svelte-kit/
+demo/build/
+demo/dist/
+demo/.env
+demo/.env.*

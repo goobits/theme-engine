@@ -1,0 +1,342 @@
+# Getting Started
+
+Complete guide to installing and configuring @goobits/themes in your SvelteKit application.
+
+> [!NOTE]
+> This is an **enhanced version** of the documentation showing interactive features powered by @goobits/docs-engine.
+
+## Requirements
+
+- **Svelte** 5.0.0 or higher
+- **SvelteKit** 2.0.0 or higher
+- **Node.js** 18.0.0 or higher
+
+> [!WARNING]
+> This package uses Svelte 5 runes and is not compatible with Svelte 4.
+
+## Installation
+
+Choose your package manager:
+
+```tabs:install
+tab: npm
+---
+```bash
+npm install @goobits/themes
+```
+---
+tab: pnpm
+---
+```bash
+pnpm add @goobits/themes
+```
+---
+tab: bun
+---
+```bash
+bun add @goobits/themes
+```
+```
+
+## Quick Setup
+
+Get themes working in your app in four steps:
+
+### Step 1: Create Theme Configuration
+
+Create a theme config file to define your available schemes:
+
+```tabs:theme-config
+tab: TypeScript
+---
+```typescript
+// src/lib/config/theme.ts
+import type { ThemeConfig } from '@goobits/themes/core';
+
+export const themeConfig: ThemeConfig = {
+  schemes: {
+    default: {
+      name: 'default',
+      displayName: 'Default',
+      description: 'Clean, professional design',
+      preview: {
+        primary: '#3b82f6',
+        accent: '#60a5fa',
+        background: '#ffffff'
+      }
+    },
+    spells: {
+      name: 'spells',
+      displayName: 'Spells',
+      description: 'Magical purple theme',
+      preview: {
+        primary: '#7c3aed',
+        accent: '#a78bfa',
+        background: '#0a0a0f'
+      }
+    }
+  }
+};
+```
+---
+tab: JavaScript
+---
+```javascript
+// src/lib/config/theme.js
+
+export const themeConfig = {
+  schemes: {
+    default: {
+      name: 'default',
+      displayName: 'Default',
+      description: 'Clean, professional design',
+      preview: {
+        primary: '#3b82f6',
+        accent: '#60a5fa',
+        background: '#ffffff'
+      }
+    },
+    spells: {
+      name: 'spells',
+      displayName: 'Spells',
+      description: 'Magical purple theme',
+      preview: {
+        primary: '#7c3aed',
+        accent: '#a78bfa',
+        background: '#0a0a0f'
+      }
+    }
+  }
+};
+```
+```
+
+### Step 2: Add Server-Side Rendering Support
+
+Configure server hooks to prevent theme flash on page load:
+
+```tabs:server-setup
+tab: hooks.server.ts
+---
+```typescript
+// src/hooks.server.ts
+import { createThemeHooks } from '@goobits/themes/server';
+import { themeConfig } from '$lib/config/theme';
+
+const { transform } = createThemeHooks(themeConfig);
+
+export const handle = transform;
+```
+---
+tab: +layout.server.ts
+---
+```typescript
+// src/routes/+layout.server.ts
+import { loadThemePreferences } from '@goobits/themes/server';
+import { themeConfig } from '$lib/config/theme';
+
+export function load({ cookies }) {
+  return {
+    preferences: loadThemePreferences(cookies, themeConfig)
+  };
+}
+```
+```
+
+> [!TIP] Why SSR?
+> Server-side rendering eliminates the "flash of unstyled content" (FOUC) by setting theme classes before the page renders in the browser.
+
+### Step 3: Update HTML Template
+
+Add the theme class placeholder to your HTML template:
+
+```html
+<!-- src/app.html -->
+<html lang="en" class="%sveltekit.theme%">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    %sveltekit.head%
+  </head>
+  <body data-sveltekit-preload-data="hover">
+    <div style="display: contents">%sveltekit.body%</div>
+  </body>
+</html>
+```
+
+> [!IMPORTANT]
+> The `%sveltekit.theme%` placeholder is replaced by the server with the actual theme classes.
+
+### Step 4: Add Theme Provider
+
+Wrap your app with the ThemeProvider component:
+
+```svelte
+<!-- src/routes/+layout.svelte -->
+<script>
+  import { ThemeProvider } from '@goobits/themes/svelte';
+  import { themeConfig } from '$lib/config/theme';
+
+  // Import preset theme CSS (optional)
+  import '@goobits/themes/themes/default.css';
+  import '@goobits/themes/themes/spells.css';
+
+  const { data, children } = $props();
+</script>
+
+<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+  {@render children?.()}
+</ThemeProvider>
+```
+
+## Using Theme Controls
+
+Add theme switching UI with built-in components:
+
+```svelte
+<script>
+  import { ThemeToggle, SchemeSelector } from '@goobits/themes/svelte';
+</script>
+
+<!-- Quick light/dark toggle -->
+<ThemeToggle />
+
+<!-- Scheme selector dropdown -->
+<SchemeSelector />
+```
+
+## Custom Theme Controls
+
+Build custom UI with the `useTheme` hook:
+
+```tabs:custom-controls
+tab: Svelte 5 (Runes)
+---
+```svelte
+<script>
+  import { useTheme } from '@goobits/themes/svelte';
+
+  const theme = useTheme();
+
+  // Reactive values using $derived
+  const currentMode = $derived(theme.theme);
+  const currentScheme = $derived(theme.scheme);
+
+  function toggleTheme() {
+    const newMode = currentMode === 'dark' ? 'light' : 'dark';
+    theme.setTheme(newMode);
+  }
+
+  function changeScheme(scheme: string) {
+    theme.setScheme(scheme);
+  }
+</script>
+
+<button onclick={toggleTheme}>
+  {currentMode === 'dark' ? '🌙' : '☀️'} Toggle Theme
+</button>
+
+<select value={currentScheme} onchange={(e) => changeScheme(e.target.value)}>
+  <option value="default">Default</option>
+  <option value="spells">Spells</option>
+</select>
+```
+---
+tab: With Animation
+---
+```svelte
+<script>
+  import { useTheme } from '@goobits/themes/svelte';
+  import { fade } from 'svelte/transition';
+
+  const theme = useTheme();
+  const currentMode = $derived(theme.theme);
+</script>
+
+<button
+  onclick={() => theme.toggle()}
+  transition:fade
+  class="theme-toggle"
+>
+  {#if currentMode === 'dark'}
+    🌙 Dark Mode
+  {:else}
+    ☀️ Light Mode
+  {/if}
+</button>
+
+<style>
+  .theme-toggle {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    background: var(--accent-primary);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.05);
+  }
+</style>
+```
+```
+
+## Verify Your Setup
+
+:::collapse{title="Verification Checklist" open=true}
+
+Confirm everything works correctly:
+
+**Check theme classes:**
+```javascript
+// In browser console
+console.log(document.documentElement.className);
+// Should show: theme-system scheme-default (or similar)
+```
+
+**Check for theme flash:**
+1. Toggle to dark mode
+2. Refresh page
+3. Page should load directly in dark mode (no white flash)
+
+**Check persistence:**
+1. Change theme or scheme
+2. Close browser tab
+3. Reopen - settings should be preserved
+
+:::
+
+## Next Steps
+
+> [!SUCCESS] You're All Set!
+> Your theme system is now configured. Explore advanced features:
+
+- **[Create custom themes](./custom-themes)** - Design your own color schemes
+- **[API Reference](./api-reference)** - Complete API documentation
+- **[Components](./components)** - Theme component details
+- **[Best Practices](./best-practices)** - Accessibility and performance tips
+
+## Troubleshooting
+
+:::collapse{title="Common Issues" open=false}
+
+**Theme flashes on page load?**
+
+Ensure you completed Step 2 (server hooks) and Step 3 (HTML template update).
+
+**TypeScript errors?**
+
+Verify `@goobits/themes` is in `dependencies`, not `devDependencies`.
+
+**Need additional help?**
+
+See the [Troubleshooting Guide](./troubleshooting) for common issues and solutions.
+
+:::
+
+---
+
+📋 [Changelog](https://github.com/goobits/theme-engine/blob/main/CHANGELOG.md) | 🏠 [Documentation Home](/)
