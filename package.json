@@ -31,8 +31,8 @@
     "LICENSE"
   ],
   "peerDependencies": {
-    "svelte": "^5.0.0",
-    "@sveltejs/kit": "^2.0.0"
+    "@sveltejs/kit": "^2.0.0",
+    "svelte": "^5.0.0"
   },
   "scripts": {
     "package": "echo 'Package is already in publishable format'",
@@ -40,10 +40,11 @@
     "test": "echo 'No tests configured'"
   },
   "devDependencies": {
+    "@sveltejs/kit": "^2.48.4",
     "@sveltejs/package": "^2.5.4",
+    "svelte": "^5.43.2",
     "typescript": "^5.9.3",
-    "vitest": "^1.0.0",
-    "svelte": "^5.43.2"
+    "vitest": "^1.0.0"
   },
   "keywords": [
     "svelte",
