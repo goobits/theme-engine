@@ -51,9 +51,7 @@ const config: ThemeConfig = createThemeConfig({
 
 **Returns:** ThemeConfig
 
-### Types
-
-#### `ThemeConfig`
+### `ThemeConfig`
 
 ```typescript
 interface ThemeConfig {
@@ -66,7 +64,7 @@ interface ThemeConfig {
 - `schemes` - Available color schemes as a Record (not an array)
 - `routeThemes` - Optional route-specific theme overrides
 
-#### `SchemeConfig`
+### `SchemeConfig`
 
 ```typescript
 interface SchemeConfig {
@@ -84,7 +82,7 @@ interface SchemeConfig {
 }
 ```
 
-#### `ThemeMode`
+### `ThemeMode`
 
 ```typescript
 type ThemeMode = "light" | "dark" | "system";
@@ -95,7 +93,7 @@ Theme mode options:
 - `"dark"` - Force dark mode
 - `"system"` - Follow OS preference
 
-#### `ThemeScheme`
+### `ThemeScheme`
 
 ```typescript
 type ThemeScheme = "default" | "spells" | string;
@@ -103,7 +101,7 @@ type ThemeScheme = "default" | "spells" | string;
 
 Extensible color scheme type. Default schemes are "default" and "spells".
 
-#### `FullTheme`
+### `FullTheme`
 
 ```typescript
 interface FullTheme {
@@ -178,7 +176,7 @@ const theme = useTheme();
 
 **Returns:** ThemeStore
 
-#### `ThemeStore`
+### `ThemeStore`
 
 ```typescript
 interface ThemeStore {
@@ -271,7 +269,7 @@ export function load({ cookies }: { cookies: Cookies }) {
 
 **Returns:** `ServerPreferences`
 
-#### `ServerPreferences`
+### `ServerPreferences`
 
 ```typescript
 interface ServerPreferences {
@@ -342,7 +340,7 @@ const config = getRouteTheme('/admin', routeThemes);
 
 **Returns:** `RouteThemeConfig | null`
 
-#### `RouteThemeConfig`
+### `RouteThemeConfig`
 
 ```typescript
 interface RouteThemeConfig {
