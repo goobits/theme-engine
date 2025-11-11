@@ -25,6 +25,7 @@ export default defineConfig({
     alias: {
       '$app/environment': '/home/user/theme-engine/test/mocks/$app-environment.ts',
       '$app/stores': '/home/user/theme-engine/test/mocks/$app-stores.ts',
+      '@lucide/svelte': '/home/user/theme-engine/test/mocks/@lucide-svelte.ts',
     },
   },
 });
