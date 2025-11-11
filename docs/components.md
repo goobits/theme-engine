@@ -524,3 +524,7 @@ All built-in components follow accessibility best practices:
   }
 </style>
 ```
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)

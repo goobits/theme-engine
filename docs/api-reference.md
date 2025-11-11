@@ -443,3 +443,7 @@ const current = getCurrentScheme();
 ```
 
 **Note:** Most applications should use `ThemeProvider` and `useTheme()` instead of these low-level APIs.
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)

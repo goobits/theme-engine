@@ -27,6 +27,27 @@ import '@goobits/themes/themes/default.css';
 import '@goobits/themes/themes/spells.css';
 ```
 
+## Naming Conventions
+
+Before creating custom schemes, understand the naming rules:
+
+**Scheme Names Must:**
+- Use lowercase letters only (`ocean`, not `Ocean`)
+- Use hyphens for multi-word names (`ocean-blue`, not `ocean_blue` or `oceanBlue`)
+- Start with a letter (`blue-ocean`, not `2-ocean`)
+- Only contain alphanumeric characters and hyphens (`theme-2024` ✓, `theme@2024` ✗)
+
+**Avoid Reserved Names:**
+- `light`, `dark`, `system`, `auto` (used internally)
+
+**Why These Rules?**
+
+Scheme names become CSS classes (`.scheme-ocean`) and must follow CSS identifier rules. Invalid names cause CSS parsing errors and won't apply.
+
+**Examples:**
+- ✅ Good: `ocean`, `forest-green`, `sunset-2024`
+- ❌ Bad: `Ocean`, `forest_green`, `2-sunset`, `theme@work`
+
 ## Creating a Custom Scheme
 
 ### Step 1: Create CSS File
@@ -576,9 +597,12 @@ Create a preview component to test colors:
 </div>
 ```
 
-## Further Reading
+## See Also
 
+**Next steps for custom themes:**
 - [Design Tokens](./design-tokens.md) - Complete CSS variable reference
-- [Best Practices](./best-practices.md) - Accessibility and performance
-- [API Reference](./api-reference.md) - Theme configuration API
-- [Components](./components.md) - Theme component customization
+- [Best Practices](./best-practices.md) - Ensure accessible color contrast
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)

@@ -218,3 +218,7 @@ Verify `@goobits/themes` is in `dependencies`, not `devDependencies`.
 
 **Need additional help?**
 See the [Troubleshooting Guide](./troubleshooting.md) for common issues and solutions.
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)

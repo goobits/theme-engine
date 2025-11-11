@@ -2,6 +2,21 @@
 
 Common issues and solutions when using @goobits/themes.
 
+## Quick Symptom Index
+
+Jump directly to your issue:
+
+- **💥 White flash on page load** → [Theme Flashes](#theme-flashes-on-page-load-fouc)
+- **🔴 TypeScript errors** → [TypeScript Errors](#typescript-errors-on-import)
+- **📦 Module not found** → [Module Import Errors](#module-import-errors)
+- **🎨 No theme styles** → [CSS Not Loading](#css-not-loading)
+- **🔄 Theme toggle not working** → [Theme Not Switching](#theme-not-switching)
+- **🌓 System theme not detected** → [System Theme Not Detecting](#system-theme-not-detecting)
+- **🍪 Settings don't persist** → [Cookies Not Persisting](#cookies-not-persisting)
+- **🎨 Custom colors not applying** → [Custom Scheme Not Applying](#custom-scheme-not-applying)
+- **💡 Hover effects missing** → [Hover Effects Not Working](#hover-effects-not-working)
+- **⚡ Slow theme switching** → [Slow Theme Switching](#slow-theme-switching)
+
 ## Quick Diagnostic Checklist
 
 Before diving into specific issues, verify these basics:
@@ -11,6 +26,19 @@ Before diving into specific issues, verify these basics:
 - [ ] Theme CSS imported in root layout
 - [ ] ThemeProvider wraps your entire app
 - [ ] Package in `dependencies`, not `devDependencies`
+
+## Common Error Messages
+
+If you see these exact error messages, here are the solutions:
+
+| Error Message | Solution |
+|---------------|----------|
+| `Cannot find module '@goobits/themes/svelte'` | [TypeScript Errors](#typescript-errors-on-import) |
+| `theme is not defined` | [Theme Not Switching](#theme-not-switching) - Component not inside ThemeProvider |
+| `ReferenceError: document is not defined` | [Module Import Errors](#module-import-errors) - SSR issue |
+| `TypeError: Cannot read property 'theme'` | [Theme Not Switching](#theme-not-switching) - Missing theme store |
+| `Failed to resolve import "@goobits/themes/...` | [Module Import Errors](#module-import-errors) - Check import path |
+| `Uncaught Error: Function called outside component initialization` | Component using useTheme() outside ThemeProvider |
 
 ## Setup Issues
 
@@ -661,3 +689,7 @@ console.log(styles.getPropertyValue('--bg-primary'));
    - Expected vs actual behavior
 
 See [SUPPORT.md](../SUPPORT.md) for detailed guidelines on asking for help.
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)

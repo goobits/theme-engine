@@ -6,7 +6,7 @@ Guidelines for building accessible, performant, and maintainable themes with @go
 
 ### Color Contrast
 
-Maintain WCAG AA standards for all text and interactive elements.
+Maintain [WCAG AA standards](https://www.w3.org/WAI/WCAG21/Understanding/conformance#levels) for all text and interactive elements.
 
 **Requirements:**
 - Normal text on background: **4.5:1** contrast ratio minimum
@@ -328,17 +328,17 @@ Use consistent patterns for theme-aware components.
 
 Test themes across all pages and states.
 
-**Checklist:**
-- [ ] Light mode on all pages
-- [ ] Dark mode on all pages
-- [ ] System mode (both light and dark)
-- [ ] All color schemes
-- [ ] Hover states
-- [ ] Focus states
-- [ ] Active states
-- [ ] Disabled states
-- [ ] Loading states
-- [ ] Error states
+**Test coverage:**
+- Light mode on all pages
+- Dark mode on all pages
+- System mode (both light and dark)
+- All color schemes
+- Hover states
+- Focus states
+- Active states
+- Disabled states
+- Loading states
+- Error states
 
 ### Browser Testing
 
@@ -617,28 +617,34 @@ html.theme-dark.scheme-custom {
 
 ## Production Checklist
 
-Before deploying:
+Before deploying, verify:
 
-- [ ] All themes tested in light and dark modes
-- [ ] Color contrast meets WCAG AA standards
-- [ ] Keyboard navigation works on all theme controls
-- [ ] Focus indicators visible
-- [ ] Screen reader announcements work
-- [ ] Reduced motion preferences respected
-- [ ] Themes work in all target browsers
-- [ ] No console errors or warnings
-- [ ] Cookies persist correctly
-- [ ] SSR works without flash
-- [ ] Bundle size optimized
-- [ ] Theme transitions smooth
-- [ ] Mobile responsive
-- [ ] Documentation updated
+- All themes tested in light and dark modes
+- Color contrast meets WCAG AA standards
+- Keyboard navigation works on all theme controls
+- Focus indicators visible
+- Screen reader announcements work
+- Reduced motion preferences respected
+- Themes work in all target browsers
+- No console errors or warnings
+- Cookies persist correctly
+- SSR works without flash
+- Bundle size optimized
+- Theme transitions smooth
+- Mobile responsive
+- Documentation updated
 
 ---
 
-## Further Reading
+## See Also
 
-- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-- [MDN: prefers-color-scheme](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme)
-- [MDN: prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
-- [Web.dev: Color and Contrast](https://web.dev/color-and-contrast-accessibility/)
+**Encountered issues?**
+- [Troubleshooting](./troubleshooting.md) - Debug common problems
+
+**External resources:**
+- [WCAG Guidelines](https://www.w3.org/WAI/WCAG21/quickref/) - Accessibility standards
+- [Web.dev: Color and Contrast](https://web.dev/color-and-contrast-accessibility/) - Contrast guidance
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)

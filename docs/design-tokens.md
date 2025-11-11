@@ -175,6 +175,44 @@ Enable/disable effects (0 = off, 1 = on):
 | `--radius-xl` | Extra large radius | `0.75rem` |
 | `--radius-full` | Full circle | `9999px` |
 
+## Migrating from Plain CSS
+
+Replace hard-coded colors with design tokens for automatic theme switching:
+
+**Before (Plain CSS):**
+```css
+.card {
+  background: #ffffff;
+  color: #000000;
+  border: 1px solid #e5e5e5;
+}
+
+.button {
+  background: #3b82f6;
+  color: white;
+}
+```
+
+**After (Design Tokens):**
+```css
+.card {
+  background: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.button {
+  background: var(--accent-primary);
+  color: white;
+}
+```
+
+**Benefits:**
+- Automatic dark mode support
+- Theme switching works instantly
+- Consistent colors across app
+- Easier maintenance (change once, update everywhere)
+
 ## Using Design Tokens
 
 ### In Custom Schemes
@@ -358,8 +396,12 @@ html.scheme-custom {
 }
 ```
 
-## Further Reading
+## See Also
 
-- [Custom Themes Guide](./custom-themes.md) - Create your own color schemes
-- [Best Practices](./best-practices.md) - Accessibility and performance
-- [API Reference](./api-reference.md) - Complete API documentation
+**Ready to create custom themes?**
+- [Custom Themes Guide](./custom-themes.md) - Apply these tokens in your own color schemes
+- [Best Practices](./best-practices.md) - Color contrast and accessibility
+
+---
+
+📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)
