@@ -12,7 +12,7 @@ import {
   applyThemeWithScheme,
   applyRouteTheme,
 } from "./theme-manager";
-import type { ThemeMode, ThemeScheme, FullTheme } from "./types";
+import type { FullTheme } from "./types";
 import type { RouteThemeConfig } from "../utils/route-themes";
 
 // Mock the $app/environment module
@@ -89,7 +89,7 @@ function mockMatchMedia(
         listeners.push(handler);
       }
     });
-    mockMediaQuery.removeEventListener = vi.fn((event: string, handler: any) => {
+    mockMediaQuery.removeEventListener = vi.fn((_event: string, handler: any) => {
       const index = listeners.indexOf(handler);
       if (index > -1) {
         listeners.splice(index, 1);
@@ -362,7 +362,7 @@ describe("watchSystemTheme", () => {
     });
 
     it("should return no-op cleanup when no API is available", () => {
-      const mediaQuery = mockMatchMedia(false, false, false);
+      mockMatchMedia(false, false, false);
       const callback = vi.fn();
 
       const cleanup = watchSystemTheme(callback);
@@ -653,7 +653,7 @@ describe("initializeTheme", () => {
     });
 
     it("should handle cleanup being called multiple times", () => {
-      const mediaQuery = mockMatchMedia(false, true, false);
+      mockMatchMedia(false, true, false);
 
       const cleanup = initializeTheme("system", "default");
 
@@ -1010,7 +1010,7 @@ describe("integration scenarios", () => {
   it("should handle route theme changes with system watching", async () => {
     const { getRouteTheme } = await import("../utils/route-themes");
     const { applyFullTheme } = await import("./scheme-registry");
-    const mediaQuery = mockMatchMedia(false, true, false);
+    mockMatchMedia(false, true, false);
 
     // Initialize with system theme
     const cleanup = initializeTheme("system", "default");

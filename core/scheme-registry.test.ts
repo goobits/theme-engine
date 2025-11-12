@@ -9,7 +9,7 @@ import {
   applyFullTheme,
   getCurrentScheme,
 } from "./scheme-registry";
-import type { ThemeScheme, FullTheme } from "./types";
+import type { FullTheme } from "./types";
 
 // Mock the $app/environment module
 vi.mock("$app/environment", () => ({
@@ -87,7 +87,7 @@ describe("THEME_SCHEMES", () => {
   it.each([
     ["default", THEME_SCHEMES.default],
     ["spells", THEME_SCHEMES.spells],
-  ])("should have all required fields for %s scheme", (name, scheme) => {
+  ])("should have all required fields for %s scheme", (_name, scheme) => {
     expect(scheme).toHaveProperty("name");
     expect(scheme).toHaveProperty("displayName");
     expect(scheme).toHaveProperty("description");
@@ -99,7 +99,7 @@ describe("THEME_SCHEMES", () => {
   it.each([
     ["default", THEME_SCHEMES.default.preview],
     ["spells", THEME_SCHEMES.spells.preview],
-  ])("should have valid preview colors for %s scheme", (name, preview) => {
+  ])("should have valid preview colors for %s scheme", (_name, preview) => {
     expect(preview.primary).toMatch(/^#[0-9a-f]{6}$/i);
     expect(preview.accent).toMatch(/^#[0-9a-f]{6}$/i);
     expect(preview.background).toMatch(/^#[0-9a-f]{6}$/i);

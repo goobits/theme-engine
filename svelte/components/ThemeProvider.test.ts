@@ -15,7 +15,6 @@ import type { ThemeConfig } from "../../core/config";
 import type { ThemeMode, ThemeScheme } from "../../core/types";
 
 // Mock dependencies before importing component
-let onMountCallback: any = null;
 let cleanupFunction: any = null;
 
 vi.mock("svelte", async () => {
@@ -23,7 +22,6 @@ vi.mock("svelte", async () => {
   return {
     ...actual,
     onMount: vi.fn((fn: any) => {
-      onMountCallback = fn;
       // Execute mount callback and capture cleanup
       cleanupFunction = fn();
       return cleanupFunction;
@@ -108,7 +106,6 @@ describe("ThemeProvider", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    onMountCallback = null;
     cleanupFunction = null;
 
     const svelteModule = await import("svelte");

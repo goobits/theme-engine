@@ -724,7 +724,7 @@ describe("createThemeStore", () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
       let shouldThrow = true;
-      mockStorage.setItem.mockImplementation((key, value) => {
+      mockStorage.setItem.mockImplementation(() => {
         if (shouldThrow) {
           throw new Error("Storage error");
         }
@@ -858,11 +858,10 @@ describe("createThemeStore", () => {
       const config = createMockConfig();
 
       const store1 = createThemeStore(config);
-      const store2 = createThemeStore(config);
 
       store1.setTheme("dark");
 
-      // Note: store2 won't automatically sync, but a new instance will read the updated value
+      // Note: existing stores won't automatically sync, but a new instance will read the updated value
       const store3 = createThemeStore(config);
       expect(store3.theme).toBe("dark");
     });

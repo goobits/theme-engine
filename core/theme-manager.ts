@@ -9,8 +9,6 @@ import { browser } from "$app/environment";
 import { logger } from "../utils/logger";
 import {
   applyFullTheme,
-  applyThemeScheme,
-  getCurrentScheme,
 } from "./scheme-registry";
 import { getRouteTheme, type RouteThemeConfig } from "../utils/route-themes";
 import type { ThemeMode, FullTheme, ThemeScheme } from "./types";
@@ -112,7 +110,7 @@ export function initializeTheme(
   applyThemeWithScheme(storedTheme, storedScheme);
 
   // Set up system theme watching for when system mode is active
-  const cleanup = watchSystemTheme((systemTheme) => {
+  const cleanup = watchSystemTheme(() => {
     // Only react if system theme is currently active
     if (
       typeof document !== "undefined" &&

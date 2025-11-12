@@ -141,18 +141,6 @@ export function getCurrentScheme(): ThemeScheme {
 }
 
 /**
- * Check if a scheme requires dark mode for optimal appearance
- */
-function schemePrefersDark(scheme: ThemeScheme): boolean {
-  switch (scheme) {
-    case "spells":
-      return true; // Spells theme looks best in dark mode
-    default:
-      return false;
-  }
-}
-
-/**
  * All scheme CSS is now statically imported in design-tokens.css
  * No dynamic loading needed - schemes are always available
  */

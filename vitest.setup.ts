@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom/vitest';
-import { expect, afterEach } from 'vitest';
+import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/svelte';
 
 // Extend Vitest's expect with jest-dom matchers
 // This enables matchers like toBeInTheDocument(), toHaveClass(), etc.
+// The matchers are automatically available via the import above
 
 // Cleanup after each test
 afterEach(() => {

@@ -44,7 +44,6 @@
   },
   "devDependencies": {
     "@sveltejs/kit": "^2.48.4",
-    "@sveltejs/package": "^2.5.4",
     "@sveltejs/vite-plugin-svelte": "^6.2.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/svelte": "^5.2.8",
@@ -82,5 +81,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@lucide/svelte": "^0.553.0"
   }
 }

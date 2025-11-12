@@ -1,5 +1,5 @@
 <!-- packages/svelte-themes/src/svelte/components/ThemeToggle.svelte -->
-<script>
+<script lang="ts">
 	import { Sun, Moon, Monitor } from '@lucide/svelte';
 	import { useTheme } from '../hooks/useTheme.svelte';
 
@@ -11,7 +11,7 @@
 	let isInitialLoad = $state(true);
 
 	// Announce theme changes to screen readers
-	function announce(message) {
+	function announce(message: string) {
 		if (typeof document !== 'undefined') {
 			const liveRegion = document.getElementById('aria-live-region');
 			if (liveRegion) {
@@ -97,7 +97,7 @@
 >
 	{#if themeInfo.icon}
 		{@const Icon = themeInfo.icon}
-		<Icon class="theme-toggle-icon" />
+		<Icon size={20} />
 	{/if}
 </button>
 
@@ -120,7 +120,7 @@
 		background-color: rgba(0, 0, 0, 0.05);
 	}
 
-	.theme-toggle-icon {
+	.theme-toggle :global(svg) {
 		width: 1.25rem;
 		height: 1.25rem;
 		color: currentColor;

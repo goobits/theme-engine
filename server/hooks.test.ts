@@ -4,7 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createThemeHooks } from "./hooks";
-import type { Handle, RequestEvent, Cookies } from "@sveltejs/kit";
+import type { RequestEvent, Cookies } from "@sveltejs/kit";
 import type { ThemeConfig } from "../core/config";
 import type { ThemeScheme } from "../core/types";
 import * as preferences from "./preferences";

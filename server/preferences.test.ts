@@ -2,11 +2,10 @@
  * Tests for Server-side Cookie Utilities
  */
 
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { loadThemePreferences } from "./preferences";
 import type { Cookies } from "@sveltejs/kit";
 import type { ThemeConfig } from "../core/config";
-import type { ThemeMode, ThemeScheme } from "../core/types";
 
 // Helper to create mock Cookies object
 function createMockCookies(cookieValues: Record<string, string> = {}): Cookies {

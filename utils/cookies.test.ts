@@ -32,16 +32,6 @@ function mockDocumentCookie(cookieString: string) {
   });
 }
 
-// Helper to get document.cookie setter calls
-function getDocumentCookieWrites(): string[] {
-  const cookieDescriptor = Object.getOwnPropertyDescriptor(document, "cookie");
-  if (cookieDescriptor && cookieDescriptor.set) {
-    const mockSetter = vi.mocked(cookieDescriptor.set);
-    return mockSetter.mock.calls.map((call) => call[0]);
-  }
-  return [];
-}
-
 describe("getDefaultPreferences", () => {
   it("should return all default preferences", () => {
     const defaults = getDefaultPreferences();
@@ -129,7 +119,7 @@ describe("readPreferenceCookies", () => {
       ["languageTheme", "languageTheme=spells", { languageTheme: "spells" }],
       ["showSidebar true", "showSidebar=true", { showSidebar: true }],
       ["showSidebar false", "showSidebar=false", { showSidebar: false }],
-    ])("should parse single %s preference cookie", (name, cookie, expected) => {
+    ])("should parse single %s preference cookie", (_name, cookie, expected) => {
       mockDocumentCookie(cookie);
       const result = readPreferenceCookies();
 
@@ -424,7 +414,7 @@ describe("writePreferenceCookies", () => {
       ["light", { theme: "light" }, "theme=light"],
       ["dark", { theme: "dark" }, "theme=dark"],
       ["system", { theme: "system" }, "theme=system"],
-    ])("should write theme=%s correctly", (name, prefs, expected) => {
+    ])("should write theme=%s correctly", (_name, prefs, expected) => {
       writePreferenceCookies(prefs as Partial<UserPreferences>);
 
       expect(cookieWrites).toHaveLength(1);
@@ -434,7 +424,7 @@ describe("writePreferenceCookies", () => {
     it.each([
       ["default", { themeScheme: "default" }, "themeScheme=default"],
       ["spells", { themeScheme: "spells" }, "themeScheme=spells"],
-    ])("should write themeScheme=%s correctly", (name, prefs, expected) => {
+    ])("should write themeScheme=%s correctly", (_name, prefs, expected) => {
       cookieWrites = [];
       writePreferenceCookies(prefs as Partial<UserPreferences>);
 
@@ -445,7 +435,7 @@ describe("writePreferenceCookies", () => {
     it.each([
       ["default", { languageTheme: "default" }, "languageTheme=default"],
       ["spells", { languageTheme: "spells" }, "languageTheme=spells"],
-    ])("should write languageTheme=%s correctly", (name, prefs, expected) => {
+    ])("should write languageTheme=%s correctly", (_name, prefs, expected) => {
       cookieWrites = [];
       writePreferenceCookies(prefs as Partial<UserPreferences>);
 
