@@ -1,25 +1,19 @@
 {
-  "compilerOptions": {
-    "allowJs": true,
-    "checkJs": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "strict": true,
-    "moduleResolution": "bundler",
-    "verbatimModuleSyntax": false,
-    "declaration": true,
-    "lib": ["es2020", "DOM", "DOM.Iterable"],
-    "module": "esnext"
-  },
-  "include": [
-    "*.ts",
-    "core/**/*",
-    "svelte/**/*",
-    "server/**/*",
-    "utils/**/*"
-  ],
-  "exclude": ["node_modules", "dist", ".svelte-kit"]
+    "compilerOptions": {
+        "allowJs": true,
+        "checkJs": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "moduleResolution": "bundler",
+        "verbatimModuleSyntax": false,
+        "declaration": true,
+        "lib": ["es2020", "DOM", "DOM.Iterable"],
+        "module": "esnext"
+    },
+    "include": ["*.ts", "core/**/*", "svelte/**/*", "server/**/*", "utils/**/*"],
+    "exclude": ["node_modules", "dist", ".svelte-kit"]
 }

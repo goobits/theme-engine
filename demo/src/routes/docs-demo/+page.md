@@ -21,13 +21,13 @@ Here's how to use the theme system:
 import { ThemeProvider } from '@goobits/themes/svelte';
 
 const themeConfig = {
-  schemes: {
-    default: {
-      name: 'default',
-      displayName: 'Default',
-      description: 'Clean, professional design'
-    }
-  }
+    schemes: {
+        default: {
+            name: 'default',
+            displayName: 'Default',
+            description: 'Clean, professional design',
+        },
+    },
 };
 ```
 
@@ -35,13 +35,13 @@ const themeConfig = {
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
-  const theme = useTheme();
-  const currentMode = $derived(theme.theme);
+    import { useTheme } from '@goobits/themes/svelte';
+    const theme = useTheme();
+    const currentMode = $derived(theme.theme);
 </script>
 
 <button onclick={() => theme.toggle()}>
-  {currentMode === 'light' ? '🌙' : '☀️'} Toggle Theme
+    {currentMode === 'light' ? '🌙' : '☀️'} Toggle Theme
 </button>
 ```
 

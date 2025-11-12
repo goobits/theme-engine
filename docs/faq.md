@@ -34,12 +34,12 @@ Quick answers to common questions about @goobits/themes.
 
 ```typescript
 export function load({ cookies }) {
-  return {
-    preferences: {
-      theme: 'dark', // default mode
-      themeScheme: 'ocean' // default scheme
-    }
-  };
+    return {
+        preferences: {
+            theme: 'dark', // default mode
+            themeScheme: 'ocean', // default scheme
+        },
+    };
 }
 ```
 
@@ -61,13 +61,14 @@ export function load({ cookies }) {
 ```typescript
 // src/lib/types/theme.d.ts
 declare module '@goobits/themes/core' {
-  export type ThemeScheme = 'default' | 'spells' | 'ocean' | 'forest';
+    export type ThemeScheme = 'default' | 'spells' | 'ocean' | 'forest';
 }
 ```
 
 ### Q: Why doesn't TypeScript recognize my imports?
 
 **A:** Make sure you're importing from the correct subpaths:
+
 - `@goobits/themes/core` - Types and config
 - `@goobits/themes/svelte` - Components and hooks
 - `@goobits/themes/server` - Server-side utilities
@@ -99,9 +100,9 @@ import '@goobits/themes/themes/spells.css';
 
 ```css
 html.scheme-custom {
-  --fx-hover-transform: translateY(-4px);
-  --fx-hover-duration: 200ms;
-  --enable-card-float: 1;
+    --fx-hover-transform: translateY(-4px);
+    --fx-hover-duration: 200ms;
+    --enable-card-float: 1;
 }
 ```
 
@@ -111,9 +112,9 @@ html.scheme-custom {
 
 ```css
 html.scheme-custom {
-  --enable-card-float: 0;
-  --enable-magical-glow: 0;
-  --fx-transition-duration: 0ms;
+    --enable-card-float: 0;
+    --enable-magical-glow: 0;
+    --fx-transition-duration: 0ms;
 }
 ```
 
@@ -124,6 +125,7 @@ html.scheme-custom {
 ### Q: What's the difference between "theme mode" and "color scheme"?
 
 **A:**
+
 - **Theme Mode**: Light, dark, or system (OS preference)
 - **Color Scheme**: Your brand colors (default, spells, ocean, etc.)
 
@@ -135,14 +137,14 @@ You can have a "dark mode" with any color scheme.
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
-  const isDark = $derived(theme.theme === 'dark');
+    const theme = useTheme();
+    const isDark = $derived(theme.theme === 'dark');
 </script>
 
 {#if isDark}
-  <!-- Dark mode content -->
+    <!-- Dark mode content -->
 {/if}
 ```
 
@@ -166,6 +168,7 @@ routeThemes: {
 ### Q: Why do I see a flash of unstyled content (FOUC)?
 
 **A:** You're missing the server-side hooks. Follow steps 2 and 3 in [Getting Started](./getting-started.md#quick-setup):
+
 1. Add `createThemeHooks()` to `hooks.server.ts`
 2. Add `%sveltekit.theme%` to your `app.html`
 
@@ -199,9 +202,9 @@ routeThemes: {
 
 ```css
 .theme-toggle {
-  --toggle-bg: var(--bg-secondary);
-  --toggle-color: var(--text-primary);
-  --toggle-hover: var(--hover-overlay);
+    --toggle-bg: var(--bg-secondary);
+    --toggle-color: var(--text-primary);
+    --toggle-hover: var(--hover-overlay);
 }
 ```
 
@@ -228,6 +231,7 @@ Then access via `theme.availableSchemes` in your component.
 ### Q: Theme toggle doesn't work. What's wrong?
 
 **A:** Ensure:
+
 1. Component is inside `<ThemeProvider>`
 2. You're importing theme CSS
 3. `%sveltekit.theme%` is in `app.html`
@@ -256,7 +260,7 @@ console.log(document.documentElement.className);
 Check CSS variables:
 
 ```javascript
-getComputedStyle(document.documentElement).getPropertyValue('--bg-primary')
+getComputedStyle(document.documentElement).getPropertyValue('--bg-primary');
 ```
 
 ---
@@ -266,6 +270,7 @@ getComputedStyle(document.documentElement).getPropertyValue('--bg-primary')
 ### Q: Can I migrate from another theme library?
 
 **A:** Yes. See [migration patterns](./recipes.md#migration-patterns) for common transitions. Key differences:
+
 - Use `ThemeProvider` instead of a context
 - Import theme CSS explicitly
 - Use `useTheme()` instead of props
@@ -277,6 +282,7 @@ getComputedStyle(document.documentElement).getPropertyValue('--bg-primary')
 ### Q: What browsers are supported?
 
 **A:** Modern browsers that support CSS custom properties:
+
 - Chrome 49+
 - Firefox 31+
 - Safari 9.1+
@@ -289,11 +295,13 @@ IE11 is **not supported**.
 ## See Also
 
 **Guides:**
+
 - [Getting Started](./getting-started.md) - Installation and setup
 - [Recipes](./recipes.md) - Code examples for common patterns
 - [Troubleshooting](./troubleshooting.md) - Detailed problem solving
 
 **Reference:**
+
 - [API Reference](./api-reference.md) - Complete API documentation
 - [Components](./components.md) - Component details and props
 

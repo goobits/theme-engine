@@ -1,74 +1,105 @@
 {
-  "name": "@goobits/themes",
-  "version": "1.0.1",
-  "description": "A reusable theme system for SvelteKit projects with Svelte 5 runes support",
-  "type": "module",
-  "main": "index.ts",
-  "exports": {
-    ".": "./index.ts",
-    "./core": "./core/index.ts",
-    "./svelte": "./svelte/index.ts",
-    "./svelte/*": "./svelte/*",
-    "./server": "./server/index.ts",
-    "./utils": "./utils/index.ts",
-    "./themes": "./themes/index.css",
-    "./themes/base": "./themes/base/index.css",
-    "./themes/base/design-tokens.css": "./themes/base/design-tokens.css",
-    "./themes/base/fx-tokens.css": "./themes/base/fx-tokens.css",
-    "./themes/base/reset.css": "./themes/base/reset.css",
-    "./themes/default.css": "./themes/presets/default.css",
-    "./themes/spells.css": "./themes/presets/spells.css",
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "core",
-    "svelte",
-    "server",
-    "themes",
-    "utils",
-    "index.ts",
-    "README.md",
-    "LICENSE"
-  ],
-  "peerDependencies": {
-    "svelte": "^5.0.0",
-    "@sveltejs/kit": "^2.0.0"
-  },
-  "scripts": {
-    "package": "echo 'Package is already in publishable format'",
-    "build": "tsc --noEmit",
-    "test": "echo 'No tests configured'"
-  },
-  "devDependencies": {
-    "@sveltejs/package": "^2.5.4",
-    "typescript": "^5.9.3",
-    "vitest": "^1.0.0",
-    "svelte": "^5.43.2"
-  },
-  "keywords": [
-    "svelte",
-    "sveltekit",
-    "themes",
-    "theming",
-    "dark-mode",
-    "color-schemes",
-    "svelte-5",
-    "runes"
-  ],
-  "license": "MIT",
-  "author": "GooBits",
-  "homepage": "https://github.com/goobits/goobits-themes#readme",
-  "bugs": {
-    "url": "https://github.com/goobits/goobits-themes/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/goobits/goobits-themes.git"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  },
-  "publishConfig": {
-    "access": "public"
-  }
+    "name": "@goobits/themes",
+    "version": "1.0.1",
+    "description": "A reusable theme system for SvelteKit projects with Svelte 5 runes support",
+    "type": "module",
+    "main": "index.ts",
+    "exports": {
+        ".": "./index.ts",
+        "./core": "./core/index.ts",
+        "./svelte": "./svelte/index.ts",
+        "./svelte/*": "./svelte/*",
+        "./server": "./server/index.ts",
+        "./utils": "./utils/index.ts",
+        "./themes": "./themes/index.css",
+        "./themes/base": "./themes/base/index.css",
+        "./themes/base/design-tokens.css": "./themes/base/design-tokens.css",
+        "./themes/base/fx-tokens.css": "./themes/base/fx-tokens.css",
+        "./themes/base/reset.css": "./themes/base/reset.css",
+        "./themes/default.css": "./themes/presets/default.css",
+        "./themes/spells.css": "./themes/presets/spells.css",
+        "./package.json": "./package.json"
+    },
+    "files": [
+        "core",
+        "svelte",
+        "server",
+        "themes",
+        "utils",
+        "index.ts",
+        "README.md",
+        "LICENSE"
+    ],
+    "peerDependencies": {
+        "@sveltejs/kit": "^2.0.0",
+        "svelte": "^5.0.0"
+    },
+    "scripts": {
+        "package": "echo 'Package is already in publishable format'",
+        "build": "tsc --noEmit",
+        "test": "vitest run",
+        "test:watch": "vitest watch",
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage",
+        "lint": "eslint . --max-warnings 10",
+        "lint:fix": "eslint . --fix",
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "check": "npm run build && npm run lint && npm run format:check && npm run test"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.1",
+        "@sveltejs/kit": "^2.48.4",
+        "@sveltejs/vite-plugin-svelte": "^6.2.1",
+        "@testing-library/jest-dom": "^6.9.1",
+        "@testing-library/svelte": "^5.2.8",
+        "@types/node": "^24.10.1",
+        "@typescript-eslint/eslint-plugin": "^8.46.4",
+        "@typescript-eslint/parser": "^8.46.4",
+        "@vitest/coverage-v8": "^4.0.8",
+        "@vitest/ui": "^4.0.8",
+        "eslint": "^9.39.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-svelte": "^3.13.0",
+        "jsdom": "^27.1.0",
+        "prettier": "^3.6.2",
+        "prettier-plugin-svelte": "^3.4.0",
+        "svelte": "^5.43.2",
+        "svelte-eslint-parser": "^1.4.0",
+        "typescript": "^5.9.3",
+        "vite": "^7.2.2",
+        "vitest": "^4.0.8"
+    },
+    "keywords": [
+        "svelte",
+        "sveltekit",
+        "themes",
+        "theming",
+        "dark-mode",
+        "color-schemes",
+        "svelte-5",
+        "runes"
+    ],
+    "license": "MIT",
+    "author": "GooBits",
+    "homepage": "https://github.com/goobits/goobits-themes#readme",
+    "bugs": {
+        "url": "https://github.com/goobits/goobits-themes/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/goobits/goobits-themes.git"
+    },
+    "engines": {
+        "node": ">=18.0.0"
+    },
+    "overrides": {
+        "cookie": "^0.7.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "dependencies": {
+        "@lucide/svelte": "^0.553.0"
+    }
 }
