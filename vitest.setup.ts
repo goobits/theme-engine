@@ -8,7 +8,7 @@ import { cleanup } from '@testing-library/svelte';
 
 // Cleanup after each test
 afterEach(() => {
-  cleanup();
+    cleanup();
 });
 
 // Global test utilities can be added here

@@ -19,18 +19,18 @@ Quick reference patterns for common tasks with @goobits/themes.
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
-  const mode = $derived(theme.theme);
+    const theme = useTheme();
+    const mode = $derived(theme.theme);
 
-  function toggle() {
-    theme.setTheme(mode === 'dark' ? 'light' : 'dark');
-  }
+    function toggle() {
+        theme.setTheme(mode === 'dark' ? 'light' : 'dark');
+    }
 </script>
 
 <button onclick={toggle}>
-  {mode === 'dark' ? '☀️' : '🌙'} Toggle Theme
+    {mode === 'dark' ? '☀️' : '🌙'} Toggle Theme
 </button>
 ```
 
@@ -38,51 +38,51 @@ Quick reference patterns for common tasks with @goobits/themes.
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
-  const schemes = $derived(theme.availableSchemes);
-  const current = $derived(theme.scheme);
+    const theme = useTheme();
+    const schemes = $derived(theme.availableSchemes);
+    const current = $derived(theme.scheme);
 </script>
 
 <div class="scheme-grid">
-  {#each schemes as scheme}
-    <button
-      class="scheme-card"
-      class:active={current === scheme.name}
-      onclick={() => theme.setScheme(scheme.name)}
-    >
-      <div class="preview" style="background: {scheme.preview.primary}"></div>
-      <span>{scheme.displayName}</span>
-    </button>
-  {/each}
+    {#each schemes as scheme}
+        <button
+            class="scheme-card"
+            class:active={current === scheme.name}
+            onclick={() => theme.setScheme(scheme.name)}
+        >
+            <div class="preview" style="background: {scheme.preview.primary}"></div>
+            <span>{scheme.displayName}</span>
+        </button>
+    {/each}
 </div>
 
 <style>
-  .scheme-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 1rem;
-  }
+    .scheme-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 1rem;
+    }
 
-  .scheme-card {
-    padding: 0.75rem;
-    border: 2px solid var(--border-primary);
-    border-radius: 0.5rem;
-    background: var(--bg-secondary);
-    cursor: pointer;
-  }
+    .scheme-card {
+        padding: 0.75rem;
+        border: 2px solid var(--border-primary);
+        border-radius: 0.5rem;
+        background: var(--bg-secondary);
+        cursor: pointer;
+    }
 
-  .scheme-card.active {
-    border-color: var(--accent-primary);
-  }
+    .scheme-card.active {
+        border-color: var(--accent-primary);
+    }
 
-  .preview {
-    width: 100%;
-    height: 60px;
-    border-radius: 0.25rem;
-    margin-bottom: 0.5rem;
-  }
+    .preview {
+        width: 100%;
+        height: 60px;
+        border-radius: 0.25rem;
+        margin-bottom: 0.5rem;
+    }
 </style>
 ```
 
@@ -91,24 +91,26 @@ Quick reference patterns for common tasks with @goobits/themes.
 ```css
 /* Add to global CSS */
 html {
-  transition: background-color 300ms, color 300ms;
+    transition:
+        background-color 300ms,
+        color 300ms;
 }
 
 html.theme-switching,
 html.theme-switching * {
-  transition: none !important;
+    transition: none !important;
 }
 ```
 
 ```typescript
 // In theme switching logic
 function smoothThemeChange(newTheme: ThemeMode) {
-  document.documentElement.classList.add('theme-switching');
-  theme.setTheme(newTheme);
+    document.documentElement.classList.add('theme-switching');
+    theme.setTheme(newTheme);
 
-  setTimeout(() => {
-    document.documentElement.classList.remove('theme-switching');
-  }, 50);
+    setTimeout(() => {
+        document.documentElement.classList.remove('theme-switching');
+    }, 50);
 }
 ```
 
@@ -121,18 +123,20 @@ function smoothThemeChange(newTheme: ThemeMode) {
 ```typescript
 // src/lib/config/theme.ts
 export const themeConfig: ThemeConfig = {
-  schemes: { /* ... */ },
-  routeThemes: {
-    '/admin': {
-      theme: { base: 'dark', scheme: 'default' },
-      override: true,
-      description: 'Admin uses dark theme'
+    schemes: {
+        /* ... */
     },
-    '/admin/*': {
-      theme: { base: 'dark', scheme: 'default' },
-      override: true
-    }
-  }
+    routeThemes: {
+        '/admin': {
+            theme: { base: 'dark', scheme: 'default' },
+            override: true,
+            description: 'Admin uses dark theme',
+        },
+        '/admin/*': {
+            theme: { base: 'dark', scheme: 'default' },
+            override: true,
+        },
+    },
 };
 ```
 
@@ -156,14 +160,14 @@ routeThemes: {
 import type { PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ params, cookies }) => {
-  const post = await getPost(params.slug);
+    const post = await getPost(params.slug);
 
-  // Set theme based on post metadata
-  if (post.prefersDarkMode) {
-    cookies.set('theme', 'dark', { path: '/' });
-  }
+    // Set theme based on post metadata
+    if (post.prefersDarkMode) {
+        cookies.set('theme', 'dark', { path: '/' });
+    }
 
-  return { post };
+    return { post };
 };
 ```
 
@@ -179,39 +183,39 @@ import { json } from '@sveltejs/kit';
 import type { RequestHandler } from './$types';
 
 export const POST: RequestHandler = async ({ request, locals }) => {
-  const { theme, themeScheme } = await request.json();
+    const { theme, themeScheme } = await request.json();
 
-  await db.userPreferences.update({
-    where: { userId: locals.user.id },
-    data: { theme, themeScheme }
-  });
+    await db.userPreferences.update({
+        where: { userId: locals.user.id },
+        data: { theme, themeScheme },
+    });
 
-  return json({ success: true });
+    return json({ success: true });
 };
 ```
 
 ```svelte
 <!-- In component -->
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
+    const theme = useTheme();
 
-  async function savePreferences() {
-    await fetch('/api/preferences', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        theme: theme.theme,
-        themeScheme: theme.scheme
-      })
+    async function savePreferences() {
+        await fetch('/api/preferences', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                theme: theme.theme,
+                themeScheme: theme.scheme,
+            }),
+        });
+    }
+
+    // Save whenever theme changes
+    $effect(() => {
+        savePreferences();
     });
-  }
-
-  // Save whenever theme changes
-  $effect(() => {
-    savePreferences();
-  });
 </script>
 ```
 
@@ -222,16 +226,16 @@ export const POST: RequestHandler = async ({ request, locals }) => {
 import { loadThemePreferences } from '@goobits/themes/server';
 
 export async function load({ cookies, locals }) {
-  // Try database first, fallback to cookies
-  const userPrefs = locals.user
-    ? await db.userPreferences.findUnique({
-        where: { userId: locals.user.id }
-      })
-    : null;
+    // Try database first, fallback to cookies
+    const userPrefs = locals.user
+        ? await db.userPreferences.findUnique({
+              where: { userId: locals.user.id },
+          })
+        : null;
 
-  const preferences = userPrefs || loadThemePreferences(cookies, themeConfig);
+    const preferences = userPrefs || loadThemePreferences(cookies, themeConfig);
 
-  return { preferences };
+    return { preferences };
 }
 ```
 
@@ -243,27 +247,27 @@ export async function load({ cookies, locals }) {
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
-  const isDark = $derived(theme.theme === 'dark');
+    const theme = useTheme();
+    const isDark = $derived(theme.theme === 'dark');
 </script>
 
 <div class="card" class:dark={isDark}>
-  <slot />
+    <slot />
 </div>
 
 <style>
-  .card {
-    background: var(--bg-card);
-    border: 1px solid var(--border-primary);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-  }
+    .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-primary);
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+    }
 
-  .card.dark {
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
-  }
+    .card.dark {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
 </style>
 ```
 
@@ -271,16 +275,16 @@ export async function load({ cookies, locals }) {
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
-  const mode = $derived(theme.theme);
+    const theme = useTheme();
+    const mode = $derived(theme.theme);
 </script>
 
 {#if mode === 'dark'}
-  <img src="/logo-light.svg" alt="Logo" />
+    <img src="/logo-light.svg" alt="Logo" />
 {:else}
-  <img src="/logo-dark.svg" alt="Logo" />
+    <img src="/logo-dark.svg" alt="Logo" />
 {/if}
 ```
 
@@ -288,132 +292,133 @@ export async function load({ cookies, locals }) {
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  let open = $state(false);
-  const theme = useTheme();
-  const schemes = $derived(theme.availableSchemes);
+    let open = $state(false);
+    const theme = useTheme();
+    const schemes = $derived(theme.availableSchemes);
 </script>
 
-<button onclick={() => open = true}>Customize Theme</button>
+<button onclick={() => (open = true)}>Customize Theme</button>
 
 {#if open}
-  <div class="modal-backdrop" onclick={() => open = false}>
-    <div class="modal" onclick={(e) => e.stopPropagation()}>
-      <h2>Choose Your Theme</h2>
+    <div class="modal-backdrop" onclick={() => (open = false)}>
+        <div class="modal" onclick={e => e.stopPropagation()}>
+            <h2>Choose Your Theme</h2>
 
-      <div class="mode-selector">
-        <button
-          class:active={theme.theme === 'light'}
-          onclick={() => theme.setTheme('light')}
-        >
-          ☀️ Light
-        </button>
-        <button
-          class:active={theme.theme === 'dark'}
-          onclick={() => theme.setTheme('dark')}
-        >
-          🌙 Dark
-        </button>
-        <button
-          class:active={theme.theme === 'system'}
-          onclick={() => theme.setTheme('system')}
-        >
-          💻 System
-        </button>
-      </div>
-
-      <div class="scheme-selector">
-        {#each schemes as scheme}
-          <button
-            class="scheme-option"
-            class:active={theme.scheme === scheme.name}
-            onclick={() => theme.setScheme(scheme.name)}
-          >
-            <div class="color-preview">
-              <span style="background: {scheme.preview.primary}"></span>
-              <span style="background: {scheme.preview.accent}"></span>
+            <div class="mode-selector">
+                <button
+                    class:active={theme.theme === 'light'}
+                    onclick={() => theme.setTheme('light')}
+                >
+                    ☀️ Light
+                </button>
+                <button
+                    class:active={theme.theme === 'dark'}
+                    onclick={() => theme.setTheme('dark')}
+                >
+                    🌙 Dark
+                </button>
+                <button
+                    class:active={theme.theme === 'system'}
+                    onclick={() => theme.setTheme('system')}
+                >
+                    💻 System
+                </button>
             </div>
-            {scheme.icon} {scheme.displayName}
-          </button>
-        {/each}
-      </div>
 
-      <button onclick={() => open = false}>Done</button>
+            <div class="scheme-selector">
+                {#each schemes as scheme}
+                    <button
+                        class="scheme-option"
+                        class:active={theme.scheme === scheme.name}
+                        onclick={() => theme.setScheme(scheme.name)}
+                    >
+                        <div class="color-preview">
+                            <span style="background: {scheme.preview.primary}"></span>
+                            <span style="background: {scheme.preview.accent}"></span>
+                        </div>
+                        {scheme.icon}
+                        {scheme.displayName}
+                    </button>
+                {/each}
+            </div>
+
+            <button onclick={() => (open = false)}>Done</button>
+        </div>
     </div>
-  </div>
 {/if}
 
 <style>
-  .modal-backdrop {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+    .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
 
-  .modal {
-    background: var(--bg-primary);
-    padding: 2rem;
-    border-radius: 1rem;
-    max-width: 500px;
-    width: 90%;
-  }
+    .modal {
+        background: var(--bg-primary);
+        padding: 2rem;
+        border-radius: 1rem;
+        max-width: 500px;
+        width: 90%;
+    }
 
-  .mode-selector {
-    display: flex;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
+    .mode-selector {
+        display: flex;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
 
-  .mode-selector button {
-    flex: 1;
-    padding: 0.75rem;
-    border: 2px solid var(--border-primary);
-    background: var(--bg-secondary);
-    border-radius: 0.5rem;
-  }
+    .mode-selector button {
+        flex: 1;
+        padding: 0.75rem;
+        border: 2px solid var(--border-primary);
+        background: var(--bg-secondary);
+        border-radius: 0.5rem;
+    }
 
-  .mode-selector button.active {
-    border-color: var(--accent-primary);
-    background: var(--accent-primary);
-    color: white;
-  }
+    .mode-selector button.active {
+        border-color: var(--accent-primary);
+        background: var(--accent-primary);
+        color: white;
+    }
 
-  .scheme-selector {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin: 1rem 0;
-  }
+    .scheme-selector {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
 
-  .scheme-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem;
-    border: 2px solid var(--border-primary);
-    background: var(--bg-secondary);
-    border-radius: 0.5rem;
-    text-align: left;
-  }
+    .scheme-option {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        border: 2px solid var(--border-primary);
+        background: var(--bg-secondary);
+        border-radius: 0.5rem;
+        text-align: left;
+    }
 
-  .scheme-option.active {
-    border-color: var(--accent-primary);
-  }
+    .scheme-option.active {
+        border-color: var(--accent-primary);
+    }
 
-  .color-preview {
-    display: flex;
-    gap: 4px;
-  }
+    .color-preview {
+        display: flex;
+        gap: 4px;
+    }
 
-  .color-preview span {
-    width: 24px;
-    height: 24px;
-    border-radius: 4px;
-  }
+    .color-preview span {
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+    }
 </style>
 ```
 
@@ -426,11 +431,11 @@ export async function load({ cookies, locals }) {
 ```css
 /* Adjust design tokens for mobile */
 @media (max-width: 768px) {
-  html {
-    --text-base: 14px;
-    --spacing-unit: 0.75rem;
-    --border-radius: 0.375rem;
-  }
+    html {
+        --text-base: 14px;
+        --spacing-unit: 0.75rem;
+        --border-radius: 0.375rem;
+    }
 }
 ```
 
@@ -438,16 +443,21 @@ export async function load({ cookies, locals }) {
 
 ```css
 html.scheme-spells {
-  --glow-animation: glow 2s ease-in-out infinite;
+    --glow-animation: glow 2s ease-in-out infinite;
 }
 
 @keyframes glow {
-  0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.2); }
+    0%,
+    100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.2);
+    }
 }
 
 .card {
-  animation: var(--glow-animation, none);
+    animation: var(--glow-animation, none);
 }
 ```
 
@@ -455,11 +465,11 @@ html.scheme-spells {
 
 ```css
 @media print {
-  html {
-    --bg-primary: white !important;
-    --text-primary: black !important;
-    --border-primary: #ccc !important;
-  }
+    html {
+        --bg-primary: white !important;
+        --text-primary: black !important;
+        --border-primary: #ccc !important;
+    }
 }
 ```
 
@@ -471,15 +481,15 @@ html.scheme-spells {
 
 ```svelte
 <script>
-  import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
 
-  onMount(async () => {
-    const { theme } = useTheme();
+    onMount(async () => {
+        const { theme } = useTheme();
 
-    if (theme === 'spells') {
-      await import('@goobits/themes/themes/spells.css');
-    }
-  });
+        if (theme === 'spells') {
+            await import('@goobits/themes/themes/spells.css');
+        }
+    });
 </script>
 ```
 
@@ -488,8 +498,8 @@ html.scheme-spells {
 ```html
 <!-- src/app.html -->
 <head>
-  <link rel="preload" href="/themes/default.css" as="style" />
-  <link rel="preload" href="/themes/spells.css" as="style" />
+    <link rel="preload" href="/themes/default.css" as="style" />
+    <link rel="preload" href="/themes/spells.css" as="style" />
 </head>
 ```
 
@@ -500,13 +510,13 @@ html.scheme-spells {
 const themeCache = new Map();
 
 function getThemeStyles(mode: ThemeMode, scheme: ThemeScheme) {
-  const key = `${mode}-${scheme}`;
+    const key = `${mode}-${scheme}`;
 
-  if (!themeCache.has(key)) {
-    themeCache.set(key, computeThemeStyles(mode, scheme));
-  }
+    if (!themeCache.has(key)) {
+        themeCache.set(key, computeThemeStyles(mode, scheme));
+    }
 
-  return themeCache.get(key);
+    return themeCache.get(key);
 }
 ```
 
@@ -515,6 +525,7 @@ function getThemeStyles(mode: ThemeMode, scheme: ThemeScheme) {
 ## See Also
 
 **Related guides:**
+
 - [Custom Themes](./custom-themes.md) - Create your own color schemes
 - [Components](./components.md) - Built-in theme components
 - [Best Practices](./best-practices.md) - Performance and accessibility

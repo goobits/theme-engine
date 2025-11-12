@@ -9,10 +9,10 @@
  */
 
 /* CSS Reset */
-@import "./reset.css";
+@import './reset.css';
 
 /* Design System Tokens */
-@import "./design-tokens.css";
+@import './design-tokens.css';
 
 /* FX (Effects) System */
-@import "./fx-tokens.css";
+@import './fx-tokens.css';

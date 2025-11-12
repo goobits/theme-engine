@@ -44,14 +44,14 @@ import '@goobits/themes/themes/default.css';
 
 **[📚 Documentation Home](./docs/README.md)** | **[🚀 Getting Started](./docs/getting-started.md)**
 
-| Guide | Description |
-|-------|-------------|
-| [API Reference](./docs/api-reference.md) | Complete API documentation with types |
-| [Components](./docs/components.md) | Built-in components and `useTheme()` hook |
-| [Custom Themes](./docs/custom-themes.md) | Create color schemes and design tokens |
-| [Design Tokens](./docs/design-tokens.md) | CSS variable reference |
-| [Best Practices](./docs/best-practices.md) | Accessibility and performance |
-| [Troubleshooting](./docs/troubleshooting.md) | Common issues and solutions |
+| Guide                                        | Description                               |
+| -------------------------------------------- | ----------------------------------------- |
+| [API Reference](./docs/api-reference.md)     | Complete API documentation with types     |
+| [Components](./docs/components.md)           | Built-in components and `useTheme()` hook |
+| [Custom Themes](./docs/custom-themes.md)     | Create color schemes and design tokens    |
+| [Design Tokens](./docs/design-tokens.md)     | CSS variable reference                    |
+| [Best Practices](./docs/best-practices.md)   | Accessibility and performance             |
+| [Troubleshooting](./docs/troubleshooting.md) | Common issues and solutions               |
 
 ## Contributing
 
