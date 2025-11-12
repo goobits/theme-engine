@@ -142,7 +142,7 @@ describe("createThemeStore", () => {
     it("should load settings from localStorage on browser", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       mockStorage.setItem("app_theme_v1", JSON.stringify({
         theme: "dark",
@@ -163,7 +163,7 @@ describe("createThemeStore", () => {
     it("should fallback to cookies when localStorage is empty", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({
@@ -183,7 +183,7 @@ describe("createThemeStore", () => {
     it("should use defaults when both localStorage and cookies are empty", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({});
@@ -202,7 +202,7 @@ describe("createThemeStore", () => {
     it("should update theme mode", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -216,7 +216,7 @@ describe("createThemeStore", () => {
     it("should save to localStorage when theme is changed", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -232,7 +232,7 @@ describe("createThemeStore", () => {
     it("should write to cookies when theme is changed", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { writePreferenceCookies } = await import("../../utils/cookies");
 
@@ -250,7 +250,7 @@ describe("createThemeStore", () => {
     it("should update all theme modes correctly", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -269,7 +269,7 @@ describe("createThemeStore", () => {
       mockStorage.setItem.mockImplementation(() => {
         throw new Error("Storage quota exceeded");
       });
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -287,7 +287,7 @@ describe("createThemeStore", () => {
     it("should update theme scheme", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -301,7 +301,7 @@ describe("createThemeStore", () => {
     it("should save to localStorage when scheme is changed", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -317,7 +317,7 @@ describe("createThemeStore", () => {
     it("should write to cookies when scheme is changed", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { writePreferenceCookies } = await import("../../utils/cookies");
 
@@ -335,7 +335,7 @@ describe("createThemeStore", () => {
     it("should handle different scheme types", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -353,7 +353,7 @@ describe("createThemeStore", () => {
     it("should cycle from light to dark", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -367,7 +367,7 @@ describe("createThemeStore", () => {
     it("should cycle from dark to system", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -381,7 +381,7 @@ describe("createThemeStore", () => {
     it("should cycle from system to light", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -395,7 +395,7 @@ describe("createThemeStore", () => {
     it("should complete full cycle through all modes", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -416,7 +416,7 @@ describe("createThemeStore", () => {
     it("should save to localStorage when cycling", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -431,7 +431,7 @@ describe("createThemeStore", () => {
     it("should not save to localStorage on server", async () => {
       await setBrowserMode(false);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -445,7 +445,7 @@ describe("createThemeStore", () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
       mockStorage.setItem("app_theme_v1", "invalid json {");
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({});
@@ -469,7 +469,7 @@ describe("createThemeStore", () => {
       mockStorage.setItem("app_theme_v1", JSON.stringify({
         theme: "dark",
       }));
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -487,7 +487,7 @@ describe("createThemeStore", () => {
         theme: "dark",
         themeScheme: "spells",
       }));
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({
@@ -512,7 +512,7 @@ describe("createThemeStore", () => {
       mockStorage.getItem.mockImplementation(() => {
         throw new Error("Storage access denied");
       });
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({
@@ -532,7 +532,7 @@ describe("createThemeStore", () => {
     it("should fallback to defaults when cookies throw error", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockImplementation(() => {
@@ -551,7 +551,7 @@ describe("createThemeStore", () => {
     it("should only use cookies when both theme and themeScheme are present", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({
@@ -572,7 +572,7 @@ describe("createThemeStore", () => {
     it("should use cookies when only themeScheme is missing from localStorage", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { readPreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(readPreferenceCookies).mockReturnValue({
@@ -629,7 +629,7 @@ describe("createThemeStore", () => {
     it("should stop calling subscriber after unsubscribe", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -689,7 +689,7 @@ describe("createThemeStore", () => {
     it("should handle concurrent theme changes", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -710,7 +710,7 @@ describe("createThemeStore", () => {
         error.name = "QuotaExceededError";
         throw error;
       });
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -729,7 +729,7 @@ describe("createThemeStore", () => {
           throw new Error("Storage error");
         }
       });
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -746,7 +746,7 @@ describe("createThemeStore", () => {
     it("should handle cookie write failures gracefully", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { writePreferenceCookies } = await import("../../utils/cookies");
       vi.mocked(writePreferenceCookies).mockImplementation(() => {
@@ -768,7 +768,7 @@ describe("createThemeStore", () => {
         theme: null,
         themeScheme: undefined,
       }));
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
       const store = createThemeStore(config);
@@ -785,7 +785,7 @@ describe("createThemeStore", () => {
     it("should persist and restore complete user session", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
 
@@ -803,7 +803,7 @@ describe("createThemeStore", () => {
     it("should sync between localStorage and cookies", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const { writePreferenceCookies } = await import("../../utils/cookies");
       const mockWriteCookies = vi.mocked(writePreferenceCookies);
@@ -826,7 +826,7 @@ describe("createThemeStore", () => {
     it("should handle migration from cookies to localStorage", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       // User has cookies but no localStorage (migration scenario)
       const { readPreferenceCookies } = await import("../../utils/cookies");
@@ -853,7 +853,7 @@ describe("createThemeStore", () => {
     it("should work correctly across multiple store instances", async () => {
       await setBrowserMode(true);
       const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
+      globalThis.localStorage = mockStorage as any;
 
       const config = createMockConfig();
 

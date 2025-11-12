@@ -152,9 +152,9 @@ describe("useTheme", () => {
     it("should return theme store with multiple available schemes", () => {
       const mockStore: ThemeStore = {
         subscribe: vi.fn(),
-        settings: { theme: "dark", themeScheme: "custom" },
+        settings: { theme: "dark", themeScheme: "custom" as ThemeScheme },
         theme: "dark",
-        scheme: "custom",
+        scheme: "custom" as ThemeScheme,
         availableSchemes: [
           { name: "default", displayName: "Default" },
           { name: "custom", displayName: "Custom" },

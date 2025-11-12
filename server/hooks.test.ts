@@ -6,6 +6,7 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { createThemeHooks } from "./hooks";
 import type { Handle, RequestEvent, Cookies } from "@sveltejs/kit";
 import type { ThemeConfig } from "../core/config";
+import type { ThemeScheme } from "../core/types";
 import * as preferences from "./preferences";
 
 // Mock loadThemePreferences
@@ -144,7 +145,7 @@ describe("createThemeHooks", () => {
       });
 
       // Only first occurrence should be replaced (string.replace replaces first match)
-      const occurrences = (result.body.match(/theme-light scheme-default/g) || [])
+      const occurrences = ((result.body as unknown as string).match(/theme-light scheme-default/g) || [])
         .length;
       expect(occurrences).toBe(1);
     });
@@ -327,7 +328,7 @@ describe("createThemeHooks", () => {
 
       vi.mocked(preferences.loadThemePreferences).mockReturnValue({
         theme: "light",
-        themeScheme: "custom-theme",
+        themeScheme: "custom-theme" as ThemeScheme,
       });
 
       const hooks = createThemeHooks(config);
@@ -691,7 +692,7 @@ describe("createThemeHooks", () => {
 
       vi.mocked(preferences.loadThemePreferences).mockReturnValue({
         theme: "light",
-        themeScheme: "custom",
+        themeScheme: "custom" as ThemeScheme,
       });
 
       const hooks = createThemeHooks(config);
@@ -907,7 +908,7 @@ describe("createThemeHooks", () => {
 
       vi.mocked(preferences.loadThemePreferences).mockReturnValue({
         theme: "dark",
-        themeScheme: "my-custom_scheme.v2",
+        themeScheme: "my-custom_scheme.v2" as ThemeScheme,
       });
 
       const hooks = createThemeHooks(config);

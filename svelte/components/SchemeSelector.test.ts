@@ -104,12 +104,12 @@ describe("SchemeSelector", () => {
       useThemeMock.mockReturnValue(store);
 
       store.setScheme("spells");
-      store.setScheme("brand");
+      store.setScheme("brand" as ThemeScheme);
       store.setScheme("default");
 
       expect(store.setScheme).toHaveBeenCalledTimes(3);
       expect(store.setScheme).toHaveBeenNthCalledWith(1, "spells");
-      expect(store.setScheme).toHaveBeenNthCalledWith(2, "brand");
+      expect(store.setScheme).toHaveBeenNthCalledWith(2, "brand" as ThemeScheme);
       expect(store.setScheme).toHaveBeenNthCalledWith(3, "default");
     });
 
@@ -154,7 +154,7 @@ describe("SchemeSelector", () => {
         { name: "vibrant", displayName: "Vibrant Colors" },
         { name: "professional", displayName: "Professional Look" },
       ];
-      const store = createMockThemeStore("dark", "minimal", customSchemes);
+      const store = createMockThemeStore("dark", "minimal" as ThemeScheme, customSchemes);
       useThemeMock.mockReturnValue(store);
 
       expect(store.availableSchemes).toHaveLength(3);
@@ -177,8 +177,8 @@ describe("SchemeSelector", () => {
       useThemeMock.mockReturnValue(store);
 
       // Simulate scheme change
-      store.scheme = "brand";
-      store.settings.themeScheme = "brand";
+      (store as any).scheme = "brand" as ThemeScheme;
+      (store as any).settings.themeScheme = "brand" as ThemeScheme;
 
       expect(store.scheme).toBe("brand");
       expect(store.settings.themeScheme).toBe("brand");
@@ -202,7 +202,7 @@ describe("SchemeSelector", () => {
     });
 
     it("should work with system theme mode", () => {
-      const store = createMockThemeStore("system", "brand");
+      const store = createMockThemeStore("system", "brand" as ThemeScheme);
       useThemeMock.mockReturnValue(store);
 
       expect(store.theme).toBe("system");
@@ -233,7 +233,7 @@ describe("SchemeSelector", () => {
         name: `scheme${i}`,
         displayName: `Scheme ${i}`,
       }));
-      const store = createMockThemeStore("dark", "scheme0", manySchemes);
+      const store = createMockThemeStore("dark", "scheme0" as ThemeScheme, manySchemes);
       useThemeMock.mockReturnValue(store);
 
       expect(store.availableSchemes).toHaveLength(10);
@@ -245,7 +245,7 @@ describe("SchemeSelector", () => {
         { name: "scheme_with_underscores", displayName: "Scheme With Underscores" },
         { name: "scheme.with.dots", displayName: "Scheme With Dots" },
       ];
-      const store = createMockThemeStore("system", "scheme-with-dashes", specialSchemes);
+      const store = createMockThemeStore("system", "scheme-with-dashes" as ThemeScheme, specialSchemes);
       useThemeMock.mockReturnValue(store);
 
       expect(store.availableSchemes).toHaveLength(3);
@@ -259,7 +259,7 @@ describe("SchemeSelector", () => {
           displayName: "This Is A Very Long Display Name That Exceeds Normal Length",
         },
       ];
-      const store = createMockThemeStore("light", "long", longNameSchemes);
+      const store = createMockThemeStore("light", "long" as ThemeScheme, longNameSchemes);
       useThemeMock.mockReturnValue(store);
 
       expect(store.availableSchemes[0].displayName).toBe(
@@ -272,7 +272,7 @@ describe("SchemeSelector", () => {
         { name: "default", displayName: "Default" },
         { name: "spells", displayName: "Spells" },
       ];
-      const store = createMockThemeStore("dark", "brand", limitedSchemes);
+      const store = createMockThemeStore("dark", "brand" as ThemeScheme, limitedSchemes);
       useThemeMock.mockReturnValue(store);
 
       // Current scheme is "brand" but not in availableSchemes
@@ -299,7 +299,7 @@ describe("SchemeSelector", () => {
 
       // Simulate rapid clicking through schemes
       for (let i = 0; i < 5; i++) {
-        const schemes: ThemeScheme[] = ["default", "spells", "brand"];
+        const schemes: ThemeScheme[] = ["default", "spells", "brand" as ThemeScheme];
         store.setScheme(schemes[i % 3]);
       }
 
@@ -320,7 +320,7 @@ describe("SchemeSelector", () => {
       const schemesWithoutDesc = [
         { name: "minimal", displayName: "Minimal" },
       ];
-      const store = createMockThemeStore("light", "minimal", schemesWithoutDesc);
+      const store = createMockThemeStore("light", "minimal" as ThemeScheme, schemesWithoutDesc);
       useThemeMock.mockReturnValue(store);
 
       expect(store.availableSchemes[0].description).toBeUndefined();
@@ -329,7 +329,7 @@ describe("SchemeSelector", () => {
 
   describe("settings synchronization", () => {
     it("should keep settings.themeScheme in sync with scheme", () => {
-      const store = createMockThemeStore("system", "brand");
+      const store = createMockThemeStore("system", "brand" as ThemeScheme);
       useThemeMock.mockReturnValue(store);
 
       expect(store.settings.themeScheme).toBe(store.scheme);
@@ -340,8 +340,8 @@ describe("SchemeSelector", () => {
       useThemeMock.mockReturnValue(store);
 
       // Simulate scheme change
-      store.scheme = "spells";
-      store.settings.themeScheme = "spells";
+      (store as any).scheme = "spells";
+      (store as any).settings.themeScheme = "spells";
 
       expect(store.settings.themeScheme).toBe("spells");
       expect(store.scheme).toBe("spells");
@@ -352,8 +352,8 @@ describe("SchemeSelector", () => {
       useThemeMock.mockReturnValue(store);
 
       const originalTheme = store.theme;
-      store.scheme = "brand";
-      store.settings.themeScheme = "brand";
+      (store as any).scheme = "brand" as ThemeScheme;
+      (store as any).settings.themeScheme = "brand" as ThemeScheme;
 
       expect(store.theme).toBe(originalTheme);
       expect(store.settings.theme).toBe(originalTheme);

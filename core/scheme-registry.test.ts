@@ -366,7 +366,7 @@ describe("applyFullTheme", () => {
     });
 
     it("should use setTimeout for transition delay", () => {
-      const setTimeoutSpy = vi.spyOn(global, "setTimeout");
+      const setTimeoutSpy = vi.spyOn(globalThis, "setTimeout");
       const theme: FullTheme = { base: "light", scheme: "default" };
       applyFullTheme(theme);
 

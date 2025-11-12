@@ -202,7 +202,7 @@ describe("ThemeToggle", () => {
 
     it("should handle empty availableSchemes array", () => {
       const store = createMockThemeStore("light", "default");
-      store.availableSchemes = [];
+      (store as any).availableSchemes = [];
       useThemeMock.mockReturnValue(store);
 
       const schemeConfig = store.availableSchemes.find(
@@ -214,7 +214,7 @@ describe("ThemeToggle", () => {
 
     it("should handle multiple schemes", () => {
       const store = createMockThemeStore("dark", "spells");
-      store.availableSchemes = [
+      (store as any).availableSchemes = [
         { name: "default", displayName: "Default" },
         { name: "spells", displayName: "Spells" },
         { name: "custom", displayName: "Custom" },
@@ -241,7 +241,7 @@ describe("ThemeToggle", () => {
 
     it("should handle very long scheme names", () => {
       const store = createMockThemeStore("system", "custom" as ThemeScheme);
-      store.availableSchemes = [
+      (store as any).availableSchemes = [
         {
           name: "custom",
           displayName: "Very Long Scheme Name That Exceeds Normal Length",
@@ -260,7 +260,7 @@ describe("ThemeToggle", () => {
 
     it("should handle scheme with special characters", () => {
       const store = createMockThemeStore("light", "custom" as ThemeScheme);
-      store.availableSchemes = [
+      (store as any).availableSchemes = [
         { name: "custom", displayName: "Custom™ Theme (β)" },
       ];
       useThemeMock.mockReturnValue(store);
