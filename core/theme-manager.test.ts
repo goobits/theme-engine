@@ -136,47 +136,19 @@ describe("applyThemeWithScheme", () => {
     vi.unstubAllGlobals();
   });
 
-  it("should apply light theme with default scheme", async () => {
+  it.each([
+    ["light", "default"],
+    ["dark", "spells"],
+    ["system", "default"],
+    ["system", "spells"],
+  ] as const)("should apply %s theme with %s scheme", async (theme, scheme) => {
     const { applyFullTheme } = await import("./scheme-registry");
 
-    applyThemeWithScheme("light", "default");
+    applyThemeWithScheme(theme, scheme);
 
     expect(applyFullTheme).toHaveBeenCalledWith({
-      base: "light",
-      scheme: "default",
-    });
-  });
-
-  it("should apply dark theme with spells scheme", async () => {
-    const { applyFullTheme } = await import("./scheme-registry");
-
-    applyThemeWithScheme("dark", "spells");
-
-    expect(applyFullTheme).toHaveBeenCalledWith({
-      base: "dark",
-      scheme: "spells",
-    });
-  });
-
-  it("should apply system theme with default scheme", async () => {
-    const { applyFullTheme } = await import("./scheme-registry");
-
-    applyThemeWithScheme("system", "default");
-
-    expect(applyFullTheme).toHaveBeenCalledWith({
-      base: "system",
-      scheme: "default",
-    });
-  });
-
-  it("should apply system theme with spells scheme", async () => {
-    const { applyFullTheme } = await import("./scheme-registry");
-
-    applyThemeWithScheme("system", "spells");
-
-    expect(applyFullTheme).toHaveBeenCalledWith({
-      base: "system",
-      scheme: "spells",
+      base: theme,
+      scheme: scheme,
     });
   });
 

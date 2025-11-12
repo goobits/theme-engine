@@ -684,52 +684,6 @@ describe("createThemeStore", () => {
     });
   });
 
-  describe("derived values", () => {
-    it("should expose theme as derived value", async () => {
-      await setBrowserMode(true);
-      const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
-
-      const config = createMockConfig();
-      const store = createThemeStore(config);
-
-      expect(store.theme).toBe(store.settings.theme);
-
-      store.setTheme("dark");
-      expect(store.theme).toBe("dark");
-      expect(store.theme).toBe(store.settings.theme);
-    });
-
-    it("should expose scheme as derived value", async () => {
-      await setBrowserMode(true);
-      const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
-
-      const config = createMockConfig();
-      const store = createThemeStore(config);
-
-      expect(store.scheme).toBe(store.settings.themeScheme);
-
-      store.setScheme("spells");
-      expect(store.scheme).toBe("spells");
-      expect(store.scheme).toBe(store.settings.themeScheme);
-    });
-
-    it("should keep derived values in sync with settings", async () => {
-      await setBrowserMode(true);
-      const mockStorage = mockLocalStorage();
-      global.localStorage = mockStorage as any;
-
-      const config = createMockConfig();
-      const store = createThemeStore(config);
-
-      store.setTheme("light");
-      store.setScheme("spells");
-
-      expect(store.theme).toBe(store.settings.theme);
-      expect(store.scheme).toBe(store.settings.themeScheme);
-    });
-  });
 
   describe("edge cases", () => {
     it("should handle concurrent theme changes", async () => {

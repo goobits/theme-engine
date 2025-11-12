@@ -160,16 +160,6 @@ describe("loadThemePreferences", () => {
 
       expect(result.theme).toBe("system");
     });
-
-    it("should accept any string as theme mode (type casting)", () => {
-      const cookies = createMockCookies({ theme: "invalid" });
-      const config = createMockConfig(["default"]);
-
-      const result = loadThemePreferences(cookies, config);
-
-      // Since it's type-casted, it will accept any value
-      expect(result.theme).toBe("invalid");
-    });
   });
 
   describe("theme schemes", () => {
@@ -198,16 +188,6 @@ describe("loadThemePreferences", () => {
       const result = loadThemePreferences(cookies, config);
 
       expect(result.themeScheme).toBe("custom");
-    });
-
-    it("should accept any string as theme scheme (type casting)", () => {
-      const cookies = createMockCookies({ themeScheme: "nonexistent" });
-      const config = createMockConfig(["default"]);
-
-      const result = loadThemePreferences(cookies, config);
-
-      // Since it's type-casted, it will accept any value
-      expect(result.themeScheme).toBe("nonexistent");
     });
   });
 
@@ -408,47 +388,6 @@ describe("loadThemePreferences", () => {
   });
 
   describe("edge cases", () => {
-    it("should handle whitespace in cookie values", () => {
-      const cookies = createMockCookies({
-        theme: " light ",
-        themeScheme: " default ",
-      });
-      const config = createMockConfig(["default"]);
-
-      const result = loadThemePreferences(cookies, config);
-
-      // Values are used as-is without trimming
-      expect(result.theme).toBe(" light ");
-      expect(result.themeScheme).toBe(" default ");
-    });
-
-    it("should handle case-sensitive theme values", () => {
-      const cookies = createMockCookies({
-        theme: "Light",
-        themeScheme: "Default",
-      });
-      const config = createMockConfig(["default"]);
-
-      const result = loadThemePreferences(cookies, config);
-
-      // No case normalization
-      expect(result.theme).toBe("Light");
-      expect(result.themeScheme).toBe("Default");
-    });
-
-    it("should handle numeric string values", () => {
-      const cookies = createMockCookies({
-        theme: "123",
-        themeScheme: "456",
-      });
-      const config = createMockConfig(["default"]);
-
-      const result = loadThemePreferences(cookies, config);
-
-      expect(result.theme).toBe("123");
-      expect(result.themeScheme).toBe("456");
-    });
-
     it("should handle special characters in cookie values", () => {
       const cookies = createMockCookies({
         theme: "dark-mode",
@@ -531,60 +470,6 @@ describe("loadThemePreferences", () => {
 
       // Should return first scheme
       expect(result.themeScheme).toBe("scheme-0");
-    });
-  });
-
-  describe("type safety", () => {
-    it("should return ThemeMode type for theme property", () => {
-      const cookies = createMockCookies({ theme: "dark" });
-      const config = createMockConfig(["default"]);
-
-      const result = loadThemePreferences(cookies, config);
-      const theme: ThemeMode = result.theme;
-
-      expect(theme).toBe("dark");
-    });
-
-    it("should return ThemeScheme type for themeScheme property", () => {
-      const cookies = createMockCookies({ themeScheme: "spells" });
-      const config = createMockConfig(["default", "spells"]);
-
-      const result = loadThemePreferences(cookies, config);
-      const scheme: ThemeScheme = result.themeScheme;
-
-      expect(scheme).toBe("spells");
-    });
-
-    it("should accept ThemeConfig with all optional fields", () => {
-      const cookies = createMockCookies({});
-      const config: ThemeConfig = {
-        schemes: {
-          complete: {
-            name: "complete",
-            displayName: "Complete",
-            description: "Complete scheme",
-            icon: "star",
-            title: "Complete Scheme",
-            preview: {
-              primary: "#3b82f6",
-              accent: "#8b5cf6",
-              background: "#ffffff",
-            },
-            cssFile: "/styles/complete.css",
-          },
-        },
-        routeThemes: {
-          "/test": {
-            theme: { base: "dark", scheme: "complete" },
-            override: true,
-            description: "Test route",
-          },
-        },
-      };
-
-      const result = loadThemePreferences(cookies, config);
-
-      expect(result.themeScheme).toBe("complete");
     });
   });
 

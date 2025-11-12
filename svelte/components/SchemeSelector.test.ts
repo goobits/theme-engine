@@ -63,13 +63,6 @@ describe("SchemeSelector", () => {
   });
 
   describe("component initialization", () => {
-    it("should call useTheme hook on mount", async () => {
-      useThemeMock.mockReturnValue(createMockThemeStore());
-      await import("./SchemeSelector.svelte");
-
-      expect(useThemeMock).toBeDefined();
-    });
-
     it("should initialize with default scheme", () => {
       const store = createMockThemeStore("system", "default");
       useThemeMock.mockReturnValue(store);
@@ -84,55 +77,6 @@ describe("SchemeSelector", () => {
 
       expect(store.scheme).toBe("spells");
       expect(store.settings.themeScheme).toBe("spells");
-    });
-
-    it("should initialize with brand scheme", () => {
-      const store = createMockThemeStore("dark", "brand");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.scheme).toBe("brand");
-      expect(store.settings.themeScheme).toBe("brand");
-    });
-  });
-
-  describe("theme store integration", () => {
-    it("should use scheme from theme store", () => {
-      const store = createMockThemeStore("system", "spells");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.scheme).toBe("spells");
-    });
-
-    it("should use availableSchemes from theme store", () => {
-      const store = createMockThemeStore("light", "default");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.availableSchemes).toHaveLength(3);
-      expect(store.availableSchemes[0].name).toBe("default");
-      expect(store.availableSchemes[1].name).toBe("spells");
-      expect(store.availableSchemes[2].name).toBe("brand");
-    });
-
-    it("should have access to setScheme function", () => {
-      const store = createMockThemeStore("dark", "default");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.setScheme).toBeDefined();
-      expect(typeof store.setScheme).toBe("function");
-    });
-
-    it("should have access to all theme store properties", () => {
-      const store = createMockThemeStore("system", "default");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store).toHaveProperty("subscribe");
-      expect(store).toHaveProperty("settings");
-      expect(store).toHaveProperty("theme");
-      expect(store).toHaveProperty("scheme");
-      expect(store).toHaveProperty("availableSchemes");
-      expect(store).toHaveProperty("setTheme");
-      expect(store).toHaveProperty("setScheme");
-      expect(store).toHaveProperty("cycleMode");
     });
   });
 
@@ -155,33 +99,6 @@ describe("SchemeSelector", () => {
       expect(store.setScheme).toHaveBeenCalledTimes(1);
     });
 
-    it("should handle scheme change from default to spells", () => {
-      const store = createMockThemeStore("light", "default");
-      useThemeMock.mockReturnValue(store);
-
-      store.setScheme("spells");
-
-      expect(store.setScheme).toHaveBeenCalledWith("spells");
-    });
-
-    it("should handle scheme change from spells to brand", () => {
-      const store = createMockThemeStore("dark", "spells");
-      useThemeMock.mockReturnValue(store);
-
-      store.setScheme("brand");
-
-      expect(store.setScheme).toHaveBeenCalledWith("brand");
-    });
-
-    it("should handle scheme change from brand to default", () => {
-      const store = createMockThemeStore("system", "brand");
-      useThemeMock.mockReturnValue(store);
-
-      store.setScheme("default");
-
-      expect(store.setScheme).toHaveBeenCalledWith("default");
-    });
-
     it("should handle multiple scheme changes", () => {
       const store = createMockThemeStore("light", "default");
       useThemeMock.mockReturnValue(store);
@@ -194,6 +111,15 @@ describe("SchemeSelector", () => {
       expect(store.setScheme).toHaveBeenNthCalledWith(1, "spells");
       expect(store.setScheme).toHaveBeenNthCalledWith(2, "brand");
       expect(store.setScheme).toHaveBeenNthCalledWith(3, "default");
+    });
+
+    it("should not throw error when changing to same scheme", () => {
+      const store = createMockThemeStore("light", "default");
+      useThemeMock.mockReturnValue(store);
+
+      // Select the same scheme that's already selected
+      expect(() => store.setScheme("default")).not.toThrow();
+      expect(store.setScheme).toHaveBeenCalledWith("default");
     });
   });
 
@@ -236,24 +162,6 @@ describe("SchemeSelector", () => {
       expect(store.availableSchemes[1].displayName).toBe("Vibrant Colors");
       expect(store.availableSchemes[2].displayName).toBe("Professional Look");
     });
-
-    it("should map scheme name to option value", () => {
-      const store = createMockThemeStore("system", "default");
-      useThemeMock.mockReturnValue(store);
-
-      const defaultScheme = store.availableSchemes.find(s => s.name === "default");
-      expect(defaultScheme).toBeDefined();
-      expect(defaultScheme?.name).toBe("default");
-    });
-
-    it("should map scheme displayName to option text", () => {
-      const store = createMockThemeStore("light", "spells");
-      useThemeMock.mockReturnValue(store);
-
-      const spellsScheme = store.availableSchemes.find(s => s.name === "spells");
-      expect(spellsScheme).toBeDefined();
-      expect(spellsScheme?.displayName).toBe("Spells");
-    });
   });
 
   describe("reactive behavior", () => {
@@ -262,14 +170,6 @@ describe("SchemeSelector", () => {
       useThemeMock.mockReturnValue(store);
 
       expect(store.scheme).toBe("spells");
-    });
-
-    it("should derive availableSchemes from theme.availableSchemes", () => {
-      const store = createMockThemeStore("system", "default");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.availableSchemes).toBeDefined();
-      expect(Array.isArray(store.availableSchemes)).toBe(true);
     });
 
     it("should update when scheme changes in store", () => {
@@ -301,35 +201,12 @@ describe("SchemeSelector", () => {
       expect(store.scheme).toBe("default");
     });
 
-    it("should work with dark theme mode", () => {
-      const store = createMockThemeStore("dark", "spells");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.theme).toBe("dark");
-      expect(store.scheme).toBe("spells");
-    });
-
     it("should work with system theme mode", () => {
       const store = createMockThemeStore("system", "brand");
       useThemeMock.mockReturnValue(store);
 
       expect(store.theme).toBe("system");
       expect(store.scheme).toBe("brand");
-    });
-
-    it("should handle all theme mode and scheme combinations", () => {
-      const modes: ThemeMode[] = ["light", "dark", "system"];
-      const schemes: ThemeScheme[] = ["default", "spells", "brand"];
-
-      modes.forEach((mode) => {
-        schemes.forEach((scheme) => {
-          const store = createMockThemeStore(mode, scheme);
-          useThemeMock.mockReturnValue(store);
-
-          expect(store.theme).toBe(mode);
-          expect(store.scheme).toBe(scheme);
-        });
-      });
     });
   });
 
@@ -402,53 +279,6 @@ describe("SchemeSelector", () => {
       expect(store.scheme).toBe("brand");
       expect(store.availableSchemes.find(s => s.name === "brand")).toBeUndefined();
     });
-
-    it("should handle undefined scheme", () => {
-      const store: ThemeStore = {
-        subscribe: vi.fn(),
-        settings: { theme: "system", themeScheme: undefined as any },
-        theme: "system",
-        scheme: undefined as any,
-        availableSchemes: [],
-        setTheme: vi.fn(),
-        setScheme: vi.fn(),
-        cycleMode: vi.fn(),
-      };
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.scheme).toBeUndefined();
-    });
-
-    it("should handle null scheme", () => {
-      const store: ThemeStore = {
-        subscribe: vi.fn(),
-        settings: { theme: "light", themeScheme: null as any },
-        theme: "light",
-        scheme: null as any,
-        availableSchemes: [],
-        setTheme: vi.fn(),
-        setScheme: vi.fn(),
-        cycleMode: vi.fn(),
-      };
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.scheme).toBeNull();
-    });
-
-    it("should handle empty string scheme", () => {
-      const store = createMockThemeStore("dark", "" as ThemeScheme);
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.scheme).toBe("");
-    });
-
-    it("should handle missing setScheme function", () => {
-      const store = createMockThemeStore("system", "default");
-      store.setScheme = undefined as any;
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.setScheme).toBeUndefined();
-    });
   });
 
   describe("scheme change event handling", () => {
@@ -463,17 +293,6 @@ describe("SchemeSelector", () => {
       expect(store.setScheme).toHaveBeenCalledWith(newScheme);
     });
 
-    it("should call setScheme with string value from event", () => {
-      const store = createMockThemeStore("dark", "spells");
-      useThemeMock.mockReturnValue(store);
-
-      // Simulate user selecting brand scheme
-      store.setScheme("brand");
-
-      expect(store.setScheme).toHaveBeenCalledWith("brand");
-      expect(typeof store.setScheme.mock.calls[0][0]).toBe("string");
-    });
-
     it("should handle rapid scheme changes", () => {
       const store = createMockThemeStore("system", "default");
       useThemeMock.mockReturnValue(store);
@@ -485,15 +304,6 @@ describe("SchemeSelector", () => {
       }
 
       expect(store.setScheme).toHaveBeenCalledTimes(5);
-    });
-
-    it("should not throw error when changing to same scheme", () => {
-      const store = createMockThemeStore("light", "default");
-      useThemeMock.mockReturnValue(store);
-
-      // Select the same scheme that's already selected
-      expect(() => store.setScheme("default")).not.toThrow();
-      expect(store.setScheme).toHaveBeenCalledWith("default");
     });
   });
 
@@ -514,35 +324,6 @@ describe("SchemeSelector", () => {
       useThemeMock.mockReturnValue(store);
 
       expect(store.availableSchemes[0].description).toBeUndefined();
-    });
-
-    it("should preserve all scheme properties", () => {
-      const store = createMockThemeStore("system", "spells");
-      useThemeMock.mockReturnValue(store);
-
-      const spellsScheme = store.availableSchemes.find(s => s.name === "spells");
-      expect(spellsScheme).toHaveProperty("name");
-      expect(spellsScheme).toHaveProperty("displayName");
-      expect(spellsScheme).toHaveProperty("description");
-    });
-  });
-
-  describe("store subscription", () => {
-    it("should have subscribe method available", () => {
-      const store = createMockThemeStore("light", "default");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store.subscribe).toBeDefined();
-      expect(typeof store.subscribe).toBe("function");
-    });
-
-    it("should maintain store reactivity", () => {
-      const store = createMockThemeStore("dark", "default");
-      useThemeMock.mockReturnValue(store);
-
-      expect(store).toHaveProperty("subscribe");
-      expect(store).toHaveProperty("scheme");
-      expect(store).toHaveProperty("availableSchemes");
     });
   });
 

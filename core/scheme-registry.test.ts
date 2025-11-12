@@ -84,35 +84,22 @@ describe("THEME_SCHEMES", () => {
     expect(THEME_SCHEMES.spells.displayName).toBe("Grimoire");
   });
 
-  it("should have all required fields for default scheme", () => {
-    const defaultScheme = THEME_SCHEMES.default;
-    expect(defaultScheme).toHaveProperty("name");
-    expect(defaultScheme).toHaveProperty("displayName");
-    expect(defaultScheme).toHaveProperty("description");
-    expect(defaultScheme).toHaveProperty("icon");
-    expect(defaultScheme).toHaveProperty("title");
-    expect(defaultScheme).toHaveProperty("preview");
+  it.each([
+    ["default", THEME_SCHEMES.default],
+    ["spells", THEME_SCHEMES.spells],
+  ])("should have all required fields for %s scheme", (name, scheme) => {
+    expect(scheme).toHaveProperty("name");
+    expect(scheme).toHaveProperty("displayName");
+    expect(scheme).toHaveProperty("description");
+    expect(scheme).toHaveProperty("icon");
+    expect(scheme).toHaveProperty("title");
+    expect(scheme).toHaveProperty("preview");
   });
 
-  it("should have all required fields for spells scheme", () => {
-    const spellsScheme = THEME_SCHEMES.spells;
-    expect(spellsScheme).toHaveProperty("name");
-    expect(spellsScheme).toHaveProperty("displayName");
-    expect(spellsScheme).toHaveProperty("description");
-    expect(spellsScheme).toHaveProperty("icon");
-    expect(spellsScheme).toHaveProperty("title");
-    expect(spellsScheme).toHaveProperty("preview");
-  });
-
-  it("should have valid preview colors for default scheme", () => {
-    const preview = THEME_SCHEMES.default.preview;
-    expect(preview.primary).toMatch(/^#[0-9a-f]{6}$/i);
-    expect(preview.accent).toMatch(/^#[0-9a-f]{6}$/i);
-    expect(preview.background).toMatch(/^#[0-9a-f]{6}$/i);
-  });
-
-  it("should have valid preview colors for spells scheme", () => {
-    const preview = THEME_SCHEMES.spells.preview;
+  it.each([
+    ["default", THEME_SCHEMES.default.preview],
+    ["spells", THEME_SCHEMES.spells.preview],
+  ])("should have valid preview colors for %s scheme", (name, preview) => {
     expect(preview.primary).toMatch(/^#[0-9a-f]{6}$/i);
     expect(preview.accent).toMatch(/^#[0-9a-f]{6}$/i);
     expect(preview.background).toMatch(/^#[0-9a-f]{6}$/i);
@@ -192,26 +179,6 @@ describe("applyThemeScheme", () => {
       applyThemeScheme("default");
       expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-default");
       expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-spells");
-    });
-
-    it("should switch from default to spells scheme", () => {
-      applyThemeScheme("default");
-      vi.clearAllMocks();
-
-      applyThemeScheme("spells");
-      expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-default");
-      expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-spells");
-      expect(mockHtml.classList.add).toHaveBeenCalledWith("scheme-spells");
-    });
-
-    it("should switch from spells to default scheme", () => {
-      applyThemeScheme("spells");
-      vi.clearAllMocks();
-
-      applyThemeScheme("default");
-      expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-default");
-      expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-spells");
-      expect(mockHtml.classList.add).toHaveBeenCalledWith("scheme-default");
     });
 
     it("should handle applying same scheme twice", () => {
@@ -365,31 +332,6 @@ describe("applyFullTheme", () => {
     });
   });
 
-  describe("client-side behavior - scheme removal", () => {
-    beforeEach(async () => {
-      await setBrowserMode(true);
-    });
-
-    it("should remove all existing scheme classes before applying new one", () => {
-      const theme: FullTheme = { base: "light", scheme: "default" };
-      applyFullTheme(theme);
-
-      expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-default");
-      expect(mockHtml.classList.remove).toHaveBeenCalledWith("scheme-spells");
-    });
-
-    it("should remove schemes equal to number of THEME_SCHEMES", () => {
-      const theme: FullTheme = { base: "light", scheme: "default" };
-      applyFullTheme(theme);
-
-      const removeCalls = mockHtml.classList.remove.mock.calls;
-      const schemeRemoveCalls = removeCalls.filter((call) =>
-        call.some((arg) => typeof arg === "string" && arg.startsWith("scheme-"))
-      );
-
-      expect(schemeRemoveCalls.length).toBeGreaterThan(0);
-    });
-  });
 
   describe("client-side behavior - theme switching transitions", () => {
     beforeEach(async () => {

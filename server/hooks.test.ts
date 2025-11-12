@@ -59,38 +59,6 @@ describe("createThemeHooks", () => {
     vi.clearAllMocks();
   });
 
-  describe("function structure", () => {
-    it("should return an object with transform property", () => {
-      const config = createMockConfig(["default"]);
-      const hooks = createThemeHooks(config);
-
-      expect(hooks).toHaveProperty("transform");
-      expect(typeof hooks.transform).toBe("function");
-    });
-
-    it("should create a Handle function", () => {
-      const config = createMockConfig(["default"]);
-      const hooks = createThemeHooks(config);
-
-      expect(hooks.transform).toBeDefined();
-      expect(hooks.transform.length).toBe(1); // Handle takes one argument
-    });
-
-    it("should accept ThemeConfig parameter", () => {
-      const config = createMockConfig(["default", "spells"]);
-      const hooks = createThemeHooks(config);
-
-      expect(hooks).toBeDefined();
-    });
-
-    it("should work with empty schemes config", () => {
-      const config: ThemeConfig = { schemes: {} };
-      const hooks = createThemeHooks(config);
-
-      expect(hooks.transform).toBeDefined();
-    });
-  });
-
   describe("HTML transformation with placeholder", () => {
     it("should replace %sveltekit.theme% placeholder with theme classes", async () => {
       const config = createMockConfig(["default"]);

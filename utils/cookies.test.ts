@@ -122,52 +122,19 @@ describe("readPreferenceCookies", () => {
       expect(result).toEqual({});
     });
 
-    it("should parse single theme preference cookie", () => {
-      mockDocumentCookie("theme=dark");
+    it.each([
+      ["theme", "theme=dark", { theme: "dark" }],
+      ["themeScheme", "themeScheme=spells", { themeScheme: "spells" }],
+      ["language", "language=fr", { language: "fr" }],
+      ["languageTheme", "languageTheme=spells", { languageTheme: "spells" }],
+      ["showSidebar true", "showSidebar=true", { showSidebar: true }],
+      ["showSidebar false", "showSidebar=false", { showSidebar: false }],
+    ])("should parse single %s preference cookie", (name, cookie, expected) => {
+      mockDocumentCookie(cookie);
       const result = readPreferenceCookies();
 
-      expect(result.theme).toBe("dark");
+      expect(result).toMatchObject(expected);
       expect(Object.keys(result)).toHaveLength(1);
-    });
-
-    it("should parse single themeScheme preference cookie", () => {
-      mockDocumentCookie("themeScheme=spells");
-      const result = readPreferenceCookies();
-
-      expect(result.themeScheme).toBe("spells");
-      expect(Object.keys(result)).toHaveLength(1);
-    });
-
-    it("should parse single language preference cookie", () => {
-      mockDocumentCookie("language=fr");
-      const result = readPreferenceCookies();
-
-      expect(result.language).toBe("fr");
-      expect(Object.keys(result)).toHaveLength(1);
-    });
-
-    it("should parse single languageTheme preference cookie", () => {
-      mockDocumentCookie("languageTheme=spells");
-      const result = readPreferenceCookies();
-
-      expect(result.languageTheme).toBe("spells");
-      expect(Object.keys(result)).toHaveLength(1);
-    });
-
-    it("should parse showSidebar as boolean true", () => {
-      mockDocumentCookie("showSidebar=true");
-      const result = readPreferenceCookies();
-
-      expect(result.showSidebar).toBe(true);
-      expect(typeof result.showSidebar).toBe("boolean");
-    });
-
-    it("should parse showSidebar as boolean false", () => {
-      mockDocumentCookie("showSidebar=false");
-      const result = readPreferenceCookies();
-
-      expect(result.showSidebar).toBe(false);
-      expect(typeof result.showSidebar).toBe("boolean");
     });
 
     it("should parse multiple preference cookies", () => {
@@ -375,49 +342,23 @@ describe("writePreferenceCookies", () => {
       await setBrowserMode(true);
     });
 
-    it("should write theme preference cookie", () => {
-      writePreferenceCookies({ theme: "dark" });
+    it.each([
+      ["theme", { theme: "dark" }, "theme=dark"],
+      ["themeScheme", { themeScheme: "spells" }, "themeScheme=spells"],
+      ["language", { language: "fr" }, "language=fr"],
+      ["languageTheme", { languageTheme: "spells" }, "languageTheme=spells"],
+      ["showSidebar true", { showSidebar: true }, "showSidebar=true"],
+      ["showSidebar false", { showSidebar: false }, "showSidebar=false"],
+    ])("should write %s preference cookie", (name, prefs, expected) => {
+      writePreferenceCookies(prefs as Partial<UserPreferences>);
 
       expect(cookieWrites).toHaveLength(1);
-      expect(cookieWrites[0]).toContain("theme=dark");
-      expect(cookieWrites[0]).toContain("path=/");
-      expect(cookieWrites[0]).toContain("max-age=31536000");
-      expect(cookieWrites[0]).toContain("SameSite=lax");
-    });
-
-    it("should write themeScheme preference cookie", () => {
-      writePreferenceCookies({ themeScheme: "spells" });
-
-      expect(cookieWrites).toHaveLength(1);
-      expect(cookieWrites[0]).toContain("themeScheme=spells");
-    });
-
-    it("should write language preference cookie", () => {
-      writePreferenceCookies({ language: "fr" });
-
-      expect(cookieWrites).toHaveLength(1);
-      expect(cookieWrites[0]).toContain("language=fr");
-    });
-
-    it("should write languageTheme preference cookie", () => {
-      writePreferenceCookies({ languageTheme: "spells" });
-
-      expect(cookieWrites).toHaveLength(1);
-      expect(cookieWrites[0]).toContain("languageTheme=spells");
-    });
-
-    it("should write showSidebar preference cookie as string", () => {
-      writePreferenceCookies({ showSidebar: true });
-
-      expect(cookieWrites).toHaveLength(1);
-      expect(cookieWrites[0]).toContain("showSidebar=true");
-    });
-
-    it("should write showSidebar false correctly", () => {
-      writePreferenceCookies({ showSidebar: false });
-
-      expect(cookieWrites).toHaveLength(1);
-      expect(cookieWrites[0]).toContain("showSidebar=false");
+      expect(cookieWrites[0]).toContain(expected);
+      if (name === "theme") {
+        expect(cookieWrites[0]).toContain("path=/");
+        expect(cookieWrites[0]).toContain("max-age=31536000");
+        expect(cookieWrites[0]).toContain("SameSite=lax");
+      }
     });
 
     it("should write multiple preference cookies", () => {
@@ -479,40 +420,37 @@ describe("writePreferenceCookies", () => {
       expect(cookieWrites[0]).toContain("language=zh-CN");
     });
 
-    it("should write all theme values correctly", () => {
-      const themes: Array<UserPreferences["theme"]> = ["light", "dark", "system"];
+    it.each([
+      ["light", { theme: "light" }, "theme=light"],
+      ["dark", { theme: "dark" }, "theme=dark"],
+      ["system", { theme: "system" }, "theme=system"],
+    ])("should write theme=%s correctly", (name, prefs, expected) => {
+      writePreferenceCookies(prefs as Partial<UserPreferences>);
 
-      themes.forEach((theme) => {
-        cookieWrites = [];
-        writePreferenceCookies({ theme });
-
-        expect(cookieWrites).toHaveLength(1);
-        expect(cookieWrites[0]).toContain(`theme=${theme}`);
-      });
+      expect(cookieWrites).toHaveLength(1);
+      expect(cookieWrites[0]).toContain(expected);
     });
 
-    it("should write all themeScheme values correctly", () => {
-      const schemes: Array<UserPreferences["themeScheme"]> = ["default", "spells"];
+    it.each([
+      ["default", { themeScheme: "default" }, "themeScheme=default"],
+      ["spells", { themeScheme: "spells" }, "themeScheme=spells"],
+    ])("should write themeScheme=%s correctly", (name, prefs, expected) => {
+      cookieWrites = [];
+      writePreferenceCookies(prefs as Partial<UserPreferences>);
 
-      schemes.forEach((themeScheme) => {
-        cookieWrites = [];
-        writePreferenceCookies({ themeScheme });
-
-        expect(cookieWrites).toHaveLength(1);
-        expect(cookieWrites[0]).toContain(`themeScheme=${themeScheme}`);
-      });
+      expect(cookieWrites).toHaveLength(1);
+      expect(cookieWrites[0]).toContain(expected);
     });
 
-    it("should write all languageTheme values correctly", () => {
-      const languageThemes: Array<UserPreferences["languageTheme"]> = ["default", "spells"];
+    it.each([
+      ["default", { languageTheme: "default" }, "languageTheme=default"],
+      ["spells", { languageTheme: "spells" }, "languageTheme=spells"],
+    ])("should write languageTheme=%s correctly", (name, prefs, expected) => {
+      cookieWrites = [];
+      writePreferenceCookies(prefs as Partial<UserPreferences>);
 
-      languageThemes.forEach((languageTheme) => {
-        cookieWrites = [];
-        writePreferenceCookies({ languageTheme });
-
-        expect(cookieWrites).toHaveLength(1);
-        expect(cookieWrites[0]).toContain(`languageTheme=${languageTheme}`);
-      });
+      expect(cookieWrites).toHaveLength(1);
+      expect(cookieWrites[0]).toContain(expected);
     });
   });
 

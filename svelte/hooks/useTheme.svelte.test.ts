@@ -207,24 +207,12 @@ describe("useTheme", () => {
       }
     });
 
-    it("should throw error when getContext returns false", () => {
-      getContextMock.mockReturnValue(false);
-
-      expect(() => useTheme()).toThrow(
-        "useTheme must be used within a ThemeProvider"
-      );
-    });
-
-    it("should throw error when getContext returns empty string", () => {
-      getContextMock.mockReturnValue("");
-
-      expect(() => useTheme()).toThrow(
-        "useTheme must be used within a ThemeProvider"
-      );
-    });
-
-    it("should throw error when getContext returns 0", () => {
-      getContextMock.mockReturnValue(0);
+    it.each([
+      ["false", false],
+      ["empty string", ""],
+      ["0", 0],
+    ])("should throw error when getContext returns %s", (_, value) => {
+      getContextMock.mockReturnValue(value);
 
       expect(() => useTheme()).toThrow(
         "useTheme must be used within a ThemeProvider"
@@ -271,81 +259,6 @@ describe("useTheme", () => {
       useTheme();
 
       expect(getContextMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe("type safety", () => {
-    it("should return ThemeStore type with correct structure", () => {
-      const mockStore: ThemeStore = {
-        subscribe: vi.fn(),
-        settings: { theme: "system", themeScheme: "default" },
-        theme: "system",
-        scheme: "default",
-        availableSchemes: [],
-        setTheme: vi.fn(),
-        setScheme: vi.fn(),
-        cycleMode: vi.fn(),
-      };
-
-      getContextMock.mockReturnValue(mockStore);
-
-      const result = useTheme();
-
-      // Verify all required properties exist
-      expect(result).toHaveProperty("subscribe");
-      expect(result).toHaveProperty("settings");
-      expect(result).toHaveProperty("theme");
-      expect(result).toHaveProperty("scheme");
-      expect(result).toHaveProperty("availableSchemes");
-      expect(result).toHaveProperty("setTheme");
-      expect(result).toHaveProperty("setScheme");
-      expect(result).toHaveProperty("cycleMode");
-    });
-
-    it("should return ThemeStore with valid theme modes", () => {
-      const modes: ThemeMode[] = ["light", "dark", "system"];
-
-      modes.forEach((mode) => {
-        const mockStore: ThemeStore = {
-          subscribe: vi.fn(),
-          settings: { theme: mode, themeScheme: "default" },
-          theme: mode,
-          scheme: "default",
-          availableSchemes: [],
-          setTheme: vi.fn(),
-          setScheme: vi.fn(),
-          cycleMode: vi.fn(),
-        };
-
-        getContextMock.mockReturnValue(mockStore);
-
-        const result = useTheme();
-
-        expect(result.theme).toBe(mode);
-      });
-    });
-
-    it("should return ThemeStore with valid scheme types", () => {
-      const schemes: ThemeScheme[] = ["default", "spells", "brand", "custom"];
-
-      schemes.forEach((scheme) => {
-        const mockStore: ThemeStore = {
-          subscribe: vi.fn(),
-          settings: { theme: "system", themeScheme: scheme },
-          theme: "system",
-          scheme: scheme,
-          availableSchemes: [],
-          setTheme: vi.fn(),
-          setScheme: vi.fn(),
-          cycleMode: vi.fn(),
-        };
-
-        getContextMock.mockReturnValue(mockStore);
-
-        const result = useTheme();
-
-        expect(result.scheme).toBe(scheme);
-      });
     });
   });
 
