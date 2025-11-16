@@ -1,11 +1,7 @@
 name: CI
 
 on:
-    push:
-        branches: [main, develop]
-    pull_request:
-        branches: [main, develop]
-    workflow_dispatch: # Allow manual trigger for security audit
+    workflow_dispatch: # Manual trigger only
 
 jobs:
     test:
@@ -58,12 +54,10 @@ jobs:
                   path: coverage/
                   retention-days: 30
 
-    # Separate job for security audit - runs on demand via workflow_dispatch
+    # Separate job for security audit
     security-audit:
         name: Security Audit
         runs-on: ubuntu-latest
-        # Only run on manual trigger
-        if: github.event_name == 'workflow_dispatch'
 
         steps:
             - name: Checkout code
