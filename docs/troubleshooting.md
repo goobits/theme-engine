@@ -31,14 +31,14 @@ Before diving into specific issues, verify these basics:
 
 If you see these exact error messages, here are the solutions:
 
-| Error Message | Solution |
-|---------------|----------|
-| `Cannot find module '@goobits/themes/svelte'` | [TypeScript Errors](#typescript-errors-on-import) |
-| `theme is not defined` | [Theme Not Switching](#theme-not-switching) - Component not inside ThemeProvider |
-| `ReferenceError: document is not defined` | [Module Import Errors](#module-import-errors) - SSR issue |
-| `TypeError: Cannot read property 'theme'` | [Theme Not Switching](#theme-not-switching) - Missing theme store |
-| `Failed to resolve import "@goobits/themes/...` | [Module Import Errors](#module-import-errors) - Check import path |
-| `Uncaught Error: Function called outside component initialization` | Component using useTheme() outside ThemeProvider |
+| Error Message                                                      | Solution                                                                         |
+| ------------------------------------------------------------------ | -------------------------------------------------------------------------------- |
+| `Cannot find module '@goobits/themes/svelte'`                      | [TypeScript Errors](#typescript-errors-on-import)                                |
+| `theme is not defined`                                             | [Theme Not Switching](#theme-not-switching) - Component not inside ThemeProvider |
+| `ReferenceError: document is not defined`                          | [Module Import Errors](#module-import-errors) - SSR issue                        |
+| `TypeError: Cannot read property 'theme'`                          | [Theme Not Switching](#theme-not-switching) - Missing theme store                |
+| `Failed to resolve import "@goobits/themes/...`                    | [Module Import Errors](#module-import-errors) - Check import path                |
+| `Uncaught Error: Function called outside component initialization` | Component using useTheme() outside ThemeProvider                                 |
 
 ## Setup Issues
 
@@ -66,7 +66,7 @@ export const handle = transform;
 ```html
 <!-- src/app.html -->
 <html lang="en" class="%sveltekit.theme%">
-  <!-- Not just <html lang="en"> -->
+    <!-- Not just <html lang="en"> -->
 </html>
 ```
 
@@ -78,9 +78,9 @@ import { loadThemePreferences } from '@goobits/themes/server';
 import { themeConfig } from '$lib/config/theme';
 
 export function load({ cookies }) {
-  return {
-    preferences: loadThemePreferences(cookies, themeConfig)
-  };
+    return {
+        preferences: loadThemePreferences(cookies, themeConfig),
+    };
 }
 ```
 
@@ -98,12 +98,12 @@ export function load({ cookies }) {
 
 ```json
 {
-  "dependencies": {
-    "@goobits/themes": "^1.0.0"  // ✅ Should be here
-  },
-  "devDependencies": {
-    // ❌ NOT here
-  }
+    "dependencies": {
+        "@goobits/themes": "^1.0.0" // ✅ Should be here
+    },
+    "devDependencies": {
+        // ❌ NOT here
+    }
 }
 ```
 
@@ -159,12 +159,12 @@ Import theme CSS in root layout:
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
-  // Import theme CSS
-  import '@goobits/themes/themes/default.css';
-  import '@goobits/themes/themes/spells.css';
+    // Import theme CSS
+    import '@goobits/themes/themes/default.css';
+    import '@goobits/themes/themes/spells.css';
 
-  // Or your custom themes
-  import '../styles/themes/ocean.css';
+    // Or your custom themes
+    import '../styles/themes/ocean.css';
 </script>
 ```
 
@@ -185,9 +185,9 @@ Import theme CSS in root layout:
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <ThemeProvider config={themeConfig}>
-  <!-- All theme controls must be here -->
-  <ThemeToggle />
-  {@render children?.()}
+    <!-- All theme controls must be here -->
+    <ThemeToggle />
+    {@render children?.()}
 </ThemeProvider>
 ```
 
@@ -195,15 +195,15 @@ Import theme CSS in root layout:
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
+    const theme = useTheme();
 
-  // ✅ Correct
-  theme.setTheme('dark');
+    // ✅ Correct
+    theme.setTheme('dark');
 
-  // ❌ Incorrect (old docs)
-  theme.setMode('dark'); // This doesn't exist
+    // ❌ Incorrect (old docs)
+    theme.setMode('dark'); // This doesn't exist
 </script>
 ```
 
@@ -221,12 +221,12 @@ Set theme mode to 'system':
 
 ```svelte
 <script>
-  import { useTheme } from '@goobits/themes/svelte';
+    import { useTheme } from '@goobits/themes/svelte';
 
-  const theme = useTheme();
+    const theme = useTheme();
 
-  // Set to system mode
-  theme.setTheme('system');
+    // Set to system mode
+    theme.setTheme('system');
 </script>
 ```
 
@@ -235,12 +235,12 @@ Or configure as default:
 ```typescript
 // Default to system in your initial preferences
 export function load({ cookies }) {
-  return {
-    preferences: {
-      theme: 'system', // Will follow OS
-      themeScheme: 'default'
-    }
-  };
+    return {
+        preferences: {
+            theme: 'system', // Will follow OS
+            themeScheme: 'default',
+        },
+    };
 }
 ```
 
@@ -268,9 +268,9 @@ export const handle = createThemeHooks(themeConfig).transform;
 ```typescript
 // utils/cookies.ts should have correct options
 export const COOKIE_OPTIONS = {
-  path: '/',
-  maxAge: 60 * 60 * 24 * 365, // 1 year
-  sameSite: 'lax' as const,
+    path: '/',
+    maxAge: 60 * 60 * 24 * 365, // 1 year
+    sameSite: 'lax' as const,
 };
 ```
 
@@ -311,7 +311,7 @@ npm run dev
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
-  import '../styles/themes/ocean.css'; // ✅ Imported
+    import '../styles/themes/ocean.css'; // ✅ Imported
 </script>
 ```
 
@@ -320,16 +320,20 @@ npm run dev
 ```css
 /* ✅ Correct */
 html.scheme-ocean {
-  --accent-primary: #0066cc;
+    --accent-primary: #0066cc;
 }
 
 html.theme-dark.scheme-ocean {
-  --bg-primary: #001a33;
+    --bg-primary: #001a33;
 }
 
 /* ❌ Incorrect */
-.scheme-ocean { /* Missing html prefix */ }
-html .scheme-ocean { /* Space adds specificity issue */ }
+.scheme-ocean {
+    /* Missing html prefix */
+}
+html .scheme-ocean {
+    /* Space adds specificity issue */
+}
 ```
 
 3. Verify scheme name matches config:
@@ -356,11 +360,11 @@ schemes: {
 ```css
 /* Define for both modes */
 html.scheme-custom {
-  --accent-primary: #blue; /* Light mode */
+    --accent-primary: #blue; /* Light mode */
 }
 
 html.theme-dark.scheme-custom {
-  --accent-primary: #lightblue; /* Dark mode */
+    --accent-primary: #lightblue; /* Dark mode */
 }
 ```
 
@@ -368,7 +372,7 @@ html.theme-dark.scheme-custom {
 
 ```javascript
 // In browser console
-getComputedStyle(document.documentElement).getPropertyValue('--accent-primary')
+getComputedStyle(document.documentElement).getPropertyValue('--accent-primary');
 ```
 
 3. Verify no typos in variable name (case-sensitive)
@@ -388,15 +392,15 @@ Always define dark mode overrides:
 ```css
 /* Light mode colors */
 html.scheme-ocean {
-  --bg-primary: #ffffff;
-  --text-primary: #000000;
+    --bg-primary: #ffffff;
+    --text-primary: #000000;
 }
 
 /* Dark mode colors (REQUIRED) */
 html.theme-dark.scheme-ocean,
 html.theme-system-dark.scheme-ocean {
-  --bg-primary: #001a33;
-  --text-primary: #e0f2ff;
+    --bg-primary: #001a33;
+    --text-primary: #e0f2ff;
 }
 ```
 
@@ -414,8 +418,8 @@ html.theme-system-dark.scheme-ocean {
 
 ```css
 html.scheme-custom {
-  --enable-card-float: 1; /* 0 = off, 1 = on */
-  --enable-magical-glow: 1;
+    --enable-card-float: 1; /* 0 = off, 1 = on */
+    --enable-magical-glow: 1;
 }
 ```
 
@@ -423,7 +427,7 @@ html.scheme-custom {
 
 ```css
 @media (prefers-reduced-motion: reduce) {
-  /* Effects might be disabled here */
+    /* Effects might be disabled here */
 }
 ```
 
@@ -431,8 +435,8 @@ html.scheme-custom {
 
 ```css
 html.scheme-custom {
-  --fx-hover-transform: translateY(-2px);
-  --fx-hover-duration: 300ms;
+    --fx-hover-transform: translateY(-2px);
+    --fx-hover-duration: 300ms;
 }
 ```
 
@@ -526,7 +530,7 @@ routeThemes: {
 
 ```css
 .card {
-  contain: layout style paint;
+    contain: layout style paint;
 }
 ```
 
@@ -556,13 +560,13 @@ import '@goobits/themes/themes/spells.css';
 
 ```svelte
 <script>
-  import { onMount } from 'svelte';
+    import { onMount } from 'svelte';
 
-  onMount(async () => {
-    if (enableSpellsTheme) {
-      await import('@goobits/themes/themes/spells.css');
-    }
-  });
+    onMount(async () => {
+        if (enableSpellsTheme) {
+            await import('@goobits/themes/themes/spells.css');
+        }
+    });
 </script>
 ```
 
@@ -595,11 +599,11 @@ Add transition delay to root:
 
 ```css
 html.theme-switching {
-  transition: none !important;
+    transition: none !important;
 }
 
 html.theme-switching * {
-  transition: none !important;
+    transition: none !important;
 }
 ```
 
@@ -638,9 +642,9 @@ npm run dev
 
 ```json
 {
-  "compilerOptions": {
-    "types": ["@sveltejs/kit", "svelte", "vite/client"]
-  }
+    "compilerOptions": {
+        "types": ["@sveltejs/kit", "svelte", "vite/client"]
+    }
 }
 ```
 
@@ -683,10 +687,10 @@ console.log(styles.getPropertyValue('--bg-primary'));
 2. Search [GitHub Discussions](https://github.com/goobits/goobits-themes/discussions)
 3. Create a minimal reproduction
 4. Open a new issue with:
-   - Package version
-   - SvelteKit version
-   - Minimal code example
-   - Expected vs actual behavior
+    - Package version
+    - SvelteKit version
+    - Minimal code example
+    - Expected vs actual behavior
 
 See [SUPPORT.md](../SUPPORT.md) for detailed guidelines on asking for help.
 

@@ -1,64 +1,97 @@
+<script>
+    // Simple tab switching functionality
+    import { onMount } from 'svelte';
+
+    onMount(() => {
+        document.querySelectorAll('.code-tabs').forEach(tabGroup => {
+            const buttons = tabGroup.querySelectorAll('.tab-btn');
+            const contents = tabGroup.querySelectorAll('.tab-content');
+
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetTab = button.dataset.tab;
+
+                    // Remove active class from all buttons and contents in this group
+                    buttons.forEach(btn => btn.classList.remove('active'));
+                    contents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const targetContent = tabGroup.querySelector(
+                        `.tab-content[data-tab="${targetTab}"]`
+                    );
+                    if (targetContent) {
+                        targetContent.classList.add('active');
+                    }
+                });
+            });
+        });
+    });
+</script>
+
 <article>
-	<h1>Getting Started</h1>
+    <h1>Getting Started</h1>
 
-	<p class="lead">
-		Complete guide to installing and configuring @goobits/themes in your SvelteKit application.
-	</p>
+    <p class="lead">
+        Complete guide to installing and configuring @goobits/themes in your SvelteKit application.
+    </p>
 
-	<div class="callout note">
-		<strong>💡 Enhanced Documentation</strong><br />
-		This page demonstrates interactive documentation features. Notice how code examples are organized with tabs to reduce duplication!
-	</div>
+    <div class="callout note">
+        <strong>💡 Enhanced Documentation</strong><br />
+        This page demonstrates interactive documentation features. Notice how code examples are organized
+        with tabs to reduce duplication!
+    </div>
 
-	<h2>Requirements</h2>
+    <h2>Requirements</h2>
 
-	<ul>
-		<li><strong>Svelte</strong> 5.0.0 or higher</li>
-		<li><strong>SvelteKit</strong> 2.0.0 or higher</li>
-		<li><strong>Node.js</strong> 18.0.0 or higher</li>
-	</ul>
+    <ul>
+        <li><strong>Svelte</strong> 5.0.0 or higher</li>
+        <li><strong>SvelteKit</strong> 2.0.0 or higher</li>
+        <li><strong>Node.js</strong> 18.0.0 or higher</li>
+    </ul>
 
-	<div class="callout warning">
-		<strong>⚠️ Important</strong><br />
-		This package uses Svelte 5 runes and is not compatible with Svelte 4.
-	</div>
+    <div class="callout warning">
+        <strong>⚠️ Important</strong><br />
+        This package uses Svelte 5 runes and is not compatible with Svelte 4.
+    </div>
 
-	<h2>Installation</h2>
+    <h2>Installation</h2>
 
-	<p>Choose your package manager:</p>
+    <p>Choose your package manager:</p>
 
-	<div class="code-tabs">
-		<div class="tab-buttons">
-			<button class="tab-btn active" data-tab="npm">npm</button>
-			<button class="tab-btn" data-tab="pnpm">pnpm</button>
-			<button class="tab-btn" data-tab="bun">bun</button>
-		</div>
-		<div class="tab-content active" data-tab="npm">
-			<pre><code class="language-bash">npm install @goobits/themes</code></pre>
-		</div>
-		<div class="tab-content" data-tab="pnpm">
-			<pre><code class="language-bash">pnpm add @goobits/themes</code></pre>
-		</div>
-		<div class="tab-content" data-tab="bun">
-			<pre><code class="language-bash">bun add @goobits/themes</code></pre>
-		</div>
-	</div>
+    <div class="code-tabs">
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="npm">npm</button>
+            <button class="tab-btn" data-tab="pnpm">pnpm</button>
+            <button class="tab-btn" data-tab="bun">bun</button>
+        </div>
+        <div class="tab-content active" data-tab="npm">
+            <pre><code class="language-bash">npm install @goobits/themes</code></pre>
+        </div>
+        <div class="tab-content" data-tab="pnpm">
+            <pre><code class="language-bash">pnpm add @goobits/themes</code></pre>
+        </div>
+        <div class="tab-content" data-tab="bun">
+            <pre><code class="language-bash">bun add @goobits/themes</code></pre>
+        </div>
+    </div>
 
-	<h2>Quick Setup</h2>
+    <h2>Quick Setup</h2>
 
-	<p>Get themes working in your app in four steps:</p>
+    <p>Get themes working in your app in four steps:</p>
 
-	<h3>Step 1: Create Theme Configuration</h3>
+    <h3>Step 1: Create Theme Configuration</h3>
 
-	<p>Create a theme config file to define your available schemes:</p>
+    <p>Create a theme config file to define your available schemes:</p>
 
-	<div class="code-tabs">
-		<div class="tab-buttons">
-			<button class="tab-btn active" data-tab="ts-config">TypeScript</button>
-			<button class="tab-btn" data-tab="js-config">JavaScript</button>
-		</div>
-		<div class="tab-content active" data-tab="ts-config">
-			<pre><code class="language-typescript">{`// src/lib/config/theme.ts
+    <div class="code-tabs">
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="ts-config">TypeScript</button>
+            <button class="tab-btn" data-tab="js-config">JavaScript</button>
+        </div>
+        <div class="tab-content active" data-tab="ts-config">
+            <pre><code class="language-typescript"
+                    >{`// src/lib/config/theme.ts
 import type { ThemeConfig } from '@goobits/themes/core';
 
 export const themeConfig: ThemeConfig = {
@@ -84,10 +117,12 @@ export const themeConfig: ThemeConfig = {
       }
     }
   }
-};`}</code></pre>
-		</div>
-		<div class="tab-content" data-tab="js-config">
-			<pre><code class="language-javascript">{`// src/lib/config/theme.js
+};`}</code
+                ></pre>
+        </div>
+        <div class="tab-content" data-tab="js-config">
+            <pre><code class="language-javascript"
+                    >{`// src/lib/config/theme.js
 
 export const themeConfig = {
   schemes: {
@@ -112,35 +147,40 @@ export const themeConfig = {
       }
     }
   }
-};`}</code></pre>
-		</div>
-	</div>
+};`}</code
+                ></pre>
+        </div>
+    </div>
 
-	<div class="callout tip">
-		<strong>💡 Reduced Duplication</strong><br />
-		Notice how we show both TypeScript and JavaScript examples in tabs? This reduces documentation size by ~40% compared to showing both versions inline!
-	</div>
+    <div class="callout tip">
+        <strong>💡 Reduced Duplication</strong><br />
+        Notice how we show both TypeScript and JavaScript examples in tabs? This reduces documentation
+        size by ~40% compared to showing both versions inline!
+    </div>
 
-	<h3>Step 2: Add Server-Side Rendering Support</h3>
+    <h3>Step 2: Add Server-Side Rendering Support</h3>
 
-	<p>Configure server hooks to prevent theme flash on page load:</p>
+    <p>Configure server hooks to prevent theme flash on page load:</p>
 
-	<div class="code-tabs">
-		<div class="tab-buttons">
-			<button class="tab-btn active" data-tab="hooks-server">hooks.server.ts</button>
-			<button class="tab-btn" data-tab="layout-server">+layout.server.ts</button>
-		</div>
-		<div class="tab-content active" data-tab="hooks-server">
-			<pre><code class="language-typescript">{`// src/hooks.server.ts
+    <div class="code-tabs">
+        <div class="tab-buttons">
+            <button class="tab-btn active" data-tab="hooks-server">hooks.server.ts</button>
+            <button class="tab-btn" data-tab="layout-server">+layout.server.ts</button>
+        </div>
+        <div class="tab-content active" data-tab="hooks-server">
+            <pre><code class="language-typescript"
+                    >{`// src/hooks.server.ts
 import { createThemeHooks } from '@goobits/themes/server';
 import { themeConfig } from '$lib/config/theme';
 
 const { transform } = createThemeHooks(themeConfig);
 
-export const handle = transform;`}</code></pre>
-		</div>
-		<div class="tab-content" data-tab="layout-server">
-			<pre><code class="language-typescript">{`// src/routes/+layout.server.ts
+export const handle = transform;`}</code
+                ></pre>
+        </div>
+        <div class="tab-content" data-tab="layout-server">
+            <pre><code class="language-typescript"
+                    >{`// src/routes/+layout.server.ts
 import { loadThemePreferences } from '@goobits/themes/server';
 import { themeConfig } from '$lib/config/theme';
 
@@ -148,15 +188,17 @@ export function load({ cookies }) {
   return {
     preferences: loadThemePreferences(cookies, themeConfig)
   };
-}`}</code></pre>
-		</div>
-	</div>
+}`}</code
+                ></pre>
+        </div>
+    </div>
 
-	<h3>Step 3: Update HTML Template</h3>
+    <h3>Step 3: Update HTML Template</h3>
 
-	<p>Add the theme class placeholder to your HTML template:</p>
+    <p>Add the theme class placeholder to your HTML template:</p>
 
-	<pre><code class="language-html">{`<!-- src/app.html -->
+    <pre><code class="language-html"
+            >{`<!-- src/app.html -->
 <html lang="en" class="%sveltekit.theme%">
   <head>
     <meta charset="utf-8" />
@@ -167,13 +209,15 @@ export function load({ cookies }) {
   <body data-sveltekit-preload-data="hover">
     <div style="display: contents">%sveltekit.body%</div>
   </body>
-</html>`}</code></pre>
+</html>`}</code
+        ></pre>
 
-	<h3>Step 4: Add Theme Provider</h3>
+    <h3>Step 4: Add Theme Provider</h3>
 
-	<p>Wrap your app with the ThemeProvider component:</p>
+    <p>Wrap your app with the ThemeProvider component:</p>
 
-	<pre><code class="language-svelte">{`<!-- src/routes/+layout.svelte -->
+    <pre><code class="language-svelte"
+            >{`<!-- src/routes/+layout.svelte -->
 <script>
   import { ThemeProvider } from '@goobits/themes/svelte';
   import { themeConfig } from '$lib/config/theme';
@@ -187,13 +231,15 @@ export function load({ cookies }) {
 
 <ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
   {@render children?.()}
-</ThemeProvider>`}</code></pre>
+</ThemeProvider>`}</code
+        ></pre>
 
-	<h2>Using Theme Controls</h2>
+    <h2>Using Theme Controls</h2>
 
-	<p>Add theme switching UI with built-in components:</p>
+    <p>Add theme switching UI with built-in components:</p>
 
-	<pre><code class="language-svelte">{`<script>
+    <pre><code class="language-svelte"
+            >{`<script>
   import { ThemeToggle, SchemeSelector } from '@goobits/themes/svelte';
 </script>
 
@@ -201,13 +247,15 @@ export function load({ cookies }) {
 <ThemeToggle />
 
 <!-- Scheme selector dropdown -->
-<SchemeSelector />`}</code></pre>
+<SchemeSelector />`}</code
+        ></pre>
 
-	<h2>Custom Theme Controls</h2>
+    <h2>Custom Theme Controls</h2>
 
-	<p>Build custom UI with the <code>useTheme</code> hook:</p>
+    <p>Build custom UI with the <code>useTheme</code> hook:</p>
 
-	<pre><code class="language-svelte">{`<script>
+    <pre><code class="language-svelte"
+            >{`<script>
   import { useTheme } from '@goobits/themes/svelte';
 
   const theme = useTheme();
@@ -229,174 +277,146 @@ export function load({ cookies }) {
 <select value={currentScheme} onchange={(e) => theme.setScheme(e.target.value)}>
   <option value="default">Default</option>
   <option value="spells">Spells</option>
-</select>`}</code></pre>
+</select>`}</code
+        ></pre>
 
-	<div class="callout success">
-		<strong>✅ You're All Set!</strong><br />
-		Your theme system is now configured. Try switching themes in the navigation to see it in action!
-	</div>
+    <div class="callout success">
+        <strong>✅ You're All Set!</strong><br />
+        Your theme system is now configured. Try switching themes in the navigation to see it in action!
+    </div>
 
-	<h2>Next Steps</h2>
+    <h2>Next Steps</h2>
 
-	<ul>
-		<li><a href="/docs/design-tokens">Design Tokens</a> - Explore available CSS variables</li>
-		<li><a href="/docs/api-reference">API Reference</a> - Complete API documentation</li>
-		<li><a href="/docs/components">Components</a> - Theme component details</li>
-	</ul>
+    <ul>
+        <li><a href="/docs/design-tokens">Design Tokens</a> - Explore available CSS variables</li>
+        <li><a href="/docs/api-reference">API Reference</a> - Complete API documentation</li>
+        <li><a href="/docs/components">Components</a> - Theme component details</li>
+    </ul>
 </article>
 
 <style>
-	article {
-		max-width: 900px;
-	}
+    article {
+        max-width: 900px;
+    }
 
-	.lead {
-		font-size: 1.25rem;
-		color: var(--text-secondary);
-		margin-bottom: 2rem;
-		line-height: 1.6;
-	}
+    .lead {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
 
-	.callout {
-		padding: 1.5rem;
-		border-radius: 12px;
-		margin: 2rem 0;
-		border-left: 4px solid;
-		font-size: 0.95rem;
-	}
+    .callout {
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 2rem 0;
+        border-left: 4px solid;
+        font-size: 0.95rem;
+    }
 
-	.callout strong {
-		display: block;
-		margin-bottom: 0.5rem;
-		font-size: 1rem;
-	}
+    .callout strong {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
 
-	.callout.note {
-		background: rgba(59, 130, 246, 0.1);
-		border-color: #3b82f6;
-	}
+    .callout.note {
+        background: rgba(59, 130, 246, 0.1);
+        border-color: #3b82f6;
+    }
 
-	.callout.warning {
-		background: rgba(251, 146, 60, 0.1);
-		border-color: #fb923c;
-	}
+    .callout.warning {
+        background: rgba(251, 146, 60, 0.1);
+        border-color: #fb923c;
+    }
 
-	.callout.tip {
-		background: rgba(16, 185, 129, 0.1);
-		border-color: #10b981;
-	}
+    .callout.tip {
+        background: rgba(16, 185, 129, 0.1);
+        border-color: #10b981;
+    }
 
-	.callout.success {
-		background: rgba(34, 197, 94, 0.1);
-		border-color: #22c55e;
-	}
+    .callout.success {
+        background: rgba(34, 197, 94, 0.1);
+        border-color: #22c55e;
+    }
 
-	.code-tabs {
-		margin: 2rem 0;
-		border: 2px solid var(--border-primary);
-		border-radius: 12px;
-		overflow: hidden;
-		background: var(--bg-raised);
-	}
+    .code-tabs {
+        margin: 2rem 0;
+        border: 2px solid var(--border-primary);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-raised);
+    }
 
-	.tab-buttons {
-		display: flex;
-		gap: 0;
-		background: var(--bg-secondary);
-		border-bottom: 2px solid var(--border-primary);
-	}
+    .tab-buttons {
+        display: flex;
+        gap: 0;
+        background: var(--bg-secondary);
+        border-bottom: 2px solid var(--border-primary);
+    }
 
-	.tab-btn {
-		flex: 1;
-		padding: 0.75rem 1.5rem;
-		border: none;
-		background: transparent;
-		color: var(--text-secondary);
-		cursor: pointer;
-		font-weight: 500;
-		font-size: 0.95rem;
-		transition: all 0.2s;
-		border-right: 1px solid var(--border-primary);
-	}
+    .tab-btn {
+        flex: 1;
+        padding: 0.75rem 1.5rem;
+        border: none;
+        background: transparent;
+        color: var(--text-secondary);
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+        border-right: 1px solid var(--border-primary);
+    }
 
-	.tab-btn:last-child {
-		border-right: none;
-	}
+    .tab-btn:last-child {
+        border-right: none;
+    }
 
-	.tab-btn:hover {
-		background: var(--bg-primary);
-		color: var(--text-primary);
-	}
+    .tab-btn:hover {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+    }
 
-	.tab-btn.active {
-		background: var(--accent-primary);
-		color: white;
-		font-weight: 600;
-	}
+    .tab-btn.active {
+        background: var(--accent-primary);
+        color: white;
+        font-weight: 600;
+    }
 
-	.tab-content {
-		display: none;
-		padding: 0;
-	}
+    .tab-content {
+        display: none;
+        padding: 0;
+    }
 
-	.tab-content.active {
-		display: block;
-	}
+    .tab-content.active {
+        display: block;
+    }
 
-	.tab-content pre {
-		margin: 0;
-		border-radius: 0;
-	}
+    .tab-content pre {
+        margin: 0;
+        border-radius: 0;
+    }
 
-	pre {
-		background: #282a36;
-		color: #f8f8f2;
-		padding: 1.5rem;
-		border-radius: 10px;
-		overflow-x: auto;
-		margin: 1.5rem 0;
-	}
+    pre {
+        background: #282a36;
+        color: #f8f8f2;
+        padding: 1.5rem;
+        border-radius: 10px;
+        overflow-x: auto;
+        margin: 1.5rem 0;
+    }
 
-	code {
-		font-family: 'Monaco', 'Courier New', monospace;
-		font-size: 0.9rem;
-		line-height: 1.6;
-	}
+    code {
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
 
-	:global(article code:not(pre code)) {
-		background: var(--bg-secondary);
-		padding: 0.2em 0.5em;
-		border-radius: 4px;
-		color: var(--accent-primary);
-		font-weight: 500;
-	}
+    :global(article code:not(pre code)) {
+        background: var(--bg-secondary);
+        padding: 0.2em 0.5em;
+        border-radius: 4px;
+        color: var(--accent-primary);
+        font-weight: 500;
+    }
 </style>
-
-<script>
-	// Simple tab switching functionality
-	import { onMount } from 'svelte';
-
-	onMount(() => {
-		document.querySelectorAll('.code-tabs').forEach(tabGroup => {
-			const buttons = tabGroup.querySelectorAll('.tab-btn');
-			const contents = tabGroup.querySelectorAll('.tab-content');
-
-			buttons.forEach(button => {
-				button.addEventListener('click', () => {
-					const targetTab = button.dataset.tab;
-
-					// Remove active class from all buttons and contents in this group
-					buttons.forEach(btn => btn.classList.remove('active'));
-					contents.forEach(content => content.classList.remove('active'));
-
-					// Add active class to clicked button and corresponding content
-					button.classList.add('active');
-					const targetContent = tabGroup.querySelector(`.tab-content[data-tab="${targetTab}"]`);
-					if (targetContent) {
-						targetContent.classList.add('active');
-					}
-				});
-			});
-		});
-	});
-</script>

@@ -71,6 +71,7 @@ bun run test
 ### Branch Naming
 
 Use descriptive branch names:
+
 - `feat/add-new-scheme` - New features
 - `fix/theme-flash-bug` - Bug fixes
 - `docs/improve-readme` - Documentation
@@ -100,6 +101,7 @@ refactor: simplify theme store logic
 Format: `type: description`
 
 **Types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation only
@@ -114,24 +116,27 @@ Format: `type: description`
 Test your changes:
 
 1. Build the package:
+
 ```bash
 bun run build
 ```
 
 2. Link locally:
+
 ```bash
 npm link
 ```
 
 3. In a test SvelteKit project:
+
 ```bash
 npm link @goobits/themes
 ```
 
 4. Test all theme modes:
-   - Light mode
-   - Dark mode
-   - System mode
+    - Light mode
+    - Dark mode
+    - System mode
 
 5. Test multiple schemes
 
@@ -147,12 +152,13 @@ import { test, expect } from 'vitest';
 import { createThemeStore } from './theme.svelte';
 
 test('theme store initializes with correct defaults', () => {
-  const store = createThemeStore(config);
-  expect(store.theme).toBe('system');
+    const store = createThemeStore(config);
+    expect(store.theme).toBe('system');
 });
 ```
 
 Run tests:
+
 ```bash
 bun run test
 ```
@@ -195,18 +201,22 @@ If your change affects the public API:
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 How has this been tested?
 
 ## Checklist
+
 - [ ] Tests pass
 - [ ] Documentation updated
 - [ ] Commits are clear

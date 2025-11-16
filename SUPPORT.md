@@ -39,6 +39,7 @@ import { ThemeProvider } from '@goobits/themes/svelte';
 ### Have a Question?
 
 **Check documentation first:**
+
 - [Getting Started](./docs/getting-started.md) - Installation and setup
 - [API Reference](./docs/api-reference.md) - Complete API docs
 - [Troubleshooting](./docs/troubleshooting.md) - Common issues
@@ -47,10 +48,10 @@ import { ThemeProvider } from '@goobits/themes/svelte';
 
 1. Search [GitHub Discussions](https://github.com/goobits/goobits-themes/discussions)
 2. If not found, create a new discussion with:
-   - Clear question title
-   - Context about what you're trying to achieve
-   - What you've already tried
-   - Relevant code snippets
+    - Clear question title
+    - Context about what you're trying to achieve
+    - What you've already tried
+    - Relevant code snippets
 
 ### Feature Request?
 
@@ -59,9 +60,9 @@ We welcome feature suggestions!
 1. Check [existing discussions](https://github.com/goobits/goobits-themes/discussions/categories/ideas) first
 2. Create a new discussion in the "Ideas" category
 3. Describe:
-   - **Use case**: What problem does this solve?
-   - **Proposed solution**: How would it work?
-   - **Alternatives**: Other solutions you considered
+    - **Use case**: What problem does this solve?
+    - **Proposed solution**: How would it work?
+    - **Alternatives**: Other solutions you considered
 
 ### Security Issue?
 
@@ -74,6 +75,7 @@ Report security vulnerabilities via [GitHub Security Advisories](https://github.
 As an open-source project maintained by volunteers, response times vary based on maintainer availability.
 
 Typical response times:
+
 - **Critical bugs**: 1-2 weeks
 - **General questions**: 2-4 weeks
 - **Feature requests**: 2-4 weeks
@@ -119,6 +121,7 @@ npm run dev
 > **Node version**: v20.0.0
 >
 > **Steps to reproduce**:
+>
 > 1. Set theme to dark mode
 > 2. Reload page
 > 3. Brief white flash appears before dark theme applies
@@ -127,6 +130,7 @@ npm run dev
 > **Actual**: White flash for ~100ms
 >
 > **Code**:
+>
 > ```typescript
 > // src/routes/+layout.svelte
 > import { ThemeProvider } from '@goobits/themes/svelte';
@@ -148,6 +152,7 @@ npm run dev
 > I want my admin section to always use dark mode, but let users choose for the rest of the site.
 >
 > I tried:
+>
 > ```typescript
 > // My attempt here
 > ```
