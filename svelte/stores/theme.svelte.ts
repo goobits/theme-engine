@@ -2,6 +2,9 @@ import { browser } from "$app/environment";
 import type { ThemeMode, ThemeScheme } from '../../core/types';
 import { readPreferenceCookies, writePreferenceCookies } from '../../utils/cookies';
 import type { ThemeConfig } from "../../core/config";
+import { createLogger } from '@goobits/logger';
+
+const logger = createLogger('ThemeStore');
 
 export interface ThemeSettings {
   theme: ThemeMode;
@@ -39,10 +42,7 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
         themeScheme: currentSettings.themeScheme,
       });
     } catch (err) {
-      console.error(
-        "Failed to save theme settings to localStorage",
-        err
-      );
+      logger.error('Failed to save theme settings to localStorage', err);
     }
   }
 
@@ -58,10 +58,7 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
         return { ...defaultSettings, ...parsed };
       }
     } catch (err) {
-        console.warn(
-            "Failed to load theme settings from localStorage",
-            err
-        );
+        logger.warn('Failed to load theme settings from localStorage', err);
     }
 
     try {
