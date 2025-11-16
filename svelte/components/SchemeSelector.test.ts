@@ -7,7 +7,7 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { ThemeStore } from '../stores/theme.svelte';
-import type { ThemeMode, ThemeScheme } from '../../core/types';
+import type { ThemeMode, ThemeScheme, SchemeConfig } from '../../core/types';
 
 // Mock useTheme hook
 let mockThemeStore: ThemeStore;
@@ -21,7 +21,7 @@ vi.mock('../hooks/useTheme.svelte', () => ({
 function createMockThemeStore(
     theme: ThemeMode = 'system',
     scheme: ThemeScheme = 'default',
-    customSchemes?: Array<{ name: string; displayName: string; description?: string }>
+    customSchemes?: SchemeConfig[]
 ): ThemeStore {
     return {
         subscribe: vi.fn(),
@@ -33,16 +33,19 @@ function createMockThemeStore(
                 name: 'default',
                 displayName: 'Default',
                 description: 'Default theme',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
             },
             {
                 name: 'spells',
                 displayName: 'Spells',
                 description: 'Spells theme',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
             },
             {
                 name: 'brand',
                 displayName: 'Brand',
                 description: 'Brand theme',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
             },
         ],
         setTheme: vi.fn(),
@@ -145,10 +148,25 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle schemes with different displayNames', () => {
-            const customSchemes = [
-                { name: 'minimal', displayName: 'Minimal Theme' },
-                { name: 'vibrant', displayName: 'Vibrant Colors' },
-                { name: 'professional', displayName: 'Professional Look' },
+            const customSchemes: SchemeConfig[] = [
+                {
+                    name: 'minimal',
+                    displayName: 'Minimal Theme',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+                {
+                    name: 'vibrant',
+                    displayName: 'Vibrant Colors',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+                {
+                    name: 'professional',
+                    displayName: 'Professional Look',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
             ];
             const store = createMockThemeStore('dark', 'minimal' as ThemeScheme, customSchemes);
             useThemeMock.mockReturnValue(store);
@@ -216,7 +234,14 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle single scheme in availableSchemes', () => {
-            const singleScheme = [{ name: 'default', displayName: 'Default' }];
+            const singleScheme: SchemeConfig[] = [
+                {
+                    name: 'default',
+                    displayName: 'Default',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+            ];
             const store = createMockThemeStore('light', 'default', singleScheme);
             useThemeMock.mockReturnValue(store);
 
@@ -225,9 +250,11 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle many schemes in availableSchemes', () => {
-            const manySchemes = Array.from({ length: 10 }, (_, i) => ({
+            const manySchemes: SchemeConfig[] = Array.from({ length: 10 }, (_, i) => ({
                 name: `scheme${i}`,
                 displayName: `Scheme ${i}`,
+                description: '',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
             }));
             const store = createMockThemeStore('dark', 'scheme0' as ThemeScheme, manySchemes);
             useThemeMock.mockReturnValue(store);
@@ -236,10 +263,25 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle schemes with special characters in names', () => {
-            const specialSchemes = [
-                { name: 'scheme-with-dashes', displayName: 'Scheme With Dashes' },
-                { name: 'scheme_with_underscores', displayName: 'Scheme With Underscores' },
-                { name: 'scheme.with.dots', displayName: 'Scheme With Dots' },
+            const specialSchemes: SchemeConfig[] = [
+                {
+                    name: 'scheme-with-dashes',
+                    displayName: 'Scheme With Dashes',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+                {
+                    name: 'scheme_with_underscores',
+                    displayName: 'Scheme With Underscores',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+                {
+                    name: 'scheme.with.dots',
+                    displayName: 'Scheme With Dots',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
             ];
             const store = createMockThemeStore(
                 'system',
@@ -253,10 +295,12 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle schemes with long displayNames', () => {
-            const longNameSchemes = [
+            const longNameSchemes: SchemeConfig[] = [
                 {
                     name: 'long',
                     displayName: 'This Is A Very Long Display Name That Exceeds Normal Length',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
             const store = createMockThemeStore('light', 'long' as ThemeScheme, longNameSchemes);
@@ -268,9 +312,19 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle scheme selection when current scheme not in availableSchemes', () => {
-            const limitedSchemes = [
-                { name: 'default', displayName: 'Default' },
-                { name: 'spells', displayName: 'Spells' },
+            const limitedSchemes: SchemeConfig[] = [
+                {
+                    name: 'default',
+                    displayName: 'Default',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+                {
+                    name: 'spells',
+                    displayName: 'Spells',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
             ];
             const store = createMockThemeStore('dark', 'brand' as ThemeScheme, limitedSchemes);
             useThemeMock.mockReturnValue(store);
@@ -317,7 +371,14 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle schemes without description', () => {
-            const schemesWithoutDesc = [{ name: 'minimal', displayName: 'Minimal' }];
+            const schemesWithoutDesc: SchemeConfig[] = [
+                {
+                    name: 'minimal',
+                    displayName: 'Minimal',
+                    description: '',
+                    preview: { primary: '#000', accent: '#fff', background: '#fff' },
+                },
+            ];
             const store = createMockThemeStore(
                 'light',
                 'minimal' as ThemeScheme,
@@ -325,7 +386,7 @@ describe('SchemeSelector', () => {
             );
             useThemeMock.mockReturnValue(store);
 
-            expect(store.availableSchemes[0].description).toBeUndefined();
+            expect(store.availableSchemes[0].description).toBe('');
         });
     });
 

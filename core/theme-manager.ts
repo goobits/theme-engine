@@ -63,15 +63,22 @@ export function watchSystemTheme(callback: (systemTheme: 'light' | 'dark') => vo
                 mediaQuery.removeEventListener('change', handleChange);
             }
         };
-    } else if (typeof (mediaQuery as any).addListener === 'function') {
-        // Legacy API fallback
-        (mediaQuery as any).addListener(handleChange);
-        return () => {
-            if (typeof (mediaQuery as any).removeListener === 'function') {
-                (mediaQuery as any).removeListener(handleChange);
-            }
-        };
     } else {
+        // Legacy API fallback - for older browsers that use addListener/removeListener
+        interface LegacyMediaQueryList {
+            addListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
+            removeListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
+        }
+
+        const legacyMQ = mediaQuery as MediaQueryList & LegacyMediaQueryList;
+        if (typeof legacyMQ.addListener === 'function') {
+            legacyMQ.addListener(handleChange);
+            return () => {
+                if (typeof legacyMQ.removeListener === 'function') {
+                    legacyMQ.removeListener(handleChange);
+                }
+            };
+        }
         // No event support available
         return () => {};
     }
