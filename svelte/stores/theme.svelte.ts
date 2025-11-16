@@ -1,6 +1,10 @@
 import { browser } from '$app/environment';
-import type { ThemeMode, ThemeScheme } from '../../core/types';
-import { readPreferenceCookies, writePreferenceCookies } from '../../utils/cookies';
+import type { ThemeMode, ThemeScheme, SchemeConfig } from '../../core/types';
+import {
+    readPreferenceCookies,
+    writePreferenceCookies,
+    type UserPreferences,
+} from '../../utils/cookies';
 import type { ThemeConfig } from '../../core/config';
 
 export interface ThemeSettings {
@@ -8,12 +12,18 @@ export interface ThemeSettings {
     themeScheme: ThemeScheme;
 }
 
+export interface ThemeStoreSnapshot {
+    settings: ThemeSettings;
+    theme: ThemeMode;
+    scheme: ThemeScheme;
+}
+
 export interface ThemeStore {
-    subscribe: (fn: (value: any) => void) => () => void;
+    subscribe: (fn: (value: ThemeStoreSnapshot) => void) => () => void;
     readonly settings: ThemeSettings;
     readonly theme: ThemeMode;
     readonly scheme: ThemeScheme;
-    readonly availableSchemes: any[];
+    readonly availableSchemes: SchemeConfig[];
     setTheme(theme: ThemeMode): void;
     setScheme(scheme: ThemeScheme): void;
     cycleMode(): void;
@@ -59,7 +69,7 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
         }
 
         try {
-            const cookieSettings: any = readPreferenceCookies();
+            const cookieSettings: Partial<UserPreferences> = readPreferenceCookies();
             if (cookieSettings.theme && cookieSettings.themeScheme) {
                 return {
                     ...defaultSettings,
@@ -100,9 +110,9 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
     }
 
     // Create a subscribe function for backward compatibility with non-runes code
-    let subscribers = new Set<(value: any) => void>();
+    let subscribers = new Set<(value: ThemeStoreSnapshot) => void>();
 
-    const subscribe = (fn: (value: any) => void): (() => void) => {
+    const subscribe = (fn: (value: ThemeStoreSnapshot) => void): (() => void) => {
         subscribers.add(fn);
         fn({
             settings,

@@ -44,11 +44,13 @@ function createMockThemeStore(
                 name: 'default',
                 displayName: 'Default',
                 description: 'Default theme',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
             },
             {
                 name: 'spells',
                 displayName: 'Spells',
                 description: 'Spells theme',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
             },
         ],
         setTheme: vi.fn(),

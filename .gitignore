@@ -55,9 +55,9 @@ Thumbs.db
 *.temp
 
 # Package manager
+# Note: pnpm-lock.yaml is now tracked for CI consistency
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
 
 # Cache
 .cache/

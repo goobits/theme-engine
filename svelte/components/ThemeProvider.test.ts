@@ -90,8 +90,18 @@ function createMockThemeStore(
         theme,
         scheme,
         availableSchemes: [
-            { name: 'default', displayName: 'Default' },
-            { name: 'spells', displayName: 'Spells' },
+            {
+                name: 'default',
+                displayName: 'Default',
+                description: '',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
+            },
+            {
+                name: 'spells',
+                displayName: 'Spells',
+                description: '',
+                preview: { primary: '#000', accent: '#fff', background: '#fff' },
+            },
         ],
         setTheme: vi.fn(),
         setScheme: vi.fn(),
