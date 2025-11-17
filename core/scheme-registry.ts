@@ -82,25 +82,34 @@ export function applyFullTheme(fullTheme: FullTheme): void {
         html.classList.remove(`scheme-${schemeName}`);
     });
 
+    // Determine the resolved theme for data-theme attribute
+    let resolvedTheme: 'light' | 'dark';
+
     // Apply base theme
     switch (fullTheme.base) {
         case 'light':
             html.classList.add('theme-light');
+            resolvedTheme = 'light';
             break;
         case 'dark':
             html.classList.add('theme-dark');
+            resolvedTheme = 'dark';
             break;
         case 'system': {
             html.classList.add('theme-system');
             // For system theme, also apply the appropriate resolved theme
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             html.classList.add(prefersDark ? 'theme-system-dark' : 'theme-system-light');
+            resolvedTheme = prefersDark ? 'dark' : 'light';
             break;
         }
     }
 
     // Apply scheme
     html.classList.add(`scheme-${fullTheme.scheme}`);
+
+    // Set data-theme attribute to resolved value (always "light" or "dark", never "system")
+    html.dataset.theme = resolvedTheme;
 
     // Re-enable transitions after a brief delay
     setTimeout(() => {
@@ -115,6 +124,7 @@ export function applyFullTheme(fullTheme: FullTheme): void {
     logger.info('Full theme applied successfully', {
         fullTheme,
         appliedClasses,
+        dataTheme: html.dataset.theme,
         htmlElement: html.tagName,
     });
 }

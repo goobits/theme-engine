@@ -9,6 +9,7 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
         const response = await resolve(event, {
             transformPageChunk: ({ html }) => {
                 let themeClasses = `theme-${preferences.theme} scheme-${preferences.themeScheme}`;
+                let resolvedTheme: 'light' | 'dark' = preferences.theme === 'system' ? 'light' : preferences.theme;
 
                 if (preferences.theme === 'system') {
                     const prefersColorScheme = event.request.headers.get(
@@ -20,9 +21,20 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
                         prefersColorScheme === 'dark' || userAgent.includes('dark') || false;
 
                     themeClasses += likelyDarkMode ? ' theme-system-dark' : ' theme-system-light';
+                    resolvedTheme = likelyDarkMode ? 'dark' : 'light';
                 }
 
-                return html.replace('%sveltekit.theme%', themeClasses);
+                // Replace theme class placeholder
+                let result = html.replace('%sveltekit.theme%', themeClasses);
+
+                // Inject data-theme attribute into <html> tag
+                // This adds data-theme="light" or data-theme="dark" based on resolved theme
+                result = result.replace(
+                    /<html([^>]*?)>/,
+                    `<html$1 data-theme="${resolvedTheme}">`
+                );
+
+                return result;
             },
         });
 
