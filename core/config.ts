@@ -155,6 +155,18 @@ function validateConfig(config: ThemeConfig): void {
  *   }
  * });
  * ```
+ *
+ * @remarks
+ * **Color Format Requirements:**
+ * - Preview colors must be 6-digit hex format (`#RRGGBB`)
+ * - 3-digit hex format (`#RGB`) is NOT supported
+ * - Color values are case-insensitive
+ * - Examples: `#3b82f6` ✅ | `#fff` ❌ | `#FFFFFF` ✅
+ *
+ * **Validation Behavior:**
+ * - Validation runs only in development mode (detected via `import.meta.env.DEV`)
+ * - In production builds, validation is skipped for performance
+ * - Invalid configurations log warnings but do not throw errors
  */
 export function createThemeConfig(config: ThemeConfig): ThemeConfig {
     validateConfig(config);

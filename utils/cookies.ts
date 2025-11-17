@@ -30,7 +30,25 @@ export const COOKIE_OPTIONS = {
 };
 
 /**
- * Read user preferences from cookies (client-side)
+ * Reads user preferences from browser cookies on the client side.
+ *
+ * Parses document.cookie and extracts theme-related preferences.
+ * Only operates in browser environment; returns empty object on server.
+ *
+ * @returns Partial object containing available user preferences from cookies
+ *
+ * @example
+ * ```typescript
+ * import { readPreferenceCookies } from './utils/cookies';
+ *
+ * const prefs = readPreferenceCookies();
+ * // prefs = { theme: 'dark', themeScheme: 'spells', showSidebar: true }
+ * ```
+ *
+ * @remarks
+ * - Returns empty object `{}` when not in browser environment
+ * - Returns empty object if no cookies are set
+ * - Cookie values are automatically type-cast to appropriate types
  */
 export function readPreferenceCookies(): Partial<UserPreferences> {
     if (!browser) return {};
@@ -55,7 +73,31 @@ export function readPreferenceCookies(): Partial<UserPreferences> {
 }
 
 /**
- * Write user preferences to cookies (client-side)
+ * Writes user preferences to browser cookies on the client side.
+ *
+ * Persists theme and other preferences to cookies with a 1-year expiration.
+ * Only operates in browser environment; no-op on server.
+ *
+ * @param preferences - Partial preferences object with values to save
+ *
+ * @example
+ * ```typescript
+ * import { writePreferenceCookies } from './utils/cookies';
+ *
+ * // Save theme preferences
+ * writePreferenceCookies({
+ *   theme: 'dark',
+ *   themeScheme: 'spells'
+ * });
+ *
+ * // Update only specific preferences
+ * writePreferenceCookies({ showSidebar: false });
+ * ```
+ *
+ * @remarks
+ * - Does nothing when not in browser environment
+ * - Cookies set with: path=/, max-age=1 year, SameSite=lax
+ * - Only writes cookies for properties that are defined in the preferences object
  */
 export function writePreferenceCookies(preferences: Partial<UserPreferences>): void {
     if (!browser) return;
@@ -80,7 +122,26 @@ export function writePreferenceCookies(preferences: Partial<UserPreferences>): v
 }
 
 /**
- * Get default preferences
+ * Returns the default user preferences.
+ *
+ * Provides sensible fallback values for all preference options when
+ * no saved preferences are available.
+ *
+ * @returns Complete UserPreferences object with default values
+ *
+ * @example
+ * ```typescript
+ * import { getDefaultPreferences } from './utils/cookies';
+ *
+ * const defaults = getDefaultPreferences();
+ * // {
+ * //   theme: 'system',
+ * //   themeScheme: 'default',
+ * //   language: 'en',
+ * //   languageTheme: 'default',
+ * //   showSidebar: true
+ * // }
+ * ```
  */
 export function getDefaultPreferences(): UserPreferences {
     return {

@@ -9,6 +9,7 @@ import {
     applyFullTheme,
     getCurrentScheme,
 } from './scheme-registry';
+import { THEME_TRANSITION_DURATION_MS } from './constants';
 import type { FullTheme } from './types';
 
 // Mock the $app/environment module
@@ -362,7 +363,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.remove).not.toHaveBeenCalledWith('theme-switching');
 
-            vi.advanceTimersByTime(100);
+            vi.advanceTimersByTime(THEME_TRANSITION_DURATION_MS);
 
             expect(mockHtml.classList.remove).toHaveBeenCalledWith('theme-switching');
             expect(mockHtml.dataset.theme).toBe('light');
@@ -383,7 +384,7 @@ describe('applyFullTheme', () => {
             const theme: FullTheme = { base: 'light', scheme: 'default' };
             applyFullTheme(theme);
 
-            expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 100);
+            expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), THEME_TRANSITION_DURATION_MS);
             expect(mockHtml.dataset.theme).toBe('light');
         });
     });
