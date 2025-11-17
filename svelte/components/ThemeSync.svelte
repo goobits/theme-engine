@@ -6,18 +6,39 @@
     /**
      * ThemeSync - Utility component to keep data-theme attribute synchronized
      *
-     * Note: As of v1.2.0, the ThemeProvider automatically sets data-theme on the
-     * <html> element, so this component is optional and mainly useful for:
-     * - Apps that need additional elements to have data-theme
-     * - Custom theme sync logic beyond the default behavior
-     * - Backwards compatibility with older versions
+     * @deprecated As of v1.2.0, this component is DEPRECATED and no longer necessary.
      *
-     * Usage:
+     * The ThemeProvider component now automatically manages the data-theme attribute on
+     * the <html> element, making this component redundant for most use cases.
+     *
+     * **This component will be removed in v2.0.0.**
+     *
+     * ## Migration Guide
+     *
+     * Simply remove `<ThemeSync />` from your code. The ThemeProvider handles everything:
+     *
      * ```svelte
-     * <ThemeSync />
+     * <!-- BEFORE (v1.1.x) -->
+     * <ThemeProvider {config} {serverPreferences}>
+     *   <ThemeSync />  <!-- ❌ No longer needed -->
+     *   {@render children()}
+     * </ThemeProvider>
+     *
+     * <!-- AFTER (v1.2.0+) -->
+     * <ThemeProvider {config} {serverPreferences}>
+     *   {@render children()}  <!-- ✅ ThemeSync happens automatically -->
+     * </ThemeProvider>
      * ```
      *
-     * The component renders nothing and simply ensures data-theme stays in sync.
+     * ## When You Might Still Need This (Rare)
+     *
+     * Only keep this component if you have very specific requirements like:
+     * - Setting data-theme on additional DOM elements beyond <html>
+     * - Custom theme sync logic that differs from the default behavior
+     *
+     * For the vast majority of users, this component should be removed.
+     *
+     * @see {@link ThemeProvider} for automatic theme and data-theme management
      */
 
     const theme = useTheme();

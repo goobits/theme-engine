@@ -7,6 +7,7 @@
 
 import { browser } from '$app/environment';
 import { logger } from '../utils/logger';
+import { THEME_TRANSITION_DURATION_MS, resolveTheme } from './constants';
 import type { ThemeScheme, SchemeConfig, FullTheme } from './types';
 
 // Available theme schemes
@@ -39,7 +40,23 @@ export const THEME_SCHEMES: Record<ThemeScheme, SchemeConfig> = {
 };
 
 /**
- * Apply theme scheme to the HTML element
+ * Applies a theme scheme to the document root element.
+ *
+ * Removes all existing scheme classes and applies the specified scheme.
+ * Only operates in browser environment; no-op on server.
+ *
+ * @param scheme - The theme scheme to apply ('default', 'spells', or custom scheme)
+ *
+ * @example
+ * ```typescript
+ * // Switch to the spells color scheme
+ * applyThemeScheme('spells');
+ *
+ * // Switch back to default scheme
+ * applyThemeScheme('default');
+ * ```
+ *
+ * @see {@link applyFullTheme} for applying both theme mode and scheme together
  */
 export function applyThemeScheme(scheme: ThemeScheme): void {
     if (!browser || typeof document === 'undefined') return;
@@ -58,7 +75,40 @@ export function applyThemeScheme(scheme: ThemeScheme): void {
 }
 
 /**
- * Apply full theme (base + scheme) to the HTML element
+ * Applies a complete theme configuration to the document root.
+ *
+ * This is the primary function for theme application. It handles:
+ * - Base theme mode (light/dark/system) with automatic system preference resolution
+ * - Color scheme application
+ * - `data-theme` attribute for CSS targeting (always "light" or "dark", never "system")
+ * - CSS class management for both theme and scheme
+ * - Smooth transitions (disables transitions briefly to prevent visual glitches)
+ *
+ * Only operates in browser environment; no-op on server.
+ *
+ * @param fullTheme - Complete theme configuration
+ * @param fullTheme.base - Base theme mode: 'light', 'dark', or 'system'
+ * @param fullTheme.scheme - Color scheme identifier (e.g., 'default', 'spells')
+ *
+ * @example
+ * ```typescript
+ * // Apply dark theme with spells color scheme
+ * applyFullTheme({ base: 'dark', scheme: 'spells' });
+ *
+ * // Apply system theme (auto light/dark) with default scheme
+ * applyFullTheme({ base: 'system', scheme: 'default' });
+ *
+ * // Apply light theme
+ * applyFullTheme({ base: 'light', scheme: 'default' });
+ * ```
+ *
+ * @remarks
+ * When base is 'system', the function queries `window.matchMedia('(prefers-color-scheme: dark)')`
+ * to determine the user's system preference and applies the appropriate resolved theme.
+ * The `data-theme` attribute will always be set to either "light" or "dark" for CSS targeting.
+ *
+ * @see {@link applyThemeScheme} for applying only the color scheme
+ * @see {@link getCurrentScheme} for reading the current scheme
  */
 export function applyFullTheme(fullTheme: FullTheme): void {
     if (!browser || typeof document === 'undefined') return;
@@ -82,28 +132,21 @@ export function applyFullTheme(fullTheme: FullTheme): void {
         html.classList.remove(`scheme-${schemeName}`);
     });
 
-    // Determine the resolved theme for data-theme attribute
-    let resolvedTheme: 'light' | 'dark';
-
-    // Apply base theme
-    switch (fullTheme.base) {
-        case 'light':
-            html.classList.add('theme-light');
-            resolvedTheme = 'light';
-            break;
-        case 'dark':
-            html.classList.add('theme-dark');
-            resolvedTheme = 'dark';
-            break;
-        case 'system': {
-            html.classList.add('theme-system');
-            // For system theme, also apply the appropriate resolved theme
-            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            html.classList.add(prefersDark ? 'theme-system-dark' : 'theme-system-light');
-            resolvedTheme = prefersDark ? 'dark' : 'light';
-            break;
-        }
+    // Apply base theme classes
+    if (fullTheme.base === 'system') {
+        html.classList.add('theme-system');
+        // For system theme, also apply the appropriate resolved theme class
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        html.classList.add(prefersDark ? 'theme-system-dark' : 'theme-system-light');
+    } else {
+        html.classList.add(`theme-${fullTheme.base}`);
     }
+
+    // Determine the resolved theme for data-theme attribute using shared utility
+    const prefersDark = fullTheme.base === 'system'
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+        : false;
+    const resolvedTheme = resolveTheme(fullTheme.base, prefersDark);
 
     // Apply scheme
     html.classList.add(`scheme-${fullTheme.scheme}`);
@@ -114,7 +157,7 @@ export function applyFullTheme(fullTheme: FullTheme): void {
     // Re-enable transitions after a brief delay
     setTimeout(() => {
         html.classList.remove('theme-switching');
-    }, 100);
+    }, THEME_TRANSITION_DURATION_MS);
 
     // Enhanced debugging for theme application
     const appliedClasses = Array.from(html.classList).filter(
@@ -130,7 +173,27 @@ export function applyFullTheme(fullTheme: FullTheme): void {
 }
 
 /**
- * Get the current scheme from document classes
+ * Retrieves the currently active theme scheme from the document.
+ *
+ * Reads the scheme class from the document root element (e.g., `scheme-default`, `scheme-spells`)
+ * and returns the corresponding scheme identifier. Returns 'default' if no scheme class is found
+ * or if running on the server.
+ *
+ * @returns The active theme scheme identifier, or 'default' as fallback
+ *
+ * @example
+ * ```typescript
+ * const currentScheme = getCurrentScheme();
+ * console.log(currentScheme); // 'default' or 'spells'
+ *
+ * // Use in conditional logic
+ * if (getCurrentScheme() === 'spells') {
+ *   console.log('Using magical theme!');
+ * }
+ * ```
+ *
+ * @see {@link applyThemeScheme} for setting the scheme
+ * @see {@link applyFullTheme} for applying theme and scheme together
  */
 export function getCurrentScheme(): ThemeScheme {
     if (!browser || typeof document === 'undefined') return 'default';

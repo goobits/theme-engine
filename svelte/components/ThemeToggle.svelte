@@ -2,6 +2,7 @@
 <script lang="ts">
     import { Sun, Moon, Monitor } from '@lucide/svelte';
     import { useTheme } from '../hooks/useTheme.svelte';
+    import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants';
 
     const theme = useTheme();
     const currentTheme = $derived(theme.theme);
@@ -16,12 +17,12 @@
             const liveRegion = document.getElementById('aria-live-region');
             if (liveRegion) {
                 liveRegion.textContent = message;
-                // Clear after 3 seconds to avoid cluttering screen reader history
+                // Clear after specified duration to avoid cluttering screen reader history
                 setTimeout(() => {
                     if (liveRegion.textContent === message) {
                         liveRegion.textContent = '';
                     }
-                }, 3000);
+                }, ARIA_ANNOUNCEMENT_DURATION_MS);
             }
         }
     }
