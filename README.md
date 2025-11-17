@@ -5,10 +5,11 @@ Theme management for SvelteKit applications with Svelte 5 runes support.
 ## Features
 
 - Light, dark, and system theme modes with zero-flash SSR
+- Native `data-theme` attribute support (both SSR and client-side)
 - Custom color schemes with extensible configuration
 - Reactive theme state using Svelte 5 runes
 - Cookie-based preference persistence
-- Route-specific theme overrides
+- Route-specific theme overrides with automatic navigation tracking
 - Built-in components and design tokens
 
 ## Installation
@@ -39,6 +40,58 @@ import '@goobits/themes/themes/default.css';
 ```
 
 **Complete setup guide:** [Getting Started](./docs/getting-started.md)
+
+## CSS Structure
+
+The theme engine automatically manages both CSS classes and attributes on your `<html>` element, giving you flexibility in how you write theme styles.
+
+### What Gets Applied
+
+**CSS Classes:**
+- `.theme-light` | `.theme-dark` | `.theme-system` - User's theme preference
+- `.theme-system-light` | `.theme-system-dark` - Resolved system preference (when using system mode)
+- `.scheme-default` | `.scheme-{name}` - Active color scheme
+
+**Data Attributes:**
+- `data-theme="light"` | `data-theme="dark"` - Resolved visual theme (always reflects what's actually shown)
+
+### Writing Theme Styles
+
+You can target themes using either approach:
+
+```css
+/* Option 1: Use data-theme attribute (recommended - more semantic) */
+[data-theme="dark"] {
+    --bg-primary: #000;
+    --text-primary: #fff;
+}
+
+[data-theme="light"] {
+    --bg-primary: #fff;
+    --text-primary: #000;
+}
+
+/* Option 2: Use CSS classes (if you need to distinguish system vs explicit choice) */
+.theme-dark,
+.theme-system-dark {
+    --bg-primary: #000;
+}
+
+/* Scheme-specific overrides work with both approaches */
+.scheme-spells {
+    --accent-primary: #7c3aed;
+}
+
+[data-theme="dark"].scheme-spells {
+    --accent-glow: #a78bfa;
+}
+```
+
+**Key behaviors:**
+- When theme is set to `system`, `data-theme` reflects the **resolved** value (`"light"` or `"dark"`), not `"system"`
+- Both classes and attributes are set during SSR to prevent flash of unstyled content
+- Route-specific theme changes update automatically on navigation
+- All updates are synchronized between classes and attributes
 
 ## Documentation
 

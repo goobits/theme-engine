@@ -115,7 +115,7 @@ describe('createThemeHooks', () => {
                 resolve: mockResolve as any,
             });
 
-            expect(result.body).toBe('<html><body>No placeholder here</body></html>');
+            expect(result.body).toBe('<html data-theme="dark"><body>No placeholder here</body></html>');
         });
 
         it('should handle multiple occurrences of placeholder', async () => {
@@ -1090,7 +1090,7 @@ describe('createThemeHooks', () => {
             });
 
             expect(result.body).toBe(
-                '<html class="theme-system scheme-default theme-system-dark"></html>'
+                '<html class="theme-system scheme-default theme-system-dark" data-theme="dark"></html>'
             );
         });
 
@@ -1123,7 +1123,7 @@ describe('createThemeHooks', () => {
             });
 
             expect(result.body).toBe(
-                '<html class="theme-system scheme-default theme-system-light"></html>'
+                '<html class="theme-system scheme-default theme-system-light" data-theme="light"></html>'
             );
         });
     });

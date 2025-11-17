@@ -1,4 +1,5 @@
 import { browser } from '$app/environment';
+import { STORAGE_KEY } from '../../core/constants';
 import type { ThemeMode, ThemeScheme, SchemeConfig } from '../../core/types';
 import {
     readPreferenceCookies,
@@ -34,8 +35,6 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
         theme: 'system',
         themeScheme: (Object.keys(config.schemes)[0] as ThemeScheme) || 'default',
     };
-
-    const STORAGE_KEY = 'app_theme_v1';
 
     let settings = $state<ThemeSettings>(defaultSettings);
 
@@ -95,11 +94,13 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
     function setTheme(newTheme: ThemeMode) {
         settings.theme = newTheme;
         saveToLocalStorage(settings);
+        notifySubscribers();
     }
 
     function setScheme(newScheme: ThemeScheme) {
         settings.themeScheme = newScheme;
         saveToLocalStorage(settings);
+        notifySubscribers();
     }
 
     function cycleMode() {
@@ -112,8 +113,18 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
     // Create a subscribe function for backward compatibility with non-runes code
     let subscribers = new Set<(value: ThemeStoreSnapshot) => void>();
 
+    const notifySubscribers = () => {
+        const snapshot: ThemeStoreSnapshot = {
+            settings,
+            theme,
+            scheme,
+        };
+        subscribers.forEach(fn => fn(snapshot));
+    };
+
     const subscribe = (fn: (value: ThemeStoreSnapshot) => void): (() => void) => {
         subscribers.add(fn);
+        // Immediately call the subscriber with current value
         fn({
             settings,
             theme,

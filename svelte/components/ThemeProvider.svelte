@@ -20,34 +20,31 @@
     const themeStore = createThemeStore(config);
     setContext('theme', themeStore);
 
-    let lastAppliedTheme = $state<ThemeMode | undefined>();
-    let lastAppliedScheme = $state<ThemeScheme | undefined>();
+    let initialized = $state(false);
 
     // Initialize theme on the client
     onMount(() => {
         const cleanup = initializeTheme(serverPreferences.theme, serverPreferences.themeScheme);
-        lastAppliedTheme = serverPreferences.theme;
-        lastAppliedScheme = serverPreferences.themeScheme;
+        initialized = true;
         return cleanup;
     });
 
-    // Apply route theme when page changes or theme is changed by user
+    // Apply route theme when pathname changes or theme/scheme is changed by user
+    // This effect properly tracks all dependencies: pathname, theme, and scheme
     $effect(() => {
-        if (browser) {
+        if (browser && initialized) {
+            // Access all dependencies at the top level so Svelte tracks them
+            const currentPath = $page.url.pathname;
             const currentTheme = themeStore.theme;
             const currentScheme = themeStore.scheme;
 
-            if (currentTheme !== lastAppliedTheme || currentScheme !== lastAppliedScheme) {
-                applyRouteTheme(
-                    $page.url.pathname,
-                    currentTheme,
-                    currentScheme,
-                    config.routeThemes || {}
-                );
-
-                lastAppliedTheme = currentTheme;
-                lastAppliedScheme = currentScheme;
-            }
+            // Apply theme based on current route and user preferences
+            applyRouteTheme(
+                currentPath,
+                currentTheme,
+                currentScheme,
+                config.routeThemes || {}
+            );
         }
     });
 </script>
