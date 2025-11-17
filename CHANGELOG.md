@@ -7,35 +7,46 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-11-16
+
 ### Added
-- **Complete documentation overhaul** - New comprehensive docs/ directory structure
-  - [Getting Started Guide](./docs/getting-started.md) - Step-by-step setup instructions
-  - [API Reference](./docs/api-reference.md) - Complete API documentation with correct signatures
-  - [Components Guide](./docs/components.md) - Detailed component usage and customization
-  - [Custom Themes Guide](./docs/custom-themes.md) - Create your own color schemes
-  - [Design Tokens Reference](./docs/design-tokens.md) - CSS variable documentation
-  - [Best Practices](./docs/best-practices.md) - Accessibility and performance guidelines
-  - [Troubleshooting Guide](./docs/troubleshooting.md) - Common issues and solutions
-- **Support files** - SUPPORT.md and CONTRIBUTING.md for community guidance
-- **MIT LICENSE file** - Official license file added
+- **Comprehensive test infrastructure** - 81.7% test coverage
+  - 154 foundational tests for core functionality
+  - 238 unit tests with extensive mocking
+  - 176 component tests with comprehensive UI coverage
+  - Vitest configuration with coverage reporting
+- **Development tooling** - ESLint, Prettier, and CI/CD
+  - GitHub Actions CI workflow with manual triggers
+  - ESLint with comprehensive rule set (max 10 warnings)
+  - Prettier configuration for consistent formatting
+  - Automated testing and linting in CI pipeline
+- **Interactive demo app** - Full SvelteKit demonstration
+  - Demo application with theme showcase
+  - Design token explorer
+  - Enhanced documentation integration
+  - pnpm workspace configuration
+
+### Security
+- **Cookie dependency vulnerability** - Fixed security issue in cookie handling
 
 ### Changed
-- **README restructure** - Cleaner, more concise main README with links to detailed docs
-- **Documentation accuracy** - All code examples now match actual API (no more incorrect examples)
-- **API documentation** - Corrected all function signatures to match implementation:
-  - ThemeConfig uses `Record<string, SchemeConfig>` for schemes (not array)
-  - Documented actual method names (`setTheme`, `setScheme`, not `setMode`)
-  - Fixed cookie utility names (`readPreferenceCookies`, `writePreferenceCookies`)
-  - Corrected RouteThemeConfig structure with proper `theme: FullTheme` format
-- **Reduced emoji usage** - Strategic emoji placement for professional appearance
-- **Feature list** - Condensed to essential capabilities without marketing language
-- **Quick Start** - Simplified 4-step setup with correct code examples
+- **Package manager migration** - npm → pnpm throughout project
+- **Test quality improvements** - Removed 156 low-quality tests (27% reduction)
+- **TypeScript strict mode** - Resolved 63 TypeScript errors and 27 warnings
+- **Documentation enhancements** - Interactive features and better organization
 
-### Documentation Impact
-**All users should review the updated documentation:**
-- If you experienced setup issues, see [Troubleshooting Guide](./docs/troubleshooting.md)
-- If code examples from README didn't work, they're now corrected
-- TypeScript users: All types and interfaces are now accurately documented
+### Technical Details
+<details>
+<summary>For maintainers and contributors</summary>
+
+- Migrated from npm to pnpm for faster installs and better disk efficiency
+- Added comprehensive test mocks for $app modules
+- Improved type safety across core, server, and svelte modules
+- Enhanced CI pipeline to prevent regressions
+- Removed unused dependencies
+- Added dev tooling scripts: lint, lint:fix, format, format:check
+
+</details>
 
 ## [1.0.1] - 2025-11-07
 
