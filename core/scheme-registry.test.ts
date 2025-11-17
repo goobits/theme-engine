@@ -35,6 +35,7 @@ async function setBrowserMode(isBrowser: boolean) {
 // Helper to create a mock HTML element with classList
 function createMockHtmlElement() {
     const classes = new Set<string>();
+    const datasetObj: Record<string, string> = {};
     return {
         tagName: 'HTML',
         classList: {
@@ -50,6 +51,7 @@ function createMockHtmlElement() {
             _getClasses: () => Array.from(classes),
             _clear: () => classes.clear(),
         },
+        dataset: datasetObj,
     };
 }
 
@@ -244,6 +246,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-light');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-default');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should apply light theme with spells scheme', () => {
@@ -252,6 +255,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-light');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-spells');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should remove all existing theme classes before applying light theme', () => {
@@ -265,6 +269,7 @@ describe('applyFullTheme', () => {
                 'theme-system-light',
                 'theme-system-dark'
             );
+            expect(mockHtml.dataset.theme).toBe('light');
         });
     });
 
@@ -279,6 +284,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-dark');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-default');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
 
         it('should apply dark theme with spells scheme', () => {
@@ -287,6 +293,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-dark');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-spells');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
     });
 
@@ -302,6 +309,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system-light');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should apply system theme with system-dark when user prefers dark', () => {
@@ -311,6 +319,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system-dark');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
 
         it('should query matchMedia with correct prefers-color-scheme query', () => {
@@ -319,6 +328,7 @@ describe('applyFullTheme', () => {
             applyFullTheme(theme);
 
             expect(window.matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
 
         it('should apply system theme with spells scheme', () => {
@@ -329,6 +339,7 @@ describe('applyFullTheme', () => {
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system-dark');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-spells');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
     });
 
@@ -342,6 +353,7 @@ describe('applyFullTheme', () => {
             applyFullTheme(theme);
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-switching');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should remove theme-switching class after 100ms', () => {
@@ -353,6 +365,7 @@ describe('applyFullTheme', () => {
             vi.advanceTimersByTime(100);
 
             expect(mockHtml.classList.remove).toHaveBeenCalledWith('theme-switching');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should not remove theme-switching class before 100ms', () => {
@@ -362,6 +375,7 @@ describe('applyFullTheme', () => {
             vi.advanceTimersByTime(50);
 
             expect(mockHtml.classList.remove).not.toHaveBeenCalledWith('theme-switching');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should use setTimeout for transition delay', () => {
@@ -370,6 +384,7 @@ describe('applyFullTheme', () => {
             applyFullTheme(theme);
 
             expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), 100);
+            expect(mockHtml.dataset.theme).toBe('light');
         });
     });
 
@@ -392,6 +407,7 @@ describe('applyFullTheme', () => {
                 'theme-system-dark'
             );
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-dark');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
 
         it('should switch from dark to system theme', () => {
@@ -403,6 +419,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-system-dark');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
 
         it('should switch scheme while maintaining theme base', () => {
@@ -413,6 +430,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-light');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-spells');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
 
         it('should switch both theme and scheme simultaneously', () => {
@@ -423,6 +441,7 @@ describe('applyFullTheme', () => {
 
             expect(mockHtml.classList.add).toHaveBeenCalledWith('theme-dark');
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-spells');
+            expect(mockHtml.dataset.theme).toBe('dark');
         });
     });
 });
@@ -554,6 +573,7 @@ describe('getCurrentScheme', () => {
 
         it('should return correct scheme after applyFullTheme', () => {
             const classes = new Set<string>();
+            const datasetObj: Record<string, string> = {};
             mockHtml.classList.add = vi.fn((...tokens: string[]) => {
                 tokens.forEach(token => classes.add(token));
             });
@@ -561,12 +581,14 @@ describe('getCurrentScheme', () => {
                 tokens.forEach(token => classes.delete(token));
             });
             mockHtml.classList.contains = vi.fn((token: string) => classes.has(token));
+            mockHtml.dataset = datasetObj;
 
             mockMatchMedia(false);
             applyFullTheme({ base: 'light', scheme: 'spells' });
             const scheme = getCurrentScheme();
 
             expect(scheme).toBe('spells');
+            expect(mockHtml.dataset.theme).toBe('light');
         });
     });
 });
