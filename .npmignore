@@ -1,0 +1,42 @@
+# Source files (only ship dist/)
+src/
+
+# Test files
+*.test.js
+*.test.d.ts
+*.test.ts
+*.spec.js
+*.spec.d.ts
+*.spec.ts
+test/
+tests/
+
+# Development files
+.turbo/
+node_modules/
+.git/
+.github/
+demo/
+docs/
+
+# Config files
+.eslintrc
+.eslintrc.*
+eslint.config.js
+.prettierrc
+.prettierrc.*
+.prettierignore
+tsconfig.json
+vitest.config.ts
+vitest.setup.ts
+svelte.config.js
+vm.yaml
+
+# Logs and temp files
+*.log
+.DS_Store
+
+# Documentation (keep README.md, exclude others)
+CONTRIBUTING.md
+SUPPORT.md
+CHANGELOG.md
