@@ -7,6 +7,46 @@ import type { Cookies } from '@sveltejs/kit';
 import type { ThemeMode, ThemeScheme } from '../core/types';
 import type { ThemeConfig } from '../core/config';
 
+/** Valid theme mode values for validation */
+const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'system'];
+
+/**
+ * Validates and sanitizes a theme mode value.
+ * Returns the value if valid, otherwise returns the default.
+ */
+function validateThemeMode(value: string | undefined, defaultValue: ThemeMode): ThemeMode {
+    if (value && VALID_THEME_MODES.includes(value as ThemeMode)) {
+        return value as ThemeMode;
+    }
+    return defaultValue;
+}
+
+/**
+ * Validates and sanitizes a theme scheme value.
+ * Only allows alphanumeric characters, hyphens, and underscores.
+ * Returns the value if valid, otherwise returns the default.
+ */
+function validateThemeScheme(
+    value: string | undefined,
+    validSchemes: string[],
+    defaultValue: ThemeScheme
+): ThemeScheme {
+    if (!value) return defaultValue;
+
+    // Only allow safe characters: alphanumeric, hyphen, underscore
+    const safePattern = /^[a-zA-Z0-9_-]+$/;
+    if (!safePattern.test(value)) {
+        return defaultValue;
+    }
+
+    // Check if it's a known scheme
+    if (validSchemes.includes(value)) {
+        return value as ThemeScheme;
+    }
+
+    return defaultValue;
+}
+
 /**
  * Loads theme preferences from cookies on the server side.
  *
@@ -39,13 +79,16 @@ export function loadThemePreferences(
     cookies: Cookies,
     config: ThemeConfig
 ): { theme: ThemeMode; themeScheme: ThemeScheme } {
+    const validSchemes = Object.keys(config.schemes);
+    const defaultScheme = (validSchemes[0] || 'default') as ThemeScheme;
+
     const defaults = {
-        theme: 'system',
-        themeScheme: Object.keys(config.schemes)[0] || 'default',
+        theme: 'system' as ThemeMode,
+        themeScheme: defaultScheme,
     };
 
     return {
-        theme: (cookies.get('theme') as ThemeMode) || defaults.theme,
-        themeScheme: (cookies.get('themeScheme') as ThemeScheme) || defaults.themeScheme,
+        theme: validateThemeMode(cookies.get('theme'), defaults.theme),
+        themeScheme: validateThemeScheme(cookies.get('themeScheme'), validSchemes, defaults.themeScheme),
     };
 }

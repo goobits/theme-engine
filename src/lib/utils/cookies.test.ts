@@ -173,11 +173,10 @@ describe('readPreferenceCookies', () => {
             mockDocumentCookie('theme=dark;  themeScheme=default;   language=en');
             const result = readPreferenceCookies();
 
-            // Note: Extra spaces after semicolons cause empty keys in split
-            // The implementation splits by '; ' so extra spaces create issues
+            // Keys are now trimmed to handle extra whitespace gracefully
             expect(result.theme).toBe('dark');
-            // themeScheme key would have a leading space, so it won't match
-            expect(result.language).toBeUndefined();
+            expect(result.themeScheme).toBe('default');
+            expect(result.language).toBe('en');
         });
 
         it('should handle partial preference cookies', () => {
@@ -227,11 +226,12 @@ describe('readPreferenceCookies', () => {
             expect(result.language).toBe('en');
         });
 
-        it('should handle showSidebar with non-boolean string as false', () => {
+        it('should handle showSidebar with truthy string values', () => {
+            // 'yes' is now accepted as a truthy value along with 'true' and '1'
             mockDocumentCookie('showSidebar=yes');
             const result = readPreferenceCookies();
 
-            expect(result.showSidebar).toBe(false);
+            expect(result.showSidebar).toBe(true);
         });
 
         it('should handle single cookie without semicolon', () => {
@@ -258,10 +258,11 @@ describe('readPreferenceCookies', () => {
         });
 
         it('should handle URL-encoded values', () => {
+            // URL-encoded values are now properly decoded
             mockDocumentCookie('language=en%2DUS');
             const result = readPreferenceCookies();
 
-            expect(result.language).toBe('en%2DUS');
+            expect(result.language).toBe('en-US');
         });
 
         it('should return empty object for malformed cookie string', () => {

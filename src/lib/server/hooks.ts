@@ -4,6 +4,19 @@ import { resolveTheme } from '../core/constants';
 import type { ThemeConfig } from '../core/config';
 
 /**
+ * Escapes special HTML characters to prevent XSS attacks.
+ * Used to sanitize theme values before injection into HTML.
+ */
+function escapeHtml(str: string): string {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+}
+
+/**
  * Create server-side theme hooks for SvelteKit integration.
  *
  * This function generates a SvelteKit Handle that manages theme application on the server side.
@@ -52,7 +65,11 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
 
         const response = await resolve(event, {
             transformPageChunk: ({ html }) => {
-                let themeClasses = `theme-${preferences.theme} scheme-${preferences.themeScheme}`;
+                // Sanitize theme values before injection to prevent XSS
+                const safeTheme = escapeHtml(preferences.theme);
+                const safeScheme = escapeHtml(preferences.themeScheme);
+
+                let themeClasses = `theme-${safeTheme} scheme-${safeScheme}`;
 
                 // Detect dark mode preference for system theme
                 let prefersDark = false;
@@ -74,9 +91,10 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
 
                 // Inject data-theme attribute into <html> tag
                 // This adds data-theme="light" or data-theme="dark" based on resolved theme
+                const safeResolved = escapeHtml(resolved);
                 result = result.replace(
-                    /<html([^>]*?)>/,
-                    `<html$1 data-theme="${resolved}">`
+                    /<html([\s\S]*?)>/i,
+                    `<html$1 data-theme="${safeResolved}">`
                 );
 
                 return result;

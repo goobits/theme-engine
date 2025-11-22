@@ -76,7 +76,10 @@ export function getRouteTheme(
     // Check for wildcard matches
     for (const [routePattern, config] of Object.entries(routeThemes)) {
         if (routePattern.includes('*')) {
-            const pattern = routePattern.replace(/\*/g, '.*');
+            // Escape regex special characters before replacing wildcards
+            // This prevents regex injection from route patterns
+            const escaped = routePattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+            const pattern = escaped.replace(/\*/g, '.*');
             const regex = new RegExp(`^${pattern}$`);
             if (regex.test(pathname)) {
                 return config;

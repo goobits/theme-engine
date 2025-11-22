@@ -10,6 +10,9 @@ import { logger } from '../utils/logger';
 import { THEME_TRANSITION_DURATION_MS, resolveTheme } from './constants';
 import type { ThemeScheme, SchemeConfig, FullTheme } from './types';
 
+// Track the transition timeout to cancel it on rapid theme changes
+let transitionTimeoutId: ReturnType<typeof setTimeout> | undefined;
+
 // Available theme schemes
 export const THEME_SCHEMES: Record<ThemeScheme, SchemeConfig> = {
     default: {
@@ -154,9 +157,15 @@ export function applyFullTheme(fullTheme: FullTheme): void {
     // Set data-theme attribute to resolved value (always "light" or "dark", never "system")
     html.dataset.theme = resolvedTheme;
 
+    // Cancel any pending transition timeout to prevent race conditions
+    if (transitionTimeoutId !== undefined) {
+        clearTimeout(transitionTimeoutId);
+    }
+
     // Re-enable transitions after a brief delay
-    setTimeout(() => {
+    transitionTimeoutId = setTimeout(() => {
         html.classList.remove('theme-switching');
+        transitionTimeoutId = undefined;
     }, THEME_TRANSITION_DURATION_MS);
 
     // Enhanced debugging for theme application
