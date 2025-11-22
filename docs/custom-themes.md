@@ -624,4 +624,4 @@ Create a preview component to test colors:
 
 ---
 
-📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)
+[Changelog](../CHANGELOG.md) | [Documentation Home](./README.md)

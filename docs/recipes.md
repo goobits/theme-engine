@@ -10,6 +10,7 @@ Quick reference patterns for common tasks with @goobits/themes.
 - [Custom Components](#custom-components)
 - [Styling Patterns](#styling-patterns)
 - [Performance](#performance)
+- [Migration Patterns](#migration-patterns)
 
 ---
 
@@ -522,6 +523,93 @@ function getThemeStyles(mode: ThemeMode, scheme: ThemeScheme) {
 
 ---
 
+## Migration Patterns
+
+### From Other Theme Libraries
+
+When migrating from other theme libraries, follow these patterns:
+
+**Replace context-based theming:**
+
+```svelte
+<!-- Before: Custom context -->
+<script>
+    import { getContext } from 'svelte';
+    const theme = getContext('theme');
+</script>
+
+<!-- After: @goobits/themes -->
+<script>
+    import { useTheme } from '@goobits/themes/svelte';
+    const theme = useTheme();
+</script>
+```
+
+**Replace manual class toggling:**
+
+```svelte
+<!-- Before: Manual DOM manipulation -->
+<script>
+    function toggleDark() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', 'dark');
+    }
+</script>
+
+<!-- After: Theme store -->
+<script>
+    import { useTheme } from '@goobits/themes/svelte';
+    const theme = useTheme();
+</script>
+
+<button onclick={() => theme.cycleMode()}>Toggle</button>
+```
+
+**Replace CSS media queries only:**
+
+```css
+/* Before: Media query only (no user preference) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #000;
+    }
+}
+
+/* After: Use CSS classes for user control */
+html.theme-dark,
+html.theme-system-dark {
+    --bg: #000;
+}
+```
+
+### From svelte-themer
+
+```svelte
+<!-- Before: svelte-themer -->
+<script>
+    import { theme } from 'svelte-themer';
+</script>
+
+<!-- After: @goobits/themes -->
+<script>
+    import { useTheme } from '@goobits/themes/svelte';
+    const theme = useTheme();
+</script>
+```
+
+### From theme-change
+
+```typescript
+// Before: theme-change
+import { themeChange } from 'theme-change';
+themeChange();
+
+// After: @goobits/themes (handled by ThemeProvider)
+// Just wrap your app with ThemeProvider - no manual initialization needed
+```
+
+---
+
 ## See Also
 
 **Related guides:**
@@ -532,4 +620,4 @@ function getThemeStyles(mode: ThemeMode, scheme: ThemeScheme) {
 
 ---
 
-📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)
+[Changelog](../CHANGELOG.md) | [Documentation Home](./README.md)

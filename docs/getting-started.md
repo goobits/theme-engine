@@ -100,7 +100,7 @@ export const themeConfig = {
 };
 ```
 
-> **Tip:** Check out the [interactive demo](https://github.com/goobits/theme-engine/tree/main/demo) to see these features in action with tabs and visual enhancements!
+> **Tip:** Check out the [interactive demo](https://github.com/goobits/goobits-themes/tree/main/demo) to see these features in action with tabs and visual enhancements!
 
 ### Step 2: Add Server-Side Rendering Support
 
@@ -284,4 +284,4 @@ console.log(document.documentElement.className);
 
 ---
 
-📋 [Changelog](https://github.com/goobits/theme-engine/blob/main/CHANGELOG.md) | 🏠 [Documentation Home](./README.md) | 🎨 [Interactive Demo](https://github.com/goobits/theme-engine/tree/main/demo)
+[Changelog](../CHANGELOG.md) | [Documentation Home](./README.md)
