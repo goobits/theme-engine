@@ -137,6 +137,7 @@
         "access": "public"
     },
     "dependencies": {
-        "@lucide/svelte": "^0.553.0"
+        "@lucide/svelte": "^0.553.0",
+        "esm-env": "^1.2.2"
     }
 }

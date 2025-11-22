@@ -15,11 +15,7 @@
  * ```
  */
 
-// Check if we're in development mode
-// Falls back to true if import.meta is not available
-const isDev = typeof import.meta !== 'undefined'
-    ? (import.meta as { env?: { DEV?: boolean } }).env?.DEV !== false
-    : true;
+import { DEV } from 'esm-env';
 
 // No-op function for suppressed logs
 const noop = () => {};
@@ -30,14 +26,14 @@ export const logger = {
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-    info: isDev ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
+    info: DEV ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
     /**
      * Log debug messages.
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-    debug: isDev ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
+    debug: DEV ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
     /**
      * Log warning messages.
