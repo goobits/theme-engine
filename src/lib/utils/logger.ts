@@ -30,26 +30,26 @@ export const logger = {
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-    info: isDev ? (...args: any[]) => console.log('[svelte-themes]', ...args) : noop,
+    info: isDev ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
     /**
      * Log debug messages.
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-    debug: isDev ? (...args: any[]) => console.log('[svelte-themes]', ...args) : noop,
+    debug: isDev ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
     /**
      * Log warning messages.
      * Always logs (warnings are important in production).
      * @param args - Arguments to log (forwarded to console.warn)
      */
-    warn: (...args: any[]) => console.warn('[svelte-themes]', ...args),
+    warn: (...args: unknown[]) => console.warn('[svelte-themes]', ...args),
 
     /**
      * Log error messages.
      * Always logs (errors are critical in production).
      * @param args - Arguments to log (forwarded to console.error)
      */
-    error: (...args: any[]) => console.error('[svelte-themes]', ...args),
+    error: (...args: unknown[]) => console.error('[svelte-themes]', ...args),
 };
