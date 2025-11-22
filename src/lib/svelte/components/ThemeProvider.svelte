@@ -1,3 +1,24 @@
+<!--
+  @component ThemeProvider
+
+  Root provider component for the theme system.
+
+  Wraps your application to provide theme context to all child components.
+  Handles theme initialization, route-based theme switching, and creates
+  the reactive theme store accessible via useTheme().
+
+  @prop {ThemeConfig} config - Theme configuration with schemes and route themes
+  @prop {Object} serverPreferences - Server-loaded preferences from cookies
+  @prop {ThemeMode} serverPreferences.theme - Initial theme mode
+  @prop {ThemeScheme} serverPreferences.themeScheme - Initial color scheme
+
+  @example
+  ```svelte
+  <ThemeProvider {config} serverPreferences={data.preferences}>
+    <slot />
+  </ThemeProvider>
+  ```
+-->
 <script lang="ts">
     import { onMount, setContext } from 'svelte';
     import { page } from '$app/stores';

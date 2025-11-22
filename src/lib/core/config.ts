@@ -1,9 +1,46 @@
+/**
+ * Theme Configuration Module
+ *
+ * Provides configuration validation and creation utilities for the theme engine.
+ * Use {@link createThemeConfig} to define your application's theme schemes.
+ *
+ * @module config
+ */
+
 import type { SchemeConfig } from './types';
 import type { RouteThemeConfig } from '../utils/route-themes';
 import { logger } from '../utils/logger';
 
+/**
+ * Root configuration object for the theme engine.
+ *
+ * Defines available color schemes and optional route-based theme overrides.
+ * Pass this configuration to {@link createThemeConfig} for validation.
+ *
+ * @example
+ * ```typescript
+ * const config: ThemeConfig = {
+ *   schemes: {
+ *     default: {
+ *       name: 'default',
+ *       displayName: 'Default',
+ *       description: 'Clean design',
+ *       preview: { primary: '#007aff', accent: '#5856d6', background: '#fff' }
+ *     }
+ *   },
+ *   routeThemes: {
+ *     '/admin/*': {
+ *       theme: { base: 'dark', scheme: 'default' },
+ *       override: true
+ *     }
+ *   }
+ * };
+ * ```
+ */
 export interface ThemeConfig {
+    /** Available color schemes keyed by scheme identifier */
     schemes: Record<string, SchemeConfig>;
+    /** Optional route-specific theme configurations */
     routeThemes?: Record<string, RouteThemeConfig>;
 }
 

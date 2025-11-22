@@ -1,4 +1,24 @@
-<!-- packages/svelte-themes/src/svelte/components/ThemeToggle.svelte -->
+<!--
+  @component ThemeToggle
+
+  Accessible button that cycles through theme modes.
+
+  Displays an icon (Sun/Moon/Monitor) representing the current theme mode
+  and cycles through light → dark → system on each click. Includes full
+  ARIA support with live region announcements for screen readers.
+
+  Must be used within a ThemeProvider component.
+
+  @example
+  ```svelte
+  <ThemeToggle />
+  ```
+
+  @accessibility
+  - Uses aria-label for the next theme mode
+  - Announces theme changes to screen readers via live region
+  - Supports keyboard navigation (Enter/Space to activate)
+-->
 <script lang="ts">
     import { Sun, Moon, Monitor } from '@lucide/svelte';
     import { useTheme } from '../hooks/useTheme.svelte';
