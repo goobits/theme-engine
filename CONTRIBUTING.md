@@ -7,7 +7,7 @@ Thank you for considering contributing to @goobits/themes!
 ### Prerequisites
 
 - Node.js 18.0.0 or higher
-- Bun (recommended) or npm
+- pnpm (recommended) or npm
 - Git
 
 ### Getting Started
@@ -22,21 +22,19 @@ cd goobits-themes
 2. **Install dependencies**:
 
 ```bash
-bun install
-# or
-npm install
+pnpm install
 ```
 
 3. **Build the package**:
 
 ```bash
-bun run build
+pnpm run build
 ```
 
 4. **Run tests**:
 
 ```bash
-bun run test
+pnpm run test
 ```
 
 ## Project Structure
@@ -118,7 +116,7 @@ Test your changes:
 1. Build the package:
 
 ```bash
-bun run build
+pnpm run build
 ```
 
 2. Link locally:
@@ -160,7 +158,7 @@ test('theme store initializes with correct defaults', () => {
 Run tests:
 
 ```bash
-bun run test
+pnpm run test
 ```
 
 ## Documentation

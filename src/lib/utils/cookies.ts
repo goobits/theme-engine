@@ -59,14 +59,27 @@ export function readPreferenceCookies(): Partial<UserPreferences> {
 
     const cookies = document.cookie.split('; ');
     for (const cookie of cookies) {
-        const [key, value] = cookie.split('=');
+        // Handle values containing '=' by only splitting on first '='
+        const eqIndex = cookie.indexOf('=');
+        if (eqIndex === -1) continue;
+
+        const key = cookie.substring(0, eqIndex).trim();
+        // Decode URL-encoded values and get everything after the first '='
+        let value: string;
+        try {
+            value = decodeURIComponent(cookie.substring(eqIndex + 1));
+        } catch {
+            // If decoding fails, use the raw value
+            value = cookie.substring(eqIndex + 1);
+        }
+
         if (key === 'theme') preferences.theme = value as UserPreferences['theme'];
         if (key === 'themeScheme')
             preferences.themeScheme = value as UserPreferences['themeScheme'];
         if (key === 'language') preferences.language = value;
         if (key === 'languageTheme')
             preferences.languageTheme = value as UserPreferences['languageTheme'];
-        if (key === 'showSidebar') preferences.showSidebar = value === 'true';
+        if (key === 'showSidebar') preferences.showSidebar = ['true', '1', 'yes'].includes(value?.toLowerCase());
     }
 
     return preferences;

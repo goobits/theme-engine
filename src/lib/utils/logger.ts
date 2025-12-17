@@ -2,8 +2,8 @@
  * Simple logging utility for the theme engine.
  *
  * Provides consistent log formatting with a '[svelte-themes]' prefix
- * for easy identification in console output. All methods forward to
- * native console methods.
+ * for easy identification in console output. Debug and info logs are
+ * suppressed in production builds to reduce console noise.
  *
  * @example
  * ```typescript
@@ -14,28 +14,38 @@
  * logger.error('Failed to save theme', error);
  * ```
  */
+
+import { DEV } from 'esm-env';
+
+// No-op function for suppressed logs
+const noop = () => {};
+
 export const logger = {
     /**
      * Log informational messages.
+     * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-    info: (...args: any[]) => console.log('[svelte-themes]', ...args),
+    info: DEV ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
     /**
      * Log debug messages.
+     * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-    debug: (...args: any[]) => console.log('[svelte-themes]', ...args),
+    debug: DEV ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
     /**
      * Log warning messages.
+     * Always logs (warnings are important in production).
      * @param args - Arguments to log (forwarded to console.warn)
      */
-    warn: (...args: any[]) => console.warn('[svelte-themes]', ...args),
+    warn: (...args: unknown[]) => console.warn('[svelte-themes]', ...args),
 
     /**
      * Log error messages.
+     * Always logs (errors are critical in production).
      * @param args - Arguments to log (forwarded to console.error)
      */
-    error: (...args: any[]) => console.error('[svelte-themes]', ...args),
+    error: (...args: unknown[]) => console.error('[svelte-themes]', ...args),
 };

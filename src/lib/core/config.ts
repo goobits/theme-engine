@@ -1,9 +1,47 @@
+/**
+ * Theme Configuration Module
+ *
+ * Provides configuration validation and creation utilities for the theme engine.
+ * Use {@link createThemeConfig} to define your application's theme schemes.
+ *
+ * @module config
+ */
+
+import { DEV } from 'esm-env';
 import type { SchemeConfig } from './types';
 import type { RouteThemeConfig } from '../utils/route-themes';
 import { logger } from '../utils/logger';
 
+/**
+ * Root configuration object for the theme engine.
+ *
+ * Defines available color schemes and optional route-based theme overrides.
+ * Pass this configuration to {@link createThemeConfig} for validation.
+ *
+ * @example
+ * ```typescript
+ * const config: ThemeConfig = {
+ *   schemes: {
+ *     default: {
+ *       name: 'default',
+ *       displayName: 'Default',
+ *       description: 'Clean design',
+ *       preview: { primary: '#007aff', accent: '#5856d6', background: '#fff' }
+ *     }
+ *   },
+ *   routeThemes: {
+ *     '/admin/*': {
+ *       theme: { base: 'dark', scheme: 'default' },
+ *       override: true
+ *     }
+ *   }
+ * };
+ * ```
+ */
 export interface ThemeConfig {
+    /** Available color schemes keyed by scheme identifier */
     schemes: Record<string, SchemeConfig>;
+    /** Optional route-specific theme configurations */
     routeThemes?: Record<string, RouteThemeConfig>;
 }
 
@@ -18,13 +56,8 @@ function isValidHexColor(color: string): boolean {
  * Validates theme configuration in development mode
  */
 function validateConfig(config: ThemeConfig): void {
-    // Skip validation in production for performance (dev mode only)
-    // Using import.meta.env for Vite compatibility
-    const isDev = typeof import.meta !== 'undefined'
-        ? import.meta.env?.DEV !== false
-        : true; // Default to running validation
-
-    if (!isDev) {
+    // Skip validation in production for performance
+    if (!DEV) {
         return;
     }
 
@@ -164,7 +197,7 @@ function validateConfig(config: ThemeConfig): void {
  * - Examples: `#3b82f6` ✅ | `#fff` ❌ | `#FFFFFF` ✅
  *
  * **Validation Behavior:**
- * - Validation runs only in development mode (detected via `import.meta.env.DEV`)
+ * - Validation runs only in development mode (detected via esm-env)
  * - In production builds, validation is skipped for performance
  * - Invalid configurations log warnings but do not throw errors
  */

@@ -388,16 +388,18 @@ describe('loadThemePreferences', () => {
 
     describe('edge cases', () => {
         it('should handle special characters in cookie values', () => {
+            // Invalid theme values are rejected and fall back to defaults
             const cookies = createMockCookies({
-                theme: 'dark-mode',
-                themeScheme: 'scheme_custom',
+                theme: 'dark-mode', // Invalid - will fall back to 'system'
+                themeScheme: 'scheme_custom', // Not in allowed list - will fall back to 'default'
             });
             const config = createMockConfig(['default']);
 
             const result = loadThemePreferences(cookies, config);
 
-            expect(result.theme).toBe('dark-mode');
-            expect(result.themeScheme).toBe('scheme_custom');
+            // Security fix: invalid values are rejected, falling back to safe defaults
+            expect(result.theme).toBe('system');
+            expect(result.themeScheme).toBe('default');
         });
 
         it('should handle config with special scheme names', () => {

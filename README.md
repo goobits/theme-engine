@@ -95,7 +95,7 @@ You can target themes using either approach:
 
 ## Documentation
 
-**[📚 Documentation Home](./docs/README.md)** | **[🚀 Getting Started](./docs/getting-started.md)**
+**[Documentation](./docs/README.md)** | **[Getting Started](./docs/getting-started.md)**
 
 | Guide                                        | Description                               |
 | -------------------------------------------- | ----------------------------------------- |

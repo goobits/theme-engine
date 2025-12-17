@@ -455,4 +455,4 @@ const current = getCurrentScheme();
 
 ---
 
-📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)
+[Changelog](../CHANGELOG.md) | [Documentation Home](./README.md)

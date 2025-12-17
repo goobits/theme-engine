@@ -6,16 +6,16 @@ Common issues and solutions when using @goobits/themes.
 
 Jump directly to your issue:
 
-- **💥 White flash on page load** → [Theme Flashes](#theme-flashes-on-page-load-fouc)
-- **🔴 TypeScript errors** → [TypeScript Errors](#typescript-errors-on-import)
-- **📦 Module not found** → [Module Import Errors](#module-import-errors)
-- **🎨 No theme styles** → [CSS Not Loading](#css-not-loading)
-- **🔄 Theme toggle not working** → [Theme Not Switching](#theme-not-switching)
-- **🌓 System theme not detected** → [System Theme Not Detecting](#system-theme-not-detecting)
-- **🍪 Settings don't persist** → [Cookies Not Persisting](#cookies-not-persisting)
-- **🎨 Custom colors not applying** → [Custom Scheme Not Applying](#custom-scheme-not-applying)
-- **💡 Hover effects missing** → [Hover Effects Not Working](#hover-effects-not-working)
-- **⚡ Slow theme switching** → [Slow Theme Switching](#slow-theme-switching)
+- **White flash on page load** → [Theme Flashes](#theme-flashes-on-page-load-fouc)
+- **TypeScript errors** → [TypeScript Errors](#typescript-errors-on-import)
+- **Module not found** → [Module Import Errors](#module-import-errors)
+- **No theme styles** → [CSS Not Loading](#css-not-loading)
+- **Theme toggle not working** → [Theme Not Switching](#theme-not-switching)
+- **System theme not detected** → [System Theme Not Detecting](#system-theme-not-detecting)
+- **Settings don't persist** → [Cookies Not Persisting](#cookies-not-persisting)
+- **Custom colors not applying** → [Custom Scheme Not Applying](#custom-scheme-not-applying)
+- **Hover effects missing** → [Hover Effects Not Working](#hover-effects-not-working)
+- **Slow theme switching** → [Slow Theme Switching](#slow-theme-switching)
 
 ## Quick Diagnostic Checklist
 
@@ -696,4 +696,4 @@ See [SUPPORT.md](../SUPPORT.md) for detailed guidelines on asking for help.
 
 ---
 
-📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)
+[Changelog](../CHANGELOG.md) | [Documentation Home](./README.md)

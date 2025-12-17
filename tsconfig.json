@@ -14,6 +14,6 @@
         "lib": ["es2020", "DOM", "DOM.Iterable"],
         "module": "esnext"
     },
-    "include": ["*.ts", "core/**/*", "svelte/**/*", "server/**/*", "utils/**/*"],
-    "exclude": ["node_modules", "dist", ".svelte-kit"]
+    "include": ["*.ts", "src/**/*", "core/**/*", "svelte/**/*", "server/**/*", "utils/**/*"],
+    "exclude": ["node_modules", "dist", ".svelte-kit", "demo"]
 }

@@ -273,6 +273,39 @@ Use Svelte 5's `$derived` for reactive computations:
 
 ---
 
+## ThemeSync (Deprecated)
+
+> **Deprecated:** This component is deprecated as of v1.2.0 and will be removed in v2.0.0.
+
+Utility component that synchronizes the `data-theme` attribute on the `<html>` element.
+
+### Migration
+
+Remove `<ThemeSync />` from your code. ThemeProvider now handles this automatically:
+
+```svelte
+<!-- Before (v1.1.x) -->
+<ThemeProvider {config} {serverPreferences}>
+    <ThemeSync />
+    {@render children()}
+</ThemeProvider>
+
+<!-- After (v1.2.0+) -->
+<ThemeProvider {config} {serverPreferences}>
+    {@render children()}
+</ThemeProvider>
+```
+
+### When You Might Still Need This
+
+Only keep this component if you need to:
+- Set `data-theme` on additional DOM elements beyond `<html>`
+- Implement custom theme sync logic
+
+For most applications, remove this component entirely.
+
+---
+
 ## Building Custom Components
 
 Use the `useTheme()` hook to build theme-aware components. See [Recipes](./recipes.md#custom-components) for more examples.
@@ -407,4 +440,4 @@ All built-in components follow accessibility best practices:
 
 ---
 
-📋 [Changelog](../CHANGELOG.md) | 🏠 [Documentation Home](./README.md)
+[Changelog](../CHANGELOG.md) | [Documentation Home](./README.md)
