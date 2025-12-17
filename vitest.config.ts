@@ -1,5 +1,9 @@
 import { defineConfig } from 'vitest/config';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
     plugins: [svelte({ hot: !process.env.VITEST })],
@@ -17,9 +21,9 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '$app/environment': '/home/user/theme-engine/test/mocks/$app-environment.ts',
-            '$app/stores': '/home/user/theme-engine/test/mocks/$app-stores.ts',
-            '@lucide/svelte': '/home/user/theme-engine/test/mocks/@lucide-svelte.ts',
+            '$app/environment': resolve(__dirname, 'test/mocks/$app-environment.ts'),
+            '$app/stores': resolve(__dirname, 'test/mocks/$app-stores.ts'),
+            '@lucide/svelte': resolve(__dirname, 'test/mocks/@lucide-svelte.ts'),
         },
     },
 });
