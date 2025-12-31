@@ -60,12 +60,7 @@
             const currentScheme = themeStore.scheme;
 
             // Apply theme based on current route and user preferences
-            applyRouteTheme(
-                currentPath,
-                currentTheme,
-                currentScheme,
-                config.routeThemes || {}
-            );
+            applyRouteTheme(currentPath, currentTheme, currentScheme, config.routeThemes || {});
         }
     });
 </script>

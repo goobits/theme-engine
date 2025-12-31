@@ -146,9 +146,10 @@ export function applyFullTheme(fullTheme: FullTheme): void {
     }
 
     // Determine the resolved theme for data-theme attribute using shared utility
-    const prefersDark = fullTheme.base === 'system'
-        ? window.matchMedia('(prefers-color-scheme: dark)').matches
-        : false;
+    const prefersDark =
+        fullTheme.base === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+            : false;
     const resolvedTheme = resolveTheme(fullTheme.base, prefersDark);
 
     // Apply scheme
