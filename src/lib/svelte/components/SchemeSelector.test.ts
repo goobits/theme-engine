@@ -7,7 +7,8 @@
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { ThemeStore } from '../stores/theme.svelte';
-import type { ThemeMode, ThemeScheme, SchemeConfig } from '../../core/types';
+import type { ThemeScheme, SchemeConfig } from '../../core/types';
+import { createMockThemeStore } from '../../../../test/test-utils';
 
 // Mock useTheme hook
 let mockThemeStore: ThemeStore;
@@ -17,47 +18,32 @@ vi.mock('../hooks/useTheme.svelte', () => ({
     useTheme: () => useThemeMock(),
 }));
 
-// Helper to create mock ThemeStore with reactive properties
-function createMockThemeStore(
-    theme: ThemeMode = 'system',
-    scheme: ThemeScheme = 'default',
-    customSchemes?: SchemeConfig[]
-): ThemeStore {
-    return {
-        subscribe: vi.fn(),
-        settings: { theme, themeScheme: scheme },
-        theme,
-        scheme,
-        availableSchemes: customSchemes || [
-            {
-                name: 'default',
-                displayName: 'Default',
-                description: 'Default theme',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-            {
-                name: 'spells',
-                displayName: 'Spells',
-                description: 'Spells theme',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-            {
-                name: 'brand',
-                displayName: 'Brand',
-                description: 'Brand theme',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-        ],
-        setTheme: vi.fn(),
-        setScheme: vi.fn(),
-        cycleMode: vi.fn(),
-    };
-}
+// Default schemes with 'brand' for tests that need it
+const defaultSchemesWithBrand: SchemeConfig[] = [
+    {
+        name: 'default',
+        displayName: 'Default',
+        description: 'Default theme',
+        preview: { primary: '#000', accent: '#fff', background: '#fff' },
+    },
+    {
+        name: 'spells',
+        displayName: 'Spells',
+        description: 'Spells theme',
+        preview: { primary: '#000', accent: '#fff', background: '#fff' },
+    },
+    {
+        name: 'brand',
+        displayName: 'Brand',
+        description: 'Brand theme',
+        preview: { primary: '#000', accent: '#fff', background: '#fff' },
+    },
+];
 
 describe('SchemeSelector', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockThemeStore = createMockThemeStore();
+        mockThemeStore = createMockThemeStore({});
         useThemeMock.mockReturnValue(mockThemeStore);
     });
 
@@ -67,7 +53,7 @@ describe('SchemeSelector', () => {
 
     describe('component initialization', () => {
         it('should initialize with default scheme', () => {
-            const store = createMockThemeStore('system', 'default');
+            const store = createMockThemeStore({ theme: 'system', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             expect(store.scheme).toBe('default');
@@ -75,7 +61,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should initialize with custom scheme', () => {
-            const store = createMockThemeStore('light', 'spells');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'spells' });
             useThemeMock.mockReturnValue(store);
 
             expect(store.scheme).toBe('spells');
@@ -85,14 +71,14 @@ describe('SchemeSelector', () => {
 
     describe('scheme selection', () => {
         it('should display current scheme as selected value', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             expect(store.scheme).toBe('default');
         });
 
         it('should call setScheme when selection changes', () => {
-            const store = createMockThemeStore('system', 'default');
+            const store = createMockThemeStore({ theme: 'system', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             // Simulate selecting a different scheme
@@ -103,7 +89,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle multiple scheme changes', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             store.setScheme('spells');
@@ -117,7 +103,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should not throw error when changing to same scheme', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             // Select the same scheme that's already selected
@@ -128,7 +114,11 @@ describe('SchemeSelector', () => {
 
     describe('available schemes rendering', () => {
         it('should render all available schemes as options', () => {
-            const store = createMockThemeStore('system', 'default');
+            const store = createMockThemeStore({
+                theme: 'system',
+                scheme: 'default',
+                availableSchemes: defaultSchemesWithBrand,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes).toHaveLength(3);
@@ -136,7 +126,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should include scheme displayName for each option', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             store.availableSchemes.forEach(scheme => {
@@ -168,7 +158,11 @@ describe('SchemeSelector', () => {
                     preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
-            const store = createMockThemeStore('dark', 'minimal' as ThemeScheme, customSchemes);
+            const store = createMockThemeStore({
+                theme: 'dark',
+                scheme: 'minimal' as ThemeScheme,
+                availableSchemes: customSchemes,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes).toHaveLength(3);
@@ -180,14 +174,14 @@ describe('SchemeSelector', () => {
 
     describe('reactive behavior', () => {
         it('should derive currentScheme from theme.scheme', () => {
-            const store = createMockThemeStore('dark', 'spells');
+            const store = createMockThemeStore({ theme: 'dark', scheme: 'spells' });
             useThemeMock.mockReturnValue(store);
 
             expect(store.scheme).toBe('spells');
         });
 
         it('should update when scheme changes in store', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             // Simulate scheme change
@@ -199,7 +193,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should maintain consistency between scheme and settings', () => {
-            const store = createMockThemeStore('dark', 'spells');
+            const store = createMockThemeStore({ theme: 'dark', scheme: 'spells' });
             useThemeMock.mockReturnValue(store);
 
             expect(store.scheme).toBe(store.settings.themeScheme);
@@ -208,7 +202,7 @@ describe('SchemeSelector', () => {
 
     describe('integration with different theme modes', () => {
         it('should work with light theme mode', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             expect(store.theme).toBe('light');
@@ -216,7 +210,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should work with system theme mode', () => {
-            const store = createMockThemeStore('system', 'brand' as ThemeScheme);
+            const store = createMockThemeStore({ theme: 'system', scheme: 'brand' as ThemeScheme });
             useThemeMock.mockReturnValue(store);
 
             expect(store.theme).toBe('system');
@@ -226,7 +220,11 @@ describe('SchemeSelector', () => {
 
     describe('edge cases', () => {
         it('should handle empty availableSchemes array', () => {
-            const store = createMockThemeStore('system', 'default', []);
+            const store = createMockThemeStore({
+                theme: 'system',
+                scheme: 'default',
+                availableSchemes: [],
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes).toEqual([]);
@@ -242,7 +240,11 @@ describe('SchemeSelector', () => {
                     preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
-            const store = createMockThemeStore('light', 'default', singleScheme);
+            const store = createMockThemeStore({
+                theme: 'light',
+                scheme: 'default',
+                availableSchemes: singleScheme,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes).toHaveLength(1);
@@ -256,7 +258,11 @@ describe('SchemeSelector', () => {
                 description: '',
                 preview: { primary: '#000', accent: '#fff', background: '#fff' },
             }));
-            const store = createMockThemeStore('dark', 'scheme0' as ThemeScheme, manySchemes);
+            const store = createMockThemeStore({
+                theme: 'dark',
+                scheme: 'scheme0' as ThemeScheme,
+                availableSchemes: manySchemes,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes).toHaveLength(10);
@@ -283,11 +289,11 @@ describe('SchemeSelector', () => {
                     preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
-            const store = createMockThemeStore(
-                'system',
-                'scheme-with-dashes' as ThemeScheme,
-                specialSchemes
-            );
+            const store = createMockThemeStore({
+                theme: 'system',
+                scheme: 'scheme-with-dashes' as ThemeScheme,
+                availableSchemes: specialSchemes,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes).toHaveLength(3);
@@ -303,7 +309,11 @@ describe('SchemeSelector', () => {
                     preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
-            const store = createMockThemeStore('light', 'long' as ThemeScheme, longNameSchemes);
+            const store = createMockThemeStore({
+                theme: 'light',
+                scheme: 'long' as ThemeScheme,
+                availableSchemes: longNameSchemes,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes[0].displayName).toBe(
@@ -326,7 +336,11 @@ describe('SchemeSelector', () => {
                     preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
-            const store = createMockThemeStore('dark', 'brand' as ThemeScheme, limitedSchemes);
+            const store = createMockThemeStore({
+                theme: 'dark',
+                scheme: 'brand' as ThemeScheme,
+                availableSchemes: limitedSchemes,
+            });
             useThemeMock.mockReturnValue(store);
 
             // Current scheme is "brand" but not in availableSchemes
@@ -337,7 +351,7 @@ describe('SchemeSelector', () => {
 
     describe('scheme change event handling', () => {
         it('should call setScheme with correct value on change', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             // Simulate change event with new value
@@ -348,7 +362,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should handle rapid scheme changes', () => {
-            const store = createMockThemeStore('system', 'default');
+            const store = createMockThemeStore({ theme: 'system', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             // Simulate rapid clicking through schemes
@@ -363,7 +377,7 @@ describe('SchemeSelector', () => {
 
     describe('scheme metadata', () => {
         it('should include description in scheme data', () => {
-            const store = createMockThemeStore('dark', 'default');
+            const store = createMockThemeStore({ theme: 'dark', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             const defaultScheme = store.availableSchemes.find(s => s.name === 'default');
@@ -379,11 +393,11 @@ describe('SchemeSelector', () => {
                     preview: { primary: '#000', accent: '#fff', background: '#fff' },
                 },
             ];
-            const store = createMockThemeStore(
-                'light',
-                'minimal' as ThemeScheme,
-                schemesWithoutDesc
-            );
+            const store = createMockThemeStore({
+                theme: 'light',
+                scheme: 'minimal' as ThemeScheme,
+                availableSchemes: schemesWithoutDesc,
+            });
             useThemeMock.mockReturnValue(store);
 
             expect(store.availableSchemes[0].description).toBe('');
@@ -392,14 +406,14 @@ describe('SchemeSelector', () => {
 
     describe('settings synchronization', () => {
         it('should keep settings.themeScheme in sync with scheme', () => {
-            const store = createMockThemeStore('system', 'brand' as ThemeScheme);
+            const store = createMockThemeStore({ theme: 'system', scheme: 'brand' as ThemeScheme });
             useThemeMock.mockReturnValue(store);
 
             expect(store.settings.themeScheme).toBe(store.scheme);
         });
 
         it('should update settings when scheme changes', () => {
-            const store = createMockThemeStore('light', 'default');
+            const store = createMockThemeStore({ theme: 'light', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             // Simulate scheme change
@@ -411,7 +425,7 @@ describe('SchemeSelector', () => {
         });
 
         it('should maintain theme mode when changing scheme', () => {
-            const store = createMockThemeStore('dark', 'default');
+            const store = createMockThemeStore({ theme: 'dark', scheme: 'default' });
             useThemeMock.mockReturnValue(store);
 
             const originalTheme = store.theme;

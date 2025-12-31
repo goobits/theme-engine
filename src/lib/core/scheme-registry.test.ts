@@ -384,7 +384,10 @@ describe('applyFullTheme', () => {
             const theme: FullTheme = { base: 'light', scheme: 'default' };
             applyFullTheme(theme);
 
-            expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), THEME_TRANSITION_DURATION_MS);
+            expect(setTimeoutSpy).toHaveBeenCalledWith(
+                expect.any(Function),
+                THEME_TRANSITION_DURATION_MS
+            );
             expect(mockHtml.dataset.theme).toBe('light');
         });
     });
@@ -603,10 +606,11 @@ describe('edge cases and error conditions', () => {
         vi.unstubAllGlobals();
     });
 
-    it('should throw when documentElement is missing', () => {
+    it('should handle when documentElement is missing gracefully', () => {
         vi.stubGlobal('document', {});
 
-        expect(() => applyThemeScheme('default')).toThrow();
+        // Should not throw, just return early (safer behavior with new utilities)
+        expect(() => applyThemeScheme('default')).not.toThrow();
     });
 
     it('should handle document without classList', () => {

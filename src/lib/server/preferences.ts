@@ -89,6 +89,10 @@ export function loadThemePreferences(
 
     return {
         theme: validateThemeMode(cookies.get('theme'), defaults.theme),
-        themeScheme: validateThemeScheme(cookies.get('themeScheme'), validSchemes, defaults.themeScheme),
+        themeScheme: validateThemeScheme(
+            cookies.get('themeScheme'),
+            validSchemes,
+            defaults.themeScheme
+        ),
     };
 }

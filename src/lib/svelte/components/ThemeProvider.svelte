@@ -20,9 +20,9 @@
   ```
 -->
 <script lang="ts">
-    import { onMount, setContext } from 'svelte';
+    import { onMount, setContext, untrack } from 'svelte';
     import { page } from '$app/stores';
-    import { browser } from '$app/environment';
+    import { isBrowser } from '../../utils/browser';
     import { createThemeStore } from '../stores/theme.svelte';
     import { initializeTheme, applyRouteTheme } from '../../core/theme-manager';
     import type { ThemeMode, ThemeScheme } from '../../core/types';
@@ -38,7 +38,9 @@
         serverPreferences: { theme: ThemeMode; themeScheme: ThemeScheme };
     } = $props();
 
-    const themeStore = createThemeStore(config);
+    // Use untrack to explicitly capture initial config value - the store is created once
+    // and doesn't need to react to config prop changes during the component's lifetime
+    const themeStore = untrack(() => createThemeStore(config));
     setContext('theme', themeStore);
 
     let initialized = $state(false);
@@ -53,7 +55,7 @@
     // Apply route theme when pathname changes or theme/scheme is changed by user
     // This effect properly tracks all dependencies: pathname, theme, and scheme
     $effect(() => {
-        if (browser && initialized) {
+        if (isBrowser() && initialized) {
             // Access all dependencies at the top level so Svelte tracks them
             const currentPath = $page.url.pathname;
             const currentTheme = themeStore.theme;

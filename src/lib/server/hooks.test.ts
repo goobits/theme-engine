@@ -115,7 +115,9 @@ describe('createThemeHooks', () => {
                 resolve: mockResolve as any,
             });
 
-            expect(result.body).toBe('<html data-theme="dark"><body>No placeholder here</body></html>');
+            expect(result.body).toBe(
+                '<html data-theme="dark"><body>No placeholder here</body></html>'
+            );
         });
 
         it('should handle multiple occurrences of placeholder', async () => {

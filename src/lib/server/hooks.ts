@@ -79,7 +79,8 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
                     );
                     const userAgent = event.request.headers.get('user-agent')?.toLowerCase() || '';
 
-                    prefersDark = prefersColorScheme === 'dark' || userAgent.includes('dark') || false;
+                    prefersDark =
+                        prefersColorScheme === 'dark' || userAgent.includes('dark') || false;
                     themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light';
                 }
 

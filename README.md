@@ -48,11 +48,13 @@ The theme engine automatically manages both CSS classes and attributes on your `
 ### What Gets Applied
 
 **CSS Classes:**
+
 - `.theme-light` | `.theme-dark` | `.theme-system` - User's theme preference
 - `.theme-system-light` | `.theme-system-dark` - Resolved system preference (when using system mode)
 - `.scheme-default` | `.scheme-{name}` - Active color scheme
 
 **Data Attributes:**
+
 - `data-theme="light"` | `data-theme="dark"` - Resolved visual theme (always reflects what's actually shown)
 
 ### Writing Theme Styles
@@ -61,12 +63,12 @@ You can target themes using either approach:
 
 ```css
 /* Option 1: Use data-theme attribute (recommended - more semantic) */
-[data-theme="dark"] {
+[data-theme='dark'] {
     --bg-primary: #000;
     --text-primary: #fff;
 }
 
-[data-theme="light"] {
+[data-theme='light'] {
     --bg-primary: #fff;
     --text-primary: #000;
 }
@@ -82,12 +84,13 @@ You can target themes using either approach:
     --accent-primary: #7c3aed;
 }
 
-[data-theme="dark"].scheme-spells {
+[data-theme='dark'].scheme-spells {
     --accent-glow: #a78bfa;
 }
 ```
 
 **Key behaviors:**
+
 - When theme is set to `system`, `data-theme` reflects the **resolved** value (`"light"` or `"dark"`), not `"system"`
 - Both classes and attributes are set during SSR to prevent flash of unstyled content
 - Route-specific theme changes update automatically on navigation

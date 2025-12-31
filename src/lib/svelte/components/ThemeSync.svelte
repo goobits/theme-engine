@@ -1,6 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { browser } from '$app/environment';
+    import { isBrowser } from '../../utils/browser';
+    import { getHtmlElement } from '../../utils/dom';
+    import { prefersDarkMode, getDarkModeMediaQuery } from '../../utils/system-theme';
     import { useTheme } from '../hooks/useTheme.svelte';
 
     /**
@@ -45,15 +47,15 @@
 
     // Sync data-theme attribute whenever theme changes
     $effect(() => {
-        if (browser && typeof document !== 'undefined') {
-            const html = document.documentElement;
+        if (isBrowser()) {
+            const html = getHtmlElement();
+            if (!html) return;
 
             // Determine resolved theme (always "light" or "dark", never "system")
             let resolvedTheme: 'light' | 'dark';
 
             if (theme.theme === 'system') {
-                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                resolvedTheme = prefersDark ? 'dark' : 'light';
+                resolvedTheme = prefersDarkMode() ? 'dark' : 'light';
             } else {
                 resolvedTheme = theme.theme;
             }
@@ -65,13 +67,15 @@
 
     // Listen for system theme changes when in system mode
     onMount(() => {
-        if (!browser) return;
+        if (!isBrowser()) return;
 
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        const mediaQuery = getDarkModeMediaQuery();
+        if (!mediaQuery) return;
 
         const handleChange = () => {
-            if (theme.theme === 'system' && typeof document !== 'undefined') {
-                const html = document.documentElement;
+            if (theme.theme === 'system') {
+                const html = getHtmlElement();
+                if (!html) return;
                 html.dataset.theme = mediaQuery.matches ? 'dark' : 'light';
             }
         };
