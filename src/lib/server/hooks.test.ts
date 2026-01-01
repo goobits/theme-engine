@@ -34,6 +34,7 @@ function createMockRequestEvent(
             },
         },
         cookies: mockCookies,
+        locals: {} as any,
     } as unknown as RequestEvent;
 }
 
@@ -982,6 +983,148 @@ describe('createThemeHooks', () => {
 
             expect(result.status).toBe(201);
             expect(result.headers.get('X-Custom-Header')).toBe('test-value');
+        });
+    });
+
+    describe('event.locals population', () => {
+        it('should populate event.locals.themePreferences with loaded preferences', async () => {
+            const config = createMockConfig(['default']);
+            const event = createMockRequestEvent();
+
+            vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+                theme: 'light',
+                themeScheme: 'default',
+            });
+
+            const hooks = createThemeHooks(config);
+            const mockResolve = vi.fn(async () => ({
+                status: 200,
+                headers: new Headers(),
+                body: '<html></html>',
+            }));
+
+            await hooks.transform({
+                event,
+                resolve: mockResolve as any,
+            });
+
+            expect((event.locals as any).themePreferences).toEqual({
+                theme: 'light',
+                themeScheme: 'default',
+            });
+        });
+
+        it('should populate event.locals with dark theme preferences', async () => {
+            const config = createMockConfig(['spells']);
+            const event = createMockRequestEvent();
+
+            vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+                theme: 'dark',
+                themeScheme: 'spells',
+            });
+
+            const hooks = createThemeHooks(config);
+            const mockResolve = vi.fn(async () => ({
+                status: 200,
+                headers: new Headers(),
+                body: '<html></html>',
+            }));
+
+            await hooks.transform({
+                event,
+                resolve: mockResolve as any,
+            });
+
+            expect((event.locals as any).themePreferences).toEqual({
+                theme: 'dark',
+                themeScheme: 'spells',
+            });
+        });
+
+        it('should populate event.locals with system theme preferences', async () => {
+            const config = createMockConfig(['default']);
+            const event = createMockRequestEvent();
+
+            vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+                theme: 'system',
+                themeScheme: 'default',
+            });
+
+            const hooks = createThemeHooks(config);
+            const mockResolve = vi.fn(async () => ({
+                status: 200,
+                headers: new Headers(),
+                body: '<html></html>',
+            }));
+
+            await hooks.transform({
+                event,
+                resolve: mockResolve as any,
+            });
+
+            expect((event.locals as any).themePreferences).toEqual({
+                theme: 'system',
+                themeScheme: 'default',
+            });
+        });
+
+        it('should populate event.locals before calling resolve', async () => {
+            const config = createMockConfig(['default']);
+            const event = createMockRequestEvent();
+
+            vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+                theme: 'light',
+                themeScheme: 'default',
+            });
+
+            const hooks = createThemeHooks(config);
+            const mockResolve = vi.fn(async evt => {
+                // Verify that event.locals is populated when resolve is called
+                expect((evt.locals as any).themePreferences).toEqual({
+                    theme: 'light',
+                    themeScheme: 'default',
+                });
+
+                return {
+                    status: 200,
+                    headers: new Headers(),
+                    body: '<html></html>',
+                };
+            });
+
+            await hooks.transform({
+                event,
+                resolve: mockResolve as any,
+            });
+
+            expect(mockResolve).toHaveBeenCalled();
+        });
+
+        it('should populate event.locals with custom scheme', async () => {
+            const config = createMockConfig(['custom-scheme']);
+            const event = createMockRequestEvent();
+
+            vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+                theme: 'light',
+                themeScheme: 'custom-scheme' as ThemeScheme,
+            });
+
+            const hooks = createThemeHooks(config);
+            const mockResolve = vi.fn(async () => ({
+                status: 200,
+                headers: new Headers(),
+                body: '<html></html>',
+            }));
+
+            await hooks.transform({
+                event,
+                resolve: mockResolve as any,
+            });
+
+            expect((event.locals as any).themePreferences).toEqual({
+                theme: 'light',
+                themeScheme: 'custom-scheme',
+            });
         });
     });
 

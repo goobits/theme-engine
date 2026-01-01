@@ -49,6 +49,11 @@ function createMockHtmlElement() {
             contains: vi.fn((token: string) => classes.has(token)),
             toggle: vi.fn(),
             replace: vi.fn(),
+            // Make classList iterable for Array.from()
+            [Symbol.iterator]: () => classes.values(),
+            // Support filtering with filter()
+            filter: (predicate: (value: string) => boolean) =>
+                Array.from(classes).filter(predicate),
             _getClasses: () => Array.from(classes),
             _clear: () => classes.clear(),
         },
@@ -179,9 +184,15 @@ describe('applyThemeScheme', () => {
         });
 
         it('should remove all existing scheme classes before applying new one', () => {
+            // Add some existing scheme classes first
+            mockHtml.classList.add('scheme-default', 'scheme-spells', 'scheme-custom');
+            vi.clearAllMocks();
+
             applyThemeScheme('default');
+            // Should remove all scheme-* classes that were present
             expect(mockHtml.classList.remove).toHaveBeenCalledWith('scheme-default');
             expect(mockHtml.classList.remove).toHaveBeenCalledWith('scheme-spells');
+            expect(mockHtml.classList.remove).toHaveBeenCalledWith('scheme-custom');
         });
 
         it('should handle applying same scheme twice', () => {
@@ -189,14 +200,24 @@ describe('applyThemeScheme', () => {
             vi.clearAllMocks();
 
             applyThemeScheme('default');
-            expect(mockHtml.classList.remove).toHaveBeenCalled();
+            // Should still try to remove existing scheme classes (even if none present)
+            // and add the new scheme class
             expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-default');
         });
 
-        it('should remove exactly the number of schemes defined in THEME_SCHEMES', () => {
-            applyThemeScheme('default');
-            const removeCallCount = mockHtml.classList.remove.mock.calls.length;
-            expect(removeCallCount).toBe(Object.keys(THEME_SCHEMES).length);
+        it('should dynamically remove all scheme-* classes regardless of THEME_SCHEMES', () => {
+            // Add built-in and custom scheme classes
+            mockHtml.classList.add('scheme-default', 'scheme-custom', 'other-class');
+            vi.clearAllMocks();
+
+            applyThemeScheme('spells');
+            // Should remove all scheme-* classes
+            expect(mockHtml.classList.remove).toHaveBeenCalledWith('scheme-default');
+            expect(mockHtml.classList.remove).toHaveBeenCalledWith('scheme-custom');
+            // Should NOT remove non-scheme classes
+            expect(mockHtml.classList.remove).not.toHaveBeenCalledWith('other-class');
+            // Should add the new scheme
+            expect(mockHtml.classList.add).toHaveBeenCalledWith('scheme-spells');
         });
     });
 });

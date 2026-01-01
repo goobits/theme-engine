@@ -107,7 +107,7 @@ export interface ThemeStore {
 export function createThemeStore(config: ThemeConfig): ThemeStore {
     const defaultSettings: ThemeSettings = {
         theme: 'system',
-        themeScheme: (Object.keys(config.schemes)[0] as ThemeScheme) || 'default',
+        themeScheme: Object.keys(config.schemes)[0] || 'default',
     };
 
     let settings = $state<ThemeSettings>(defaultSettings);

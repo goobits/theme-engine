@@ -56,24 +56,35 @@ export function getHtmlElement(): HTMLElement | null {
 }
 
 /**
- * Removes all scheme-related CSS classes from an HTML element.
+ * Removes scheme-related CSS classes from an HTML element.
  *
- * Takes an array of scheme names and removes the corresponding CSS classes
- * (formatted as `scheme-{name}`) from the target element. This is useful for
- * clearing existing scheme classes before applying a new one.
+ * When `schemeNames` is provided, removes only those specific scheme classes.
+ * When `schemeNames` is omitted, removes ALL classes that start with `scheme-`.
+ * This is useful for clearing existing scheme classes before applying a new one.
  *
  * @param element - The HTML element to modify (typically `document.documentElement`)
- * @param schemeNames - Array of scheme identifiers (e.g., `['default', 'spells']`)
- *                      The function will remove classes like `scheme-default`, `scheme-spells`, etc.
+ * @param schemeNames - Optional array of scheme identifiers (e.g., `['default', 'spells']`)
+ *                      If provided, removes classes like `scheme-default`, `scheme-spells`, etc.
+ *                      If omitted, removes ALL `scheme-*` classes from the element.
  *
  * @example
  * ```typescript
  * const html = getHtmlElement();
  * if (html) {
- *   // Remove all scheme classes
+ *   // Remove specific scheme classes
  *   removeSchemeClasses(html, ['default', 'spells', 'ocean']);
  *
  *   // html element no longer has scheme-default, scheme-spells, or scheme-ocean classes
+ * }
+ * ```
+ *
+ * @example
+ * ```typescript
+ * // Remove ALL scheme classes (recommended for extensibility)
+ * const html = getHtmlElement();
+ * if (html) {
+ *   removeSchemeClasses(html); // Removes any scheme-* class
+ *   html.classList.add('scheme-default');
  * }
  * ```
  *
@@ -92,10 +103,18 @@ export function getHtmlElement(): HTMLElement | null {
  * This function modifies the element's classList directly and does not return
  * any value. Classes not present on the element are safely ignored.
  */
-export function removeSchemeClasses(element: HTMLElement, schemeNames: string[]): void {
-    schemeNames.forEach(schemeName => {
-        element.classList.remove(`scheme-${schemeName}`);
-    });
+export function removeSchemeClasses(element: HTMLElement, schemeNames?: string[]): void {
+    if (schemeNames) {
+        // Remove specific schemes
+        schemeNames.forEach(schemeName => {
+            element.classList.remove(`scheme-${schemeName}`);
+        });
+    } else {
+        // Remove ALL scheme-* classes
+        Array.from(element.classList)
+            .filter(cls => cls.startsWith('scheme-'))
+            .forEach(cls => element.classList.remove(cls));
+    }
 }
 
 /**

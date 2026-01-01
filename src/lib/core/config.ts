@@ -14,6 +14,15 @@ import { logger } from '../utils/logger';
 import { isValidHexColor } from '../utils/validation';
 
 /**
+ * Default preview colors for schemes that don't specify their own
+ */
+const DEFAULT_PREVIEW_COLORS = {
+    primary: '#3b82f6',
+    accent: '#8b5cf6',
+    background: '#ffffff',
+} as const;
+
+/**
  * Root configuration object for the theme engine.
  *
  * Defines available color schemes and optional route-based theme overrides.
@@ -47,91 +56,126 @@ export interface ThemeConfig {
 }
 
 /**
- * Validates preview colors for a scheme
+ * Validates and returns preview colors for a scheme, or null if invalid/missing
  */
-function validatePreviewColors(name: string, preview: unknown): void {
+function validatePreviewColors(
+    name: string,
+    preview: unknown
+): { primary: string; accent: string; background: string } | null {
     if (!preview || typeof preview !== 'object') {
-        logger.warn(
-            `[themes] Warning: Scheme "${name}" missing "preview" object. ` +
-                `Add: preview: { primary: "#3b82f6", accent: "#8b5cf6", background: "#ffffff" }`
-        );
-        return;
+        return null;
     }
 
     const colors = preview as Record<string, unknown>;
     const { primary, accent, background } = colors;
 
-    if (primary && typeof primary === 'string' && !isValidHexColor(primary)) {
+    // Check that all colors are strings
+    if (
+        typeof primary !== 'string' ||
+        typeof accent !== 'string' ||
+        typeof background !== 'string'
+    ) {
+        return null;
+    }
+
+    // Validate each color format
+    let hasInvalidColor = false;
+
+    if (!isValidHexColor(primary)) {
         logger.warn(
             `[themes] Warning: Invalid primary color for scheme "${name}": "${primary}". ` +
-                `Expected 6-digit hex format like "#3b82f6"`
+                `Expected 6-digit hex format like "#3b82f6". Using default.`
         );
+        hasInvalidColor = true;
     }
 
-    if (accent && typeof accent === 'string' && !isValidHexColor(accent)) {
+    if (!isValidHexColor(accent)) {
         logger.warn(
             `[themes] Warning: Invalid accent color for scheme "${name}": "${accent}". ` +
-                `Expected 6-digit hex format like "#8b5cf6"`
+                `Expected 6-digit hex format like "#8b5cf6". Using default.`
         );
+        hasInvalidColor = true;
     }
 
-    if (background && typeof background === 'string' && !isValidHexColor(background)) {
+    if (!isValidHexColor(background)) {
         logger.warn(
             `[themes] Warning: Invalid background color for scheme "${name}": "${background}". ` +
-                `Expected 6-digit hex format like "#ffffff"`
+                `Expected 6-digit hex format like "#ffffff". Using default.`
         );
+        hasInvalidColor = true;
     }
+
+    // Only return colors if all are valid
+    if (hasInvalidColor) {
+        return null;
+    }
+
+    return { primary, accent, background };
 }
 
 /**
- * Validates a single scheme configuration
+ * Validates and transforms a scheme configuration, applying defaults for missing fields
  */
-function validateScheme(key: string, scheme: unknown): void {
+function validateScheme(key: string, scheme: unknown): SchemeConfig | null {
     if (!scheme || typeof scheme !== 'object') {
         logger.warn(`[themes] Invalid scheme "${key}": scheme must be an object`);
-        return;
+        return null;
     }
 
     const schemeObj = scheme as Record<string, unknown>;
 
-    // Check name matches key
-    if (schemeObj.name !== key) {
+    // Warn if name doesn't match key (but use key as the source of truth)
+    if (schemeObj.name && schemeObj.name !== key) {
         logger.warn(
             `[themes] Warning: Scheme key "${key}" doesn't match scheme.name "${schemeObj.name}". ` +
-                `These should be identical to avoid confusion. ` +
-                `Change either the key or the name property to match.`
+                `Using key "${key}" as the scheme name.`
         );
     }
 
-    // Check required fields
-    if (!schemeObj.displayName) {
-        logger.warn(
-            `[themes] Warning: Scheme "${key}" missing "displayName". ` +
-                `This is shown in the UI, so it should be user-friendly like "Dark Mode" or "Ocean Theme".`
-        );
+    // Apply defaults for optional fields
+    const displayName =
+        typeof schemeObj.displayName === 'string'
+            ? schemeObj.displayName
+            : key.charAt(0).toUpperCase() + key.slice(1); // Capitalize name as default
+
+    const description = typeof schemeObj.description === 'string' ? schemeObj.description : '';
+
+    const preview = validatePreviewColors(key, schemeObj.preview) ?? DEFAULT_PREVIEW_COLORS;
+
+    // Build complete scheme config with defaults applied
+    const result: SchemeConfig = {
+        name: key,
+        displayName,
+        description,
+        preview,
+    };
+
+    // Preserve optional fields if provided
+    if (typeof schemeObj.icon === 'string') {
+        result.icon = schemeObj.icon;
     }
 
-    if (!schemeObj.description) {
-        logger.warn(
-            `[themes] Warning: Scheme "${key}" missing "description". ` +
-                `Add a brief description for better UX.`
-        );
+    if (typeof schemeObj.title === 'string') {
+        result.title = schemeObj.title;
     }
 
-    // Validate preview colors
-    validatePreviewColors(key, schemeObj.preview);
+    if (typeof schemeObj.cssFile === 'string') {
+        result.cssFile = schemeObj.cssFile;
+    }
+
+    return result;
 }
 
 /**
- * Validates all schemes in the configuration
+ * Validates and transforms all schemes in the configuration
  */
-function validateSchemes(schemes: unknown): void {
+function validateSchemes(schemes: unknown): Record<string, SchemeConfig> {
     if (!schemes || typeof schemes !== 'object') {
         logger.warn(
             '[themes] Invalid config: "schemes" must be an object. ' +
-                'Example: { schemes: { default: { name: "default", ... } } }'
+                'Example: { schemes: { default: {} } }'
         );
-        return;
+        return {};
     }
 
     const schemeKeys = Object.keys(schemes);
@@ -139,15 +183,21 @@ function validateSchemes(schemes: unknown): void {
         logger.warn(
             '[themes] Warning: No schemes defined in config. ' +
                 'Your theme system will not work without at least one scheme. ' +
-                'Add a scheme like: { schemes: { default: { name: "default", displayName: "Default", ... } } }'
+                'Add a scheme like: { schemes: { default: {} } }'
         );
-        return;
+        return {};
     }
 
-    // Validate each scheme
+    // Validate and transform each scheme
+    const validatedSchemes: Record<string, SchemeConfig> = {};
     for (const [key, scheme] of Object.entries(schemes)) {
-        validateScheme(key, scheme);
+        const validatedScheme = validateScheme(key, scheme);
+        if (validatedScheme) {
+            validatedSchemes[key] = validatedScheme;
+        }
     }
+
+    return validatedSchemes;
 }
 
 /**
@@ -175,34 +225,50 @@ function validateRouteThemes(routeThemes: unknown): void {
 }
 
 /**
- * Validates theme configuration in development mode
+ * Validates and transforms theme configuration in development mode
  */
-function validateConfig(config: ThemeConfig): void {
+function validateConfig(config: ThemeConfig): ThemeConfig {
     // Skip validation in production for performance
     if (!DEV) {
-        return;
+        return config;
     }
 
-    validateSchemes(config.schemes);
+    const validatedSchemes = validateSchemes(config.schemes);
 
     if (config.routeThemes) {
         validateRouteThemes(config.routeThemes);
     }
+
+    return {
+        ...config,
+        schemes: validatedSchemes,
+    };
 }
 
 /**
  * Creates and validates a theme configuration.
  *
- * In development mode, this function performs comprehensive validation and logs
- * warnings for common configuration errors. In production, validation is skipped
- * for performance.
+ * In development mode, this function performs comprehensive validation, applies
+ * defaults for missing fields, and logs warnings for configuration issues.
+ * In production, validation is skipped for performance.
  *
  * @param config - The theme configuration object
- * @returns The validated configuration
+ * @returns The validated and normalized configuration with defaults applied
  *
  * @example
  * ```typescript
+ * // Minimal configuration with defaults
  * const config = createThemeConfig({
+ *   schemes: {
+ *     default: {}, // Uses all defaults
+ *     custom: {
+ *       displayName: 'My Theme', // Optional customization
+ *     }
+ *   }
+ * });
+ *
+ * // Full configuration
+ * const fullConfig = createThemeConfig({
  *   schemes: {
  *     default: {
  *       name: 'default',
@@ -219,6 +285,11 @@ function validateConfig(config: ThemeConfig): void {
  * ```
  *
  * @remarks
+ * **Default Values:**
+ * - `displayName`: Capitalized scheme name (e.g., "default" → "Default")
+ * - `description`: Empty string
+ * - `preview`: Blue color scheme (primary: #3b82f6, accent: #8b5cf6, background: #ffffff)
+ *
  * **Color Format Requirements:**
  * - Preview colors must be 6-digit hex format (`#RRGGBB`)
  * - 3-digit hex format (`#RGB`) is NOT supported
@@ -231,6 +302,5 @@ function validateConfig(config: ThemeConfig): void {
  * - Invalid configurations log warnings but do not throw errors
  */
 export function createThemeConfig(config: ThemeConfig): ThemeConfig {
-    validateConfig(config);
-    return config;
+    return validateConfig(config);
 }

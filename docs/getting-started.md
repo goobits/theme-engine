@@ -38,43 +38,58 @@ Get themes working in your app in four steps:
 
 ### Step 1: Create Theme Configuration
 
-Create a theme config file to define your available schemes:
+Create a theme config file to define your available schemes.
+
+#### Minimal Configuration (Recommended for Getting Started)
+
+All fields are optional with sensible defaults:
 
 **TypeScript (`src/lib/config/theme.ts`):**
 
 ```typescript
-import type { ThemeConfig } from '@goobits/themes/core';
+import { createThemeConfig } from '@goobits/themes/core';
 
-export const themeConfig: ThemeConfig = {
+export const themeConfig = createThemeConfig({
     schemes: {
-        default: {
-            name: 'default',
-            displayName: 'Default',
-            description: 'Clean, professional design',
-            preview: {
-                primary: '#3b82f6',
-                accent: '#60a5fa',
-                background: '#ffffff',
-            },
-        },
-        spells: {
-            name: 'spells',
-            displayName: 'Spells',
-            description: 'Magical purple theme',
-            preview: {
-                primary: '#7c3aed',
-                accent: '#a78bfa',
-                background: '#0a0a0f',
-            },
+        default: {}, // Uses all defaults!
+        ocean: {
+            displayName: 'Ocean', // Optional: customize as needed
         },
     },
-};
+});
 ```
 
 **JavaScript (`src/lib/config/theme.js`):**
 
 ```javascript
-export const themeConfig = {
+import { createThemeConfig } from '@goobits/themes/core';
+
+export const themeConfig = createThemeConfig({
+    schemes: {
+        default: {}, // Uses all defaults!
+        ocean: {
+            displayName: 'Ocean', // Optional: customize as needed
+        },
+    },
+});
+```
+
+> **Default Values:**
+>
+> - `displayName`: Capitalized scheme name (e.g., "default" → "Default")
+> - `description`: Empty string
+> - `preview`: Blue color scheme (primary: #3b82f6, accent: #8b5cf6, background: #ffffff)
+
+#### Full Configuration (Optional)
+
+For complete customization, specify all fields:
+
+**TypeScript (`src/lib/config/theme.ts`):**
+
+```typescript
+import { createThemeConfig } from '@goobits/themes/core';
+
+export const themeConfig = createThemeConfig({
     schemes: {
         default: {
             name: 'default',
@@ -97,7 +112,38 @@ export const themeConfig = {
             },
         },
     },
-};
+});
+```
+
+**JavaScript (`src/lib/config/theme.js`):**
+
+```javascript
+import { createThemeConfig } from '@goobits/themes/core';
+
+export const themeConfig = createThemeConfig({
+    schemes: {
+        default: {
+            name: 'default',
+            displayName: 'Default',
+            description: 'Clean, professional design',
+            preview: {
+                primary: '#3b82f6',
+                accent: '#60a5fa',
+                background: '#ffffff',
+            },
+        },
+        spells: {
+            name: 'spells',
+            displayName: 'Spells',
+            description: 'Magical purple theme',
+            preview: {
+                primary: '#7c3aed',
+                accent: '#a78bfa',
+                background: '#0a0a0f',
+            },
+        },
+    },
+});
 ```
 
 > **Tip:** Check out the [interactive demo](https://github.com/goobits/goobits-themes/tree/main/demo) to see these features in action with tabs and visual enhancements!
@@ -120,12 +166,10 @@ export const handle = transform;
 **File: `src/routes/+layout.server.ts`**
 
 ```typescript
-import { loadThemePreferences } from '@goobits/themes/server';
-import { themeConfig } from '$lib/config/theme';
-
-export function load({ cookies }) {
+// Simplified! Theme preferences are auto-populated by the hook in locals
+export function load({ locals }) {
     return {
-        preferences: loadThemePreferences(cookies, themeConfig),
+        preferences: locals.themePreferences,
     };
 }
 ```
@@ -139,6 +183,7 @@ Add the theme class placeholder to your HTML template:
 **File: `src/app.html`**
 
 ```html
+<!DOCTYPE html>
 <html lang="en" class="%sveltekit.theme%">
     <head>
         <meta charset="utf-8" />
@@ -152,7 +197,7 @@ Add the theme class placeholder to your HTML template:
 </html>
 ```
 
-> **Important:** The `%sveltekit.theme%` placeholder is replaced by the server with the actual theme classes (e.g., `theme-dark scheme-spells`).
+> **REQUIRED:** The `class="%sveltekit.theme%"` attribute on the `<html>` tag is **REQUIRED** for theme classes to be injected. The `%sveltekit.theme%` placeholder is replaced by the server with the actual theme classes (e.g., `theme-dark scheme-spells`).
 
 ### Step 4: Add Theme Provider
 
@@ -172,10 +217,76 @@ Wrap your app with the ThemeProvider component:
     const { data, children } = $props();
 </script>
 
-<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
     {@render children?.()}
 </ThemeProvider>
 ```
+
+## Preventing Flash of Unstyled Content (FOUC)
+
+For users with `theme='system'`, the server cannot detect their OS preference on the initial page load. To prevent a flash of incorrect theme when the page loads, you can add an optional blocking script to your `app.html`:
+
+**Option 1: Inline Script (Recommended for Performance)**
+
+Add the script directly in your `app.html` before any stylesheets:
+
+```html
+<!DOCTYPE html>
+<html lang="en" class="%sveltekit.theme%">
+    <head>
+        <meta charset="utf-8" />
+        <script>
+            (function () {
+                try {
+                    var d = document.documentElement,
+                        s = localStorage.getItem('theme-preferences'),
+                        p = s ? JSON.parse(s) : {},
+                        t =
+                            p.theme ||
+                            (document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/) || [])[1] ||
+                            'system',
+                        c =
+                            p.themeScheme ||
+                            (document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/) || [])[1] ||
+                            'default',
+                        r = t;
+                    if (t === 'system') {
+                        r = window.matchMedia('(prefers-color-scheme:dark)').matches
+                            ? 'dark'
+                            : 'light';
+                    }
+                    d.setAttribute('data-theme', r);
+                    d.className =
+                        'theme-' +
+                        t +
+                        ' scheme-' +
+                        c +
+                        (t === 'system' ? ' theme-system-' + r : '');
+                } catch (e) {}
+            })();
+        </script>
+        <link rel="icon" href="%sveltekit.assets%/favicon.png" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        %sveltekit.head%
+    </head>
+    <body data-sveltekit-preload-data="hover">
+        <div style="display: contents">%sveltekit.body%</div>
+    </body>
+</html>
+```
+
+**Option 2: Import Programmatically**
+
+For better maintainability, you can import the script from the library:
+
+```typescript
+import { themeBlockingScript, themeBlockingScriptTag } from '@goobits/themes/server';
+
+// Use themeBlockingScript for the raw script content
+// Use themeBlockingScriptTag for the complete <script> tag
+```
+
+> **Note:** This blocking script is optional but recommended if you support `theme='system'`. It runs synchronously before page render to detect the user's OS theme preference and apply the correct classes immediately, eliminating FOUC on initial page load.
 
 ## Using Theme Controls
 

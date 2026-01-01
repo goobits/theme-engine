@@ -34,7 +34,7 @@ export const handle = createThemeHooks(themeConfig).transform;
 // 3. Wrap app → src/routes/+layout.svelte
 import { ThemeProvider } from '@goobits/themes/svelte';
 import '@goobits/themes/themes/default.css';
-<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
   {@render children?.()}
 </ThemeProvider>
 ```

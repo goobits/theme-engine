@@ -41,7 +41,7 @@ function validateThemeScheme(
 
     // Check if it's a known scheme
     if (validSchemes.includes(value)) {
-        return value as ThemeScheme;
+        return value;
     }
 
     return defaultValue;
@@ -80,7 +80,7 @@ export function loadThemePreferences(
     config: ThemeConfig
 ): { theme: ThemeMode; themeScheme: ThemeScheme } {
     const validSchemes = Object.keys(config.schemes);
-    const defaultScheme = (validSchemes[0] || 'default') as ThemeScheme;
+    const defaultScheme = validSchemes[0] || 'default';
 
     const defaults = {
         theme: 'system' as ThemeMode,

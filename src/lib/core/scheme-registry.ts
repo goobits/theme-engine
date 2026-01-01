@@ -64,6 +64,9 @@ export const THEME_SCHEMES: Record<ThemeScheme, SchemeConfig> = {
  *
  * // Switch back to default scheme
  * applyThemeScheme('default');
+ *
+ * // Use a custom scheme
+ * applyThemeScheme('ocean'); // No type cast needed!
  * ```
  *
  * @see {@link applyFullTheme} for applying both theme mode and scheme together
@@ -72,8 +75,8 @@ export function applyThemeScheme(scheme: ThemeScheme): void {
     const html = getHtmlElement();
     if (!html) return;
 
-    // Remove existing scheme classes and apply new one
-    removeSchemeClasses(html, Object.keys(THEME_SCHEMES));
+    // Remove ALL existing scheme classes and apply new one
+    removeSchemeClasses(html);
     applySchemeClass(html, scheme);
 
     logger.debug('Theme scheme applied', { scheme });
@@ -129,7 +132,7 @@ export function applyFullTheme(fullTheme: FullTheme): void {
 
     // Clear existing theme and scheme classes
     removeThemeClasses(html);
-    removeSchemeClasses(html, Object.keys(THEME_SCHEMES));
+    removeSchemeClasses(html);
 
     // Apply base theme classes
     if (fullTheme.base === 'system') {
@@ -196,7 +199,7 @@ export function getCurrentScheme(): ThemeScheme {
 
     for (const scheme of Object.keys(THEME_SCHEMES)) {
         if (html.classList.contains(`scheme-${scheme}`)) {
-            return scheme as ThemeScheme;
+            return scheme;
         }
     }
 

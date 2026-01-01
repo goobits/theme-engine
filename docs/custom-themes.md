@@ -182,7 +182,7 @@ Import your theme CSS in the root layout:
     const { data, children } = $props();
 </script>
 
-<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
     {@render children?.()}
 </ThemeProvider>
 ```
