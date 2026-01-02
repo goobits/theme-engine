@@ -10,9 +10,9 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import type { ThemeStore } from '../stores/theme.svelte';
 import type { ThemeConfig } from '../../core/config';
 import type { ThemeMode, ThemeScheme } from '../../core/types';
+import { createMockThemeStore, createMockConfig } from '../../../../test/test-utils';
 
 // Mock dependencies before importing component
 let cleanupFunction: any = null;
@@ -50,65 +50,6 @@ vi.mock('../../core/theme-manager', () => ({
     applyRouteTheme: vi.fn(),
 }));
 
-// Helper to create mock ThemeConfig
-function createMockConfig(routeThemes?: Record<string, any>): ThemeConfig {
-    return {
-        schemes: {
-            default: {
-                name: 'default',
-                displayName: 'Default',
-                description: 'Default theme',
-                preview: {
-                    primary: '#000',
-                    accent: '#fff',
-                    background: '#fff',
-                },
-            },
-            spells: {
-                name: 'spells',
-                displayName: 'Spells',
-                description: 'Spells theme',
-                preview: {
-                    primary: '#purple',
-                    accent: '#gold',
-                    background: '#dark',
-                },
-            },
-        },
-        ...(routeThemes && { routeThemes }),
-    };
-}
-
-// Helper to create mock ThemeStore
-function createMockThemeStore(
-    theme: ThemeMode = 'system',
-    scheme: ThemeScheme = 'default'
-): ThemeStore {
-    return {
-        subscribe: vi.fn(),
-        settings: { theme, themeScheme: scheme },
-        theme,
-        scheme,
-        availableSchemes: [
-            {
-                name: 'default',
-                displayName: 'Default',
-                description: '',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-            {
-                name: 'spells',
-                displayName: 'Spells',
-                description: '',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-        ],
-        setTheme: vi.fn(),
-        setScheme: vi.fn(),
-        cycleMode: vi.fn(),
-    };
-}
-
 describe('ThemeProvider', () => {
     let setContextMock: any;
     let createThemeStoreMock: any;
@@ -130,7 +71,7 @@ describe('ThemeProvider', () => {
         // Default mock implementations
         const mockCleanup = vi.fn();
         initializeThemeMock.mockReturnValue(mockCleanup);
-        createThemeStoreMock.mockReturnValue(createMockThemeStore());
+        createThemeStoreMock.mockReturnValue(createMockThemeStore({}));
     });
 
     afterEach(() => {
@@ -139,8 +80,8 @@ describe('ThemeProvider', () => {
 
     describe('component initialization', () => {
         it('should create theme store when component is instantiated', async () => {
-            const config = createMockConfig();
-            const mockStore = createMockThemeStore('dark', 'spells');
+            const config = createMockConfig({});
+            const mockStore = createMockThemeStore({ theme: 'dark', scheme: 'spells' });
             createThemeStoreMock.mockReturnValue(mockStore);
 
             // Import component to trigger initialization
@@ -155,7 +96,7 @@ describe('ThemeProvider', () => {
         });
 
         it('should provide theme store to child components via context', async () => {
-            const mockStore = createMockThemeStore('light', 'default');
+            const mockStore = createMockThemeStore({ theme: 'light', scheme: 'default' });
             createThemeStoreMock.mockReturnValue(mockStore);
 
             // The component should call setContext with 'theme' key and the store
@@ -230,7 +171,7 @@ describe('ThemeProvider', () => {
 
     describe('edge cases', () => {
         it('should handle missing routeThemes in config', async () => {
-            const config = createMockConfig();
+            const config = createMockConfig({});
 
             expect(config.routeThemes).toBeUndefined();
 
@@ -252,7 +193,7 @@ describe('ThemeProvider', () => {
                 '/admin': { theme: 'dark' as ThemeMode, themeScheme: 'default' as ThemeScheme },
                 '/public': { theme: 'light' as ThemeMode, themeScheme: 'spells' as ThemeScheme },
             };
-            const config = createMockConfig(routeThemes);
+            const config = createMockConfig({ routeThemes });
 
             expect(config.routeThemes).toBeDefined();
             expect(config.routeThemes?.['/admin']).toEqual({
@@ -268,7 +209,7 @@ describe('ThemeProvider', () => {
             const modes: ThemeMode[] = ['light', 'dark', 'system'];
 
             modes.forEach(mode => {
-                const mockStore = createMockThemeStore(mode, 'default');
+                const mockStore = createMockThemeStore({ theme: mode, scheme: 'default' });
                 expect(mockStore.theme).toBe(mode);
             });
         });
@@ -277,7 +218,7 @@ describe('ThemeProvider', () => {
             const schemes: ThemeScheme[] = ['default', 'spells'];
 
             schemes.forEach(scheme => {
-                const mockStore = createMockThemeStore('system', scheme);
+                const mockStore = createMockThemeStore({ theme: 'system', scheme });
                 expect(mockStore.scheme).toBe(scheme);
             });
         });
@@ -285,10 +226,10 @@ describe('ThemeProvider', () => {
 
     describe('store functionality', () => {
         it('should create store with correct theme and scheme', async () => {
-            const mockStore = createMockThemeStore('dark', 'spells');
+            const mockStore = createMockThemeStore({ theme: 'dark', scheme: 'spells' });
             createThemeStoreMock.mockReturnValue(mockStore);
 
-            const store = createThemeStoreMock(createMockConfig());
+            const store = createThemeStoreMock(createMockConfig({}));
 
             expect(store.theme).toBe('dark');
             expect(store.scheme).toBe('spells');
@@ -299,7 +240,7 @@ describe('ThemeProvider', () => {
         });
 
         it('should provide store with all required methods', async () => {
-            const mockStore = createMockThemeStore();
+            const mockStore = createMockThemeStore({});
 
             expect(mockStore.subscribe).toBeDefined();
             expect(mockStore.setTheme).toBeDefined();
@@ -308,7 +249,7 @@ describe('ThemeProvider', () => {
         });
 
         it('should allow theme updates through store methods', async () => {
-            const mockStore = createMockThemeStore();
+            const mockStore = createMockThemeStore({});
 
             mockStore.setTheme('dark');
             expect(mockStore.setTheme).toHaveBeenCalledWith('dark');

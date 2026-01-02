@@ -7,15 +7,10 @@
  * @module stores/theme
  */
 
-import { browser } from '$app/environment';
-import { STORAGE_KEY } from '../../core/constants';
+import { isBrowser } from '../../utils/browser';
 import type { ThemeMode, ThemeScheme, SchemeConfig } from '../../core/types';
-import {
-    readPreferenceCookies,
-    writePreferenceCookies,
-    type UserPreferences,
-} from '../../utils/cookies';
 import type { ThemeConfig } from '../../core/config';
+import { saveThemePreferences, loadThemePreferences } from './theme-persistence';
 
 /**
  * Internal theme settings structure.
@@ -112,58 +107,17 @@ export interface ThemeStore {
 export function createThemeStore(config: ThemeConfig): ThemeStore {
     const defaultSettings: ThemeSettings = {
         theme: 'system',
-        themeScheme: (Object.keys(config.schemes)[0] as ThemeScheme) || 'default',
+        themeScheme: Object.keys(config.schemes)[0] || 'default',
     };
 
     let settings = $state<ThemeSettings>(defaultSettings);
 
-    function saveToLocalStorage(currentSettings: ThemeSettings): void {
-        if (!browser) return;
-
-        try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSettings));
-            writePreferenceCookies({
-                theme: currentSettings.theme,
-                themeScheme: currentSettings.themeScheme,
-            });
-        } catch (err) {
-            console.error('Failed to save theme settings to localStorage', err);
+    // Load saved preferences on initialization (browser only)
+    if (isBrowser()) {
+        const saved = loadThemePreferences();
+        if (saved) {
+            settings = { ...defaultSettings, ...saved };
         }
-    }
-
-    function loadFromLocalStorage(): ThemeSettings {
-        if (!browser) {
-            return defaultSettings;
-        }
-
-        try {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                const parsed = JSON.parse(saved);
-                return { ...defaultSettings, ...parsed };
-            }
-        } catch (err) {
-            console.warn('Failed to load theme settings from localStorage', err);
-        }
-
-        try {
-            const cookieSettings: Partial<UserPreferences> = readPreferenceCookies();
-            if (cookieSettings.theme && cookieSettings.themeScheme) {
-                return {
-                    ...defaultSettings,
-                    theme: cookieSettings.theme,
-                    themeScheme: cookieSettings.themeScheme,
-                };
-            }
-        } catch {
-            // Cookie reading failed, use defaults
-        }
-
-        return defaultSettings;
-    }
-
-    if (browser) {
-        settings = loadFromLocalStorage();
     }
 
     const theme = $derived(settings.theme);
@@ -172,13 +126,13 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
 
     function setTheme(newTheme: ThemeMode) {
         settings.theme = newTheme;
-        saveToLocalStorage(settings);
+        saveThemePreferences(settings);
         notifySubscribers();
     }
 
     function setScheme(newScheme: ThemeScheme) {
         settings.themeScheme = newScheme;
-        saveToLocalStorage(settings);
+        saveThemePreferences(settings);
         notifySubscribers();
     }
 

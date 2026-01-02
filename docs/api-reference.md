@@ -269,6 +269,21 @@ export const handle = transform;
 
 Loads theme preferences from cookies for SSR.
 
+> **Note:** When using `createThemeHooks()`, preferences are automatically populated in `locals.themePreferences`. You can use this function directly if you need custom preference loading logic.
+
+**Recommended Pattern (using hook):**
+
+```typescript
+// Preferences are auto-populated by the hook in locals
+export function load({ locals }) {
+    return {
+        preferences: locals.themePreferences,
+    };
+}
+```
+
+**Direct Usage (if needed):**
+
 ```typescript
 import { loadThemePreferences } from '@goobits/themes/server';
 import type { Cookies } from '@sveltejs/kit';

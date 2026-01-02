@@ -16,6 +16,24 @@ export interface RouteThemeConfig {
 }
 
 /**
+ * Escapes special regex characters in a string to prevent regex injection.
+ * @internal
+ */
+function escapeRegex(str: string): string {
+    return str.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Converts a wildcard pattern (e.g., '/admin/*') to a RegExp for route matching.
+ * @internal
+ */
+function patternToRegex(pattern: string): RegExp {
+    const escaped = escapeRegex(pattern);
+    const regexPattern = escaped.replace(/\*/g, '.*');
+    return new RegExp(`^${regexPattern}$`);
+}
+
+/**
  * Get the theme configuration for a specific route.
  *
  * This function searches the route themes configuration to find a match for the given pathname.
@@ -75,15 +93,8 @@ export function getRouteTheme(
 
     // Check for wildcard matches
     for (const [routePattern, config] of Object.entries(routeThemes)) {
-        if (routePattern.includes('*')) {
-            // Escape regex special characters before replacing wildcards
-            // This prevents regex injection from route patterns
-            const escaped = routePattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
-            const pattern = escaped.replace(/\*/g, '.*');
-            const regex = new RegExp(`^${pattern}$`);
-            if (regex.test(pathname)) {
-                return config;
-            }
+        if (routePattern.includes('*') && patternToRegex(routePattern).test(pathname)) {
+            return config;
         }
     }
 

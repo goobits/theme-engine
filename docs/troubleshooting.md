@@ -74,12 +74,10 @@ export const handle = transform;
 
 ```typescript
 // src/routes/+layout.server.ts
-import { loadThemePreferences } from '@goobits/themes/server';
-import { themeConfig } from '$lib/config/theme';
-
-export function load({ cookies }) {
+// Simplified! Preferences are auto-populated by the hook in locals
+export function load({ locals }) {
     return {
-        preferences: loadThemePreferences(cookies, themeConfig),
+        preferences: locals.themePreferences,
     };
 }
 ```

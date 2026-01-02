@@ -2,6 +2,29 @@ import type { Handle } from '@sveltejs/kit';
 import { loadThemePreferences } from './preferences';
 import { resolveTheme } from '../core/constants';
 import type { ThemeConfig } from '../core/config';
+import type { ThemeMode, ThemeScheme } from '../core/types';
+
+/**
+ * Theme preferences interface for extending App.Locals
+ *
+ * @example
+ * ```typescript
+ * // In your app.d.ts:
+ * import type { ThemeLocals } from '@goobits/themes/server';
+ *
+ * declare global {
+ *   namespace App {
+ *     interface Locals extends ThemeLocals {}
+ *   }
+ * }
+ * ```
+ */
+export interface ThemeLocals {
+    themePreferences: {
+        theme: ThemeMode;
+        themeScheme: ThemeScheme;
+    };
+}
 
 /**
  * Escapes special HTML characters to prevent XSS attacks.
@@ -25,11 +48,12 @@ function escapeHtml(str: string): string {
  * becomes interactive. This is critical for a seamless user experience, especially when the user
  * has a stored theme preference that differs from the OS default.
  *
- * The hook:
+ * The transform hook:
  * 1. Loads user's saved theme preferences from cookies/headers
- * 2. Injects appropriate CSS class names into the <html> tag
- * 3. Adds data-theme attribute for CSS variable resolution
- * 4. Attempts to detect system theme preference from request headers
+ * 2. Populates event.locals.themePreferences for downstream access
+ * 3. Injects appropriate CSS class names into the <html> tag
+ * 4. Adds data-theme attribute for CSS variable resolution
+ * 5. Attempts to detect system theme preference from request headers
  *
  * @param config - Theme configuration object containing available schemes and optional route themes.
  *                 Typically created with {@link createThemeConfig}
@@ -46,10 +70,16 @@ function escapeHtml(str: string): string {
  * export const handle = themeHooks.transform;
  * // or combine with other hooks:
  * // export const handle = sequence(themeHooks.transform, otherHook);
+ *
+ * // In +layout.server.ts - preferences are now auto-populated!
+ * export function load({ locals }) {
+ *   return { preferences: locals.themePreferences };
+ * }
  * ```
  *
  * @remarks
  * - Must be registered in your SvelteKit hooks.server.ts or hooks.client.ts
+ * - Automatically populates event.locals.themePreferences for use in load functions
  * - Uses 'sec-ch-prefers-color-scheme' header for system theme detection when available
  * - Falls back to user-agent detection for older browsers without the preference header
  * - Injects classes like 'theme-light', 'theme-dark', 'scheme-default', 'theme-system-light', etc.
@@ -58,10 +88,15 @@ function escapeHtml(str: string): string {
  *
  * @see {@link applyThemeWithScheme} for client-side theme application
  * @see {@link createThemeConfig} for configuration setup
+ * @see {@link ThemeLocals} for TypeScript type definitions
  */
 export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
     const themeTransform: Handle = async ({ event, resolve }) => {
         const preferences = loadThemePreferences(event.cookies, config);
+
+        // Populate event.locals for downstream access
+        // This allows +layout.server.ts to access preferences without calling loadThemePreferences again
+        (event.locals as any).themePreferences = preferences;
 
         const response = await resolve(event, {
             transformPageChunk: ({ html }) => {
@@ -79,7 +114,8 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
                     );
                     const userAgent = event.request.headers.get('user-agent')?.toLowerCase() || '';
 
-                    prefersDark = prefersColorScheme === 'dark' || userAgent.includes('dark') || false;
+                    prefersDark =
+                        prefersColorScheme === 'dark' || userAgent.includes('dark') || false;
                     themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light';
                 }
 

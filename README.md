@@ -5,117 +5,121 @@ Theme management for SvelteKit applications with Svelte 5 runes support.
 ## Features
 
 - Light, dark, and system theme modes with zero-flash SSR
-- Native `data-theme` attribute support (both SSR and client-side)
 - Custom color schemes with extensible configuration
 - Reactive theme state using Svelte 5 runes
 - Cookie-based preference persistence
-- Route-specific theme overrides with automatic navigation tracking
-- Built-in components and design tokens
+- Route-specific theme overrides
 
-## Installation
+## Quick Start
+
+**1. Install**
 
 ```bash
 npm install @goobits/themes
 ```
 
-**Requirements:** Svelte 5+, SvelteKit 2+, Node.js 18+
-
-## Quick Start
+**2. Create config** → `src/lib/config/theme.ts`
 
 ```typescript
-// 1. Create theme config → src/lib/config/theme.ts
-import type { ThemeConfig } from '@goobits/themes/core';
-export const themeConfig: ThemeConfig = { schemes: { /*...*/ } };
+import { createThemeConfig } from '@goobits/themes/core';
 
-// 2. Add server hooks → src/hooks.server.ts
+export const themeConfig = createThemeConfig({
+    schemes: {
+        default: {}, // All fields optional!
+        dark: { displayName: 'Dark Mode' },
+    },
+});
+```
+
+**3. Add server hooks** → `src/hooks.server.ts`
+
+```typescript
 import { createThemeHooks } from '@goobits/themes/server';
-export const handle = createThemeHooks(themeConfig).transform;
+import { themeConfig } from '$lib/config/theme';
 
-// 3. Wrap app → src/routes/+layout.svelte
-import { ThemeProvider } from '@goobits/themes/svelte';
-import '@goobits/themes/themes/default.css';
-<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
-  {@render children?.()}
+export const handle = createThemeHooks(themeConfig).transform;
+```
+
+**4. Add layout loader** → `src/routes/+layout.server.ts`
+
+```typescript
+export function load({ locals }) {
+    return { preferences: locals.themePreferences };
+}
+```
+
+**5. Update HTML** → `src/app.html`
+
+```html
+<html lang="en" class="%sveltekit.theme%"></html>
+```
+
+**6. Wrap your app** → `src/routes/+layout.svelte`
+
+```svelte
+<script>
+    import { ThemeProvider } from '@goobits/themes/svelte';
+    import { themeConfig } from '$lib/config/theme';
+    import '@goobits/themes/themes/default.css';
+
+    const { data, children } = $props();
+</script>
+
+<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
+    {@render children?.()}
 </ThemeProvider>
 ```
 
-**Complete setup guide:** [Getting Started](./docs/getting-started.md)
+**7. Add controls** (optional)
 
-## CSS Structure
+```svelte
+<script>
+    import { ThemeToggle, SchemeSelector } from '@goobits/themes/svelte';
+</script>
 
-The theme engine automatically manages both CSS classes and attributes on your `<html>` element, giving you flexibility in how you write theme styles.
-
-### What Gets Applied
-
-**CSS Classes:**
-- `.theme-light` | `.theme-dark` | `.theme-system` - User's theme preference
-- `.theme-system-light` | `.theme-system-dark` - Resolved system preference (when using system mode)
-- `.scheme-default` | `.scheme-{name}` - Active color scheme
-
-**Data Attributes:**
-- `data-theme="light"` | `data-theme="dark"` - Resolved visual theme (always reflects what's actually shown)
-
-### Writing Theme Styles
-
-You can target themes using either approach:
-
-```css
-/* Option 1: Use data-theme attribute (recommended - more semantic) */
-[data-theme="dark"] {
-    --bg-primary: #000;
-    --text-primary: #fff;
-}
-
-[data-theme="light"] {
-    --bg-primary: #fff;
-    --text-primary: #000;
-}
-
-/* Option 2: Use CSS classes (if you need to distinguish system vs explicit choice) */
-.theme-dark,
-.theme-system-dark {
-    --bg-primary: #000;
-}
-
-/* Scheme-specific overrides work with both approaches */
-.scheme-spells {
-    --accent-primary: #7c3aed;
-}
-
-[data-theme="dark"].scheme-spells {
-    --accent-glow: #a78bfa;
-}
+<ThemeToggle />
+<SchemeSelector />
 ```
 
-**Key behaviors:**
-- When theme is set to `system`, `data-theme` reflects the **resolved** value (`"light"` or `"dark"`), not `"system"`
-- Both classes and attributes are set during SSR to prevent flash of unstyled content
-- Route-specific theme changes update automatically on navigation
-- All updates are synchronized between classes and attributes
+**That's it!** See [Getting Started](./docs/getting-started.md) for FOUC prevention and custom themes.
 
 ## Documentation
 
-**[Documentation](./docs/README.md)** | **[Getting Started](./docs/getting-started.md)**
+| Guide                                        | Description                     |
+| -------------------------------------------- | ------------------------------- |
+| [Getting Started](./docs/getting-started.md) | Full setup with FOUC prevention |
+| [API Reference](./docs/api-reference.md)     | Complete API documentation      |
+| [Components](./docs/components.md)           | Built-in components and hooks   |
+| [Custom Themes](./docs/custom-themes.md)     | Create your own color schemes   |
+| [Troubleshooting](./docs/troubleshooting.md) | Common issues and solutions     |
 
-| Guide                                        | Description                               |
-| -------------------------------------------- | ----------------------------------------- |
-| [API Reference](./docs/api-reference.md)     | Complete API documentation with types     |
-| [Components](./docs/components.md)           | Built-in components and `useTheme()` hook |
-| [Custom Themes](./docs/custom-themes.md)     | Create color schemes and design tokens    |
-| [Design Tokens](./docs/design-tokens.md)     | CSS variable reference                    |
-| [Best Practices](./docs/best-practices.md)   | Accessibility and performance             |
-| [Troubleshooting](./docs/troubleshooting.md) | Common issues and solutions               |
+## CSS Structure
 
-## Contributing
+The theme engine applies classes and attributes to `<html>`:
 
-Contributions welcome! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for development setup and guidelines.
+```css
+/* Target by attribute (recommended) */
+[data-theme='dark'] {
+    --bg: #000;
+}
+[data-theme='light'] {
+    --bg: #fff;
+}
 
-## Support
+/* Target by class (for system vs explicit) */
+.theme-dark {
+    /* explicit dark */
+}
+.theme-system-dark {
+    /* system detected dark */
+}
 
-- **Issues**: Report bugs at [github.com/goobits/goobits-themes/issues](https://github.com/goobits/goobits-themes/issues)
-- **Discussions**: Ask questions at [github.com/goobits/goobits-themes/discussions](https://github.com/goobits/goobits-themes/discussions)
-- **Help**: See [SUPPORT.md](./SUPPORT.md) for support guidelines
+/* Scheme-specific */
+.scheme-spells {
+    --accent: #7c3aed;
+}
+```
 
 ## License
 
-MIT - see [LICENSE](./LICENSE) for details.
+MIT

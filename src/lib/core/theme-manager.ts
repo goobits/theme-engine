@@ -5,7 +5,9 @@
  * to apply theme classes and handle system theme preference changes.
  */
 
-import { browser } from '$app/environment';
+import { isBrowser } from '../utils/browser';
+import { watchSystemTheme as watchSystemThemeUtil, prefersDarkMode } from '../utils/system-theme';
+import { getHtmlElement } from '../utils/dom';
 import { logger } from '../utils/logger';
 import { applyFullTheme } from './scheme-registry';
 import { getRouteTheme, type RouteThemeConfig } from '../utils/route-themes';
@@ -48,14 +50,14 @@ export function applyThemeWithScheme(theme: ThemeMode, scheme: ThemeScheme): voi
  * Apply the resolved system theme preference
  */
 function applySystemTheme(): void {
-    if (!browser || typeof document === 'undefined' || typeof window === 'undefined') return;
+    const html = getHtmlElement();
+    if (!html) return;
 
-    const html = document.documentElement;
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = prefersDarkMode();
 
     // Add resolved system theme class for immediate styling
     html.classList.remove('theme-system-light', 'theme-system-dark');
-    html.classList.add(prefersDark ? 'theme-system-dark' : 'theme-system-light');
+    html.classList.add(isDark ? 'theme-system-dark' : 'theme-system-light');
 }
 
 /**
@@ -95,51 +97,18 @@ function applySystemTheme(): void {
  * @see {@link applyThemeWithScheme} for manually applying theme changes
  */
 export function watchSystemTheme(callback: (systemTheme: 'light' | 'dark') => void): () => void {
-    if (!browser || typeof window === 'undefined') return () => {};
+    if (!isBrowser()) return () => {};
 
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-
-    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-        const matches = 'matches' in e ? e.matches : (e as MediaQueryListEvent).matches;
-        const systemTheme = matches ? 'dark' : 'light';
+    return watchSystemThemeUtil(isDark => {
+        const systemTheme = isDark ? 'dark' : 'light';
         callback(systemTheme);
 
         // If system theme is currently active, update the resolved class
-        if (
-            typeof document !== 'undefined' &&
-            document.documentElement.classList.contains('theme-system')
-        ) {
+        const html = getHtmlElement();
+        if (html?.classList.contains('theme-system')) {
             applySystemTheme();
         }
-    };
-
-    // Defensive programming: check if addEventListener is available, fallback to addListener
-    if (typeof mediaQuery.addEventListener === 'function') {
-        mediaQuery.addEventListener('change', handleChange);
-        return () => {
-            if (typeof mediaQuery.removeEventListener === 'function') {
-                mediaQuery.removeEventListener('change', handleChange);
-            }
-        };
-    } else {
-        // Legacy API fallback - for older browsers that use addListener/removeListener
-        interface LegacyMediaQueryList {
-            addListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
-            removeListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
-        }
-
-        const legacyMQ = mediaQuery as MediaQueryList & LegacyMediaQueryList;
-        if (typeof legacyMQ.addListener === 'function') {
-            legacyMQ.addListener(handleChange);
-            return () => {
-                if (typeof legacyMQ.removeListener === 'function') {
-                    legacyMQ.removeListener(handleChange);
-                }
-            };
-        }
-        // No event support available
-        return () => {};
-    }
+    });
 }
 
 /**
@@ -184,8 +153,7 @@ export function initializeTheme(
     storedTheme: ThemeMode,
     storedScheme: ThemeScheme = 'default'
 ): () => void {
-    if (!browser || typeof document === 'undefined' || typeof window === 'undefined')
-        return () => {};
+    if (!isBrowser()) return () => {};
 
     // All scheme CSS is statically imported - no preloading needed
 
@@ -195,10 +163,8 @@ export function initializeTheme(
     // Set up system theme watching for when system mode is active
     const cleanup = watchSystemTheme(() => {
         // Only react if system theme is currently active
-        if (
-            typeof document !== 'undefined' &&
-            document.documentElement.classList.contains('theme-system')
-        ) {
+        const html = getHtmlElement();
+        if (html?.classList.contains('theme-system')) {
             applySystemTheme();
         }
     });

@@ -22,21 +22,38 @@
 export type ThemeMode = 'light' | 'dark' | 'system';
 
 /**
- * Color scheme identifier for visual styling variants.
+ * Theme color scheme identifier.
  *
  * Schemes provide distinct visual identities while maintaining
  * the same light/dark mode behavior. Each scheme maps to a CSS
  * class (`scheme-{name}`) applied to the document root.
+ *
+ * This type is extensible - you can use any string value to define
+ * custom scheme names without type casts.
+ *
+ * @example
+ * ```typescript
+ * const scheme: ThemeScheme = 'spells'; // Applies .scheme-spells class
+ * const custom: ThemeScheme = 'ocean'; // Custom scheme, no cast needed
+ * ```
+ */
+export type ThemeScheme = string;
+
+/**
+ * Built-in scheme names provided by the library.
+ *
+ * These schemes are included with the library and have
+ * corresponding CSS definitions.
  *
  * - `'default'` - Clean, minimal design system
  * - `'spells'` - Magical purple theme for enchanted experiences
  *
  * @example
  * ```typescript
- * const scheme: ThemeScheme = 'spells'; // Applies .scheme-spells class
+ * const builtIn: BuiltInScheme = 'default';
  * ```
  */
-export type ThemeScheme = 'default' | 'spells';
+export type BuiltInScheme = 'default' | 'spells';
 
 /**
  * Complete theme configuration combining mode and scheme.

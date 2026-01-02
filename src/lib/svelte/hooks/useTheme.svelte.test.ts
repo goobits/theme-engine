@@ -201,14 +201,18 @@ describe('useTheme', () => {
         it('should throw error when context is not found', () => {
             getContextMock.mockReturnValue(undefined);
 
-            expect(() => useTheme()).toThrow('useTheme() must be called within a ThemeProvider component.');
+            expect(() => useTheme()).toThrow(
+                'useTheme() must be called within a ThemeProvider component.'
+            );
             expect(getContextMock).toHaveBeenCalledWith('theme');
         });
 
         it('should throw error when context is null', () => {
             getContextMock.mockReturnValue(null);
 
-            expect(() => useTheme()).toThrow('useTheme() must be called within a ThemeProvider component.');
+            expect(() => useTheme()).toThrow(
+                'useTheme() must be called within a ThemeProvider component.'
+            );
         });
 
         it('should throw error with correct message', () => {
@@ -232,7 +236,9 @@ describe('useTheme', () => {
         ])('should throw error when getContext returns %s', (_, value) => {
             getContextMock.mockReturnValue(value);
 
-            expect(() => useTheme()).toThrow('useTheme() must be called within a ThemeProvider component.');
+            expect(() => useTheme()).toThrow(
+                'useTheme() must be called within a ThemeProvider component.'
+            );
         });
     });
 

@@ -3,7 +3,7 @@
  * Works on both client and server side
  */
 
-import { browser } from '$app/environment';
+import { isBrowser } from './browser';
 
 export interface UserPreferences {
     theme: 'light' | 'dark' | 'system';
@@ -29,132 +29,85 @@ export const COOKIE_OPTIONS = {
     sameSite: 'lax' as const,
 };
 
-/**
- * Reads user preferences from browser cookies on the client side.
- *
- * Parses document.cookie and extracts theme-related preferences.
- * Only operates in browser environment; returns empty object on server.
- *
- * @returns Partial object containing available user preferences from cookies
- *
- * @example
- * ```typescript
- * import { readPreferenceCookies } from './utils/cookies';
- *
- * const prefs = readPreferenceCookies();
- * // prefs = { theme: 'dark', themeScheme: 'spells', showSidebar: true }
- * ```
- *
- * @remarks
- * - Returns empty object `{}` when not in browser environment
- * - Returns empty object if no cookies are set
- * - Cookie values are automatically type-cast to appropriate types
- */
-export function readPreferenceCookies(): Partial<UserPreferences> {
-    if (!browser) return {};
+/** Type-safe parser functions for each preference type */
+const PREFERENCE_PARSERS: { [K in keyof UserPreferences]: (value: string) => UserPreferences[K] } =
+    {
+        theme: v => v as UserPreferences['theme'],
+        themeScheme: v => v as UserPreferences['themeScheme'],
+        language: v => v,
+        languageTheme: v => v as UserPreferences['languageTheme'],
+        showSidebar: v => ['true', '1', 'yes'].includes(v?.toLowerCase()),
+    };
 
-    const preferences: Partial<UserPreferences> = {};
-
-    if (!document.cookie) return preferences;
-
+/** Gets a cookie value by name. Returns last occurrence if duplicates exist. */
+function getCookie(name: string): string | undefined {
+    if (!document.cookie) return undefined;
+    let lastValue: string | undefined = undefined;
     const cookies = document.cookie.split('; ');
     for (const cookie of cookies) {
-        // Handle values containing '=' by only splitting on first '='
         const eqIndex = cookie.indexOf('=');
         if (eqIndex === -1) continue;
-
         const key = cookie.substring(0, eqIndex).trim();
-        // Decode URL-encoded values and get everything after the first '='
-        let value: string;
+        if (key !== name) continue;
         try {
-            value = decodeURIComponent(cookie.substring(eqIndex + 1));
+            lastValue = decodeURIComponent(cookie.substring(eqIndex + 1));
         } catch {
-            // If decoding fails, use the raw value
-            value = cookie.substring(eqIndex + 1);
+            lastValue = cookie.substring(eqIndex + 1);
         }
-
-        if (key === 'theme') preferences.theme = value as UserPreferences['theme'];
-        if (key === 'themeScheme')
-            preferences.themeScheme = value as UserPreferences['themeScheme'];
-        if (key === 'language') preferences.language = value;
-        if (key === 'languageTheme')
-            preferences.languageTheme = value as UserPreferences['languageTheme'];
-        if (key === 'showSidebar') preferences.showSidebar = ['true', '1', 'yes'].includes(value?.toLowerCase());
     }
+    return lastValue;
+}
 
+/** Sets a single cookie with the specified options */
+function setCookie(name: string, value: string | boolean, options: typeof COOKIE_OPTIONS): void {
+    document.cookie = `${name}=${value}; path=${options.path}; max-age=${options.maxAge}; SameSite=${options.sameSite}`;
+}
+
+/**
+ * Reads user preferences from browser cookies.
+ * Returns empty object on server or when no cookies are set.
+ *
+ * @example
+ * const prefs = readPreferenceCookies();
+ * // { theme: 'dark', themeScheme: 'spells', showSidebar: true }
+ */
+export function readPreferenceCookies(): Partial<UserPreferences> {
+    if (!isBrowser()) return {};
+    const preferences: Partial<UserPreferences> = {};
+    for (const [key, parser] of Object.entries(PREFERENCE_PARSERS)) {
+        const value = getCookie(key);
+        if (value !== undefined) {
+            preferences[key as keyof UserPreferences] = parser(value);
+        }
+    }
     return preferences;
 }
 
 /**
- * Writes user preferences to browser cookies on the client side.
- *
- * Persists theme and other preferences to cookies with a 1-year expiration.
- * Only operates in browser environment; no-op on server.
- *
- * @param preferences - Partial preferences object with values to save
+ * Writes user preferences to browser cookies with a 1-year expiration.
+ * No-op on server. Cookies set with: path=/, max-age=1 year, SameSite=lax.
  *
  * @example
- * ```typescript
- * import { writePreferenceCookies } from './utils/cookies';
- *
- * // Save theme preferences
- * writePreferenceCookies({
- *   theme: 'dark',
- *   themeScheme: 'spells'
- * });
- *
- * // Update only specific preferences
+ * writePreferenceCookies({ theme: 'dark', themeScheme: 'spells' });
  * writePreferenceCookies({ showSidebar: false });
- * ```
- *
- * @remarks
- * - Does nothing when not in browser environment
- * - Cookies set with: path=/, max-age=1 year, SameSite=lax
- * - Only writes cookies for properties that are defined in the preferences object
  */
 export function writePreferenceCookies(preferences: Partial<UserPreferences>): void {
-    if (!browser) return;
-
-    const cookieOptions = `path=${COOKIE_OPTIONS.path}; max-age=${COOKIE_OPTIONS.maxAge}; SameSite=${COOKIE_OPTIONS.sameSite}`;
-
-    if (preferences.theme) {
-        document.cookie = `theme=${preferences.theme}; ${cookieOptions}`;
-    }
-    if (preferences.themeScheme) {
-        document.cookie = `themeScheme=${preferences.themeScheme}; ${cookieOptions}`;
-    }
-    if (preferences.language) {
-        document.cookie = `language=${preferences.language}; ${cookieOptions}`;
-    }
-    if (preferences.languageTheme) {
-        document.cookie = `languageTheme=${preferences.languageTheme}; ${cookieOptions}`;
-    }
-    if (preferences.showSidebar !== undefined) {
-        document.cookie = `showSidebar=${preferences.showSidebar}; ${cookieOptions}`;
+    if (!isBrowser()) return;
+    for (const [key, value] of Object.entries(preferences)) {
+        if (key === 'showSidebar') {
+            if (value !== undefined) setCookie(key, value as boolean, COOKIE_OPTIONS);
+        } else {
+            if (value) setCookie(key, value as string, COOKIE_OPTIONS);
+        }
     }
 }
 
 /**
  * Returns the default user preferences.
  *
- * Provides sensible fallback values for all preference options when
- * no saved preferences are available.
- *
- * @returns Complete UserPreferences object with default values
- *
  * @example
- * ```typescript
- * import { getDefaultPreferences } from './utils/cookies';
- *
  * const defaults = getDefaultPreferences();
- * // {
- * //   theme: 'system',
- * //   themeScheme: 'default',
- * //   language: 'en',
- * //   languageTheme: 'default',
- * //   showSidebar: true
- * // }
- * ```
+ * // { theme: 'system', themeScheme: 'default', language: 'en', ... }
  */
 export function getDefaultPreferences(): UserPreferences {
     return {

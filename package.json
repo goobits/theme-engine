@@ -48,10 +48,13 @@
             "default": "./dist/utils/*"
         },
         "./themes": "./themes/index.css",
+        "./themes/*": "./themes/*",
         "./themes/base": "./themes/base/index.css",
+        "./themes/base/*": "./themes/base/*",
         "./themes/base/design-tokens.css": "./themes/base/design-tokens.css",
         "./themes/base/fx-tokens.css": "./themes/base/fx-tokens.css",
         "./themes/base/reset.css": "./themes/base/reset.css",
+        "./themes/presets/*": "./themes/presets/*",
         "./themes/default.css": "./themes/presets/default.css",
         "./themes/spells.css": "./themes/presets/spells.css",
         "./package.json": "./package.json"

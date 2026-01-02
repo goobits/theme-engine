@@ -16,7 +16,7 @@ Root component that manages theme state and provides theme context to child comp
     const { data, children } = $props();
 </script>
 
-<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
     {@render children?.()}
 </ThemeProvider>
 ```
@@ -50,7 +50,7 @@ interface ServerPreferences {
     const { data, children } = $props();
 </script>
 
-<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
+<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
     <nav><!-- Navigation --></nav>
     <main>{@render children?.()}</main>
 </ThemeProvider>
@@ -299,6 +299,7 @@ Remove `<ThemeSync />` from your code. ThemeProvider now handles this automatica
 ### When You Might Still Need This
 
 Only keep this component if you need to:
+
 - Set `data-theme` on additional DOM elements beyond `<html>`
 - Implement custom theme sync logic
 
