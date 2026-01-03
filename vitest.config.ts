@@ -24,7 +24,6 @@ export default defineConfig({
         alias: {
             '$app/environment': resolve(__dirname, 'test/mocks/$app-environment.ts'),
             '$app/stores': resolve(__dirname, 'test/mocks/$app-stores.ts'),
-            '@lucide/svelte': resolve(__dirname, 'test/mocks/@lucide-svelte.ts'),
         },
     },
 });
