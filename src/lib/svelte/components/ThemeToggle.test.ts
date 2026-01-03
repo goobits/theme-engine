@@ -11,16 +11,14 @@ import type { ThemeStore } from '../stores/theme.svelte';
 import type { ThemeMode, ThemeScheme } from '../../core/types';
 import { createMockThemeStore } from '../../../../test/test-utils';
 
-// Mock lucide-svelte icons
+// Mock lucide-svelte icons (individual imports for tree-shaking)
 const MockSun = vi.fn();
 const MockMoon = vi.fn();
 const MockMonitor = vi.fn();
 
-vi.mock('@lucide/svelte', () => ({
-    Sun: MockSun,
-    Moon: MockMoon,
-    Monitor: MockMonitor,
-}));
+vi.mock('@lucide/svelte/icons/sun', () => ({ default: MockSun }));
+vi.mock('@lucide/svelte/icons/moon', () => ({ default: MockMoon }));
+vi.mock('@lucide/svelte/icons/monitor', () => ({ default: MockMonitor }));
 
 // Mock useTheme hook
 let mockThemeStore: ThemeStore;
