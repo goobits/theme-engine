@@ -69,7 +69,13 @@
     ],
     "peerDependencies": {
         "@sveltejs/kit": "^2.0.0",
-        "svelte": "^5.0.0"
+        "svelte": "^5.0.0",
+        "@lucide/svelte": ">=0.400.0"
+    },
+    "peerDependenciesMeta": {
+        "@lucide/svelte": {
+            "optional": true
+        }
     },
     "scripts": {
         "package": "svelte-package",
@@ -87,6 +93,7 @@
     },
     "devDependencies": {
         "@eslint/js": "^9.39.1",
+        "@lucide/svelte": "^0.553.0",
         "@sveltejs/adapter-auto": "^7.0.0",
         "@sveltejs/kit": "^2.48.4",
         "@sveltejs/package": "^2.5.4",
@@ -140,7 +147,6 @@
         "access": "public"
     },
     "dependencies": {
-        "@lucide/svelte": "^0.553.0",
         "esm-env": "^1.2.2"
     }
 }

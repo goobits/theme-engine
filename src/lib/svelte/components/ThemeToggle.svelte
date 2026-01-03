@@ -20,7 +20,11 @@
   - Supports keyboard navigation (Enter/Space to activate)
 -->
 <script lang="ts">
-    import { Sun, Moon, Monitor } from '@lucide/svelte';
+    // Use direct imports to avoid bundling all 1400+ lucide icons in dev mode
+    // See: https://lucide.dev/guide/packages/lucide-svelte#tree-shaking
+    import Sun from '@lucide/svelte/icons/sun';
+    import Moon from '@lucide/svelte/icons/moon';
+    import Monitor from '@lucide/svelte/icons/monitor';
     import { useTheme } from '../hooks/useTheme.svelte';
     import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants';
 
