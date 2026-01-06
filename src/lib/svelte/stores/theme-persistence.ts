@@ -7,14 +7,14 @@
  * @module stores/theme-persistence
  */
 
-import { isBrowser } from '../../utils/browser';
-import { STORAGE_KEY } from '../../core/constants';
-import type { ThemeMode, ThemeScheme } from '../../core/types';
+import { STORAGE_KEY } from '../../core/constants'
+import type { ThemeMode, ThemeScheme } from '../../core/types'
+import { isBrowser } from '../../utils/browser'
 import {
-    readPreferenceCookies,
-    writePreferenceCookies,
-    type UserPreferences,
-} from '../../utils/cookies';
+	readPreferenceCookies,
+	type UserPreferences,
+	writePreferenceCookies
+} from '../../utils/cookies'
 
 /**
  * Theme preference data structure for persistence.
@@ -22,10 +22,12 @@ import {
  * Represents the raw theme preferences stored in localStorage/cookies.
  */
 export interface ThemePersistenceData {
-    /** Theme mode preference */
-    theme: ThemeMode;
-    /** Color scheme identifier */
-    themeScheme: ThemeScheme;
+
+	/** Theme mode preference */
+	theme: ThemeMode;
+
+	/** Color scheme identifier */
+	themeScheme: ThemeScheme;
 }
 
 /**
@@ -47,17 +49,17 @@ export interface ThemePersistenceData {
  * - Writes to both localStorage and cookies atomically
  */
 export function saveThemePreferences(data: ThemePersistenceData): void {
-    if (!isBrowser()) return;
+	if (!isBrowser()) return
 
-    try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-        writePreferenceCookies({
-            theme: data.theme,
-            themeScheme: data.themeScheme,
-        });
-    } catch (err) {
-        console.error('Failed to save theme settings to localStorage', err);
-    }
+	try {
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+		writePreferenceCookies({
+			theme: data.theme,
+			themeScheme: data.themeScheme
+		})
+	} catch (err) {
+		console.error('Failed to save theme settings to localStorage', err)
+	}
 }
 
 /**
@@ -86,36 +88,37 @@ export function saveThemePreferences(data: ThemePersistenceData): void {
  * - Cookies require both theme and themeScheme to be present
  */
 export function loadThemePreferences(): Partial<ThemePersistenceData> | null {
-    if (!isBrowser()) {
-        return null;
-    }
+	if (!isBrowser()) {
+		return null
+	}
 
-    // Try localStorage first
-    try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (saved) {
-            const parsed = JSON.parse(saved);
-            // Return parsed data even if partial - caller will merge with defaults
-            return parsed;
-        }
-    } catch (err) {
-        console.warn('Failed to load theme settings from localStorage', err);
-    }
+	// Try localStorage first
+	try {
+		const saved = localStorage.getItem(STORAGE_KEY)
+		if (saved) {
+			const parsed = JSON.parse(saved)
 
-    // Fallback to cookies
-    try {
-        const cookieSettings: Partial<UserPreferences> = readPreferenceCookies();
-        if (cookieSettings.theme && cookieSettings.themeScheme) {
-            return {
-                theme: cookieSettings.theme,
-                themeScheme: cookieSettings.themeScheme,
-            };
-        }
-    } catch {
-        // Cookie reading failed, return null
-    }
+			// Return parsed data even if partial - caller will merge with defaults
+			return parsed
+		}
+	} catch (err) {
+		console.warn('Failed to load theme settings from localStorage', err)
+	}
 
-    return null;
+	// Fallback to cookies
+	try {
+		const cookieSettings: Partial<UserPreferences> = readPreferenceCookies()
+		if (cookieSettings.theme && cookieSettings.themeScheme) {
+			return {
+				theme: cookieSettings.theme,
+				themeScheme: cookieSettings.themeScheme
+			}
+		}
+	} catch {
+		// Cookie reading failed, return null
+	}
+
+	return null
 }
 
 /**
@@ -135,11 +138,11 @@ export function loadThemePreferences(): Partial<ThemePersistenceData> | null {
  * - Handles errors gracefully
  */
 export function clearThemePreferences(): void {
-    if (!isBrowser()) return;
+	if (!isBrowser()) return
 
-    try {
-        localStorage.removeItem(STORAGE_KEY);
-    } catch (err) {
-        console.error('Failed to clear theme settings from localStorage', err);
-    }
+	try {
+		localStorage.removeItem(STORAGE_KEY)
+	} catch (err) {
+		console.error('Failed to clear theme settings from localStorage', err)
+	}
 }

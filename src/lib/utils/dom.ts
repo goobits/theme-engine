@@ -17,7 +17,7 @@
  * ```
  */
 
-import { browser } from '$app/environment';
+import { browser } from '$app/environment'
 
 /**
  * Safely retrieves the document's root HTML element.
@@ -51,8 +51,8 @@ import { browser } from '$app/environment';
  * runtime errors in server-side contexts.
  */
 export function getHtmlElement(): HTMLElement | null {
-    if (!browser || typeof document === 'undefined') return null;
-    return document.documentElement;
+	if (!browser || typeof document === 'undefined') return null
+	return document.documentElement
 }
 
 /**
@@ -104,17 +104,17 @@ export function getHtmlElement(): HTMLElement | null {
  * any value. Classes not present on the element are safely ignored.
  */
 export function removeSchemeClasses(element: HTMLElement, schemeNames?: string[]): void {
-    if (schemeNames) {
-        // Remove specific schemes
-        schemeNames.forEach(schemeName => {
-            element.classList.remove(`scheme-${schemeName}`);
-        });
-    } else {
-        // Remove ALL scheme-* classes
-        Array.from(element.classList)
-            .filter(cls => cls.startsWith('scheme-'))
-            .forEach(cls => element.classList.remove(cls));
-    }
+	if (schemeNames) {
+		// Remove specific schemes
+		schemeNames.forEach(schemeName => {
+			element.classList.remove(`scheme-${ schemeName }`)
+		})
+	} else {
+		// Remove ALL scheme-* classes
+		Array.from(element.classList)
+			.filter(cls => cls.startsWith('scheme-'))
+			.forEach(cls => element.classList.remove(cls))
+	}
 }
 
 /**
@@ -157,13 +157,13 @@ export function removeSchemeClasses(element: HTMLElement, schemeNames?: string[]
  * It does not affect scheme classes or other CSS classes on the element.
  */
 export function removeThemeClasses(element: HTMLElement): void {
-    element.classList.remove(
-        'theme-light',
-        'theme-dark',
-        'theme-system',
-        'theme-system-light',
-        'theme-system-dark'
-    );
+	element.classList.remove(
+		'theme-light',
+		'theme-dark',
+		'theme-system',
+		'theme-system-light',
+		'theme-system-dark'
+	)
 }
 
 /**
@@ -202,8 +202,8 @@ export function removeThemeClasses(element: HTMLElement): void {
  * `data-theme` attribute.
  */
 export function applyThemeClass(element: HTMLElement, theme: 'light' | 'dark'): void {
-    removeThemeClasses(element);
-    element.classList.add(`theme-${theme}`);
+	removeThemeClasses(element)
+	element.classList.add(`theme-${ theme }`)
 }
 
 /**
@@ -243,7 +243,7 @@ export function applyThemeClass(element: HTMLElement, theme: 'light' | 'dark'): 
  * - The scheme name is used as-is to form the class name (`scheme-{scheme}`)
  */
 export function applySchemeClass(element: HTMLElement, scheme: string): void {
-    element.classList.add(`scheme-${scheme}`);
+	element.classList.add(`scheme-${ scheme }`)
 }
 
 /**
@@ -285,7 +285,7 @@ export function applySchemeClass(element: HTMLElement, scheme: string): void {
  * - This attribute is commonly used in CSS selectors: `[data-theme="dark"] { ... }`
  */
 export function setDataThemeAttribute(element: HTMLElement, theme: string): void {
-    element.dataset.theme = theme;
+	element.dataset.theme = theme
 }
 
 /**
@@ -324,5 +324,5 @@ export function setDataThemeAttribute(element: HTMLElement, theme: string): void
  * - Use this to read the resolved theme value, not the user's preference
  */
 export function getDataThemeAttribute(element: HTMLElement): string | null {
-    return element.dataset.theme ?? null;
+	return element.dataset.theme ?? null
 }

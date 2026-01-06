@@ -7,10 +7,10 @@
  * @module stores/theme
  */
 
-import { isBrowser } from '../../utils/browser';
-import type { ThemeMode, ThemeScheme, SchemeConfig } from '../../core/types';
-import type { ThemeConfig } from '../../core/config';
-import { saveThemePreferences, loadThemePreferences } from './theme-persistence';
+import type { ThemeConfig } from '../../core/config'
+import type { SchemeConfig,ThemeMode, ThemeScheme } from '../../core/types'
+import { isBrowser } from '../../utils/browser'
+import { loadThemePreferences,saveThemePreferences } from './theme-persistence'
 
 /**
  * Internal theme settings structure.
@@ -18,10 +18,12 @@ import { saveThemePreferences, loadThemePreferences } from './theme-persistence'
  * Represents the raw theme preferences stored in localStorage/cookies.
  */
 export interface ThemeSettings {
-    /** Current theme mode preference */
-    theme: ThemeMode;
-    /** Current color scheme identifier */
-    themeScheme: ThemeScheme;
+
+	/** Current theme mode preference */
+	theme: ThemeMode;
+
+	/** Current color scheme identifier */
+	themeScheme: ThemeScheme;
 }
 
 /**
@@ -31,12 +33,15 @@ export interface ThemeSettings {
  * non-runes code and external state management.
  */
 export interface ThemeStoreSnapshot {
-    /** Complete settings object */
-    settings: ThemeSettings;
-    /** Current theme mode */
-    theme: ThemeMode;
-    /** Current color scheme */
-    scheme: ThemeScheme;
+
+	/** Complete settings object */
+	settings: ThemeSettings;
+
+	/** Current theme mode */
+	theme: ThemeMode;
+
+	/** Current color scheme */
+	scheme: ThemeScheme;
 }
 
 /**
@@ -53,22 +58,30 @@ export interface ThemeStoreSnapshot {
  * ```
  */
 export interface ThemeStore {
-    /** Subscribe to store changes (for non-runes compatibility) */
-    subscribe: (fn: (value: ThemeStoreSnapshot) => void) => () => void;
-    /** Current settings object (reactive) */
-    readonly settings: ThemeSettings;
-    /** Current theme mode (reactive) */
-    readonly theme: ThemeMode;
-    /** Current color scheme (reactive) */
-    readonly scheme: ThemeScheme;
-    /** Available color schemes from config */
-    readonly availableSchemes: SchemeConfig[];
-    /** Set the theme mode */
-    setTheme(theme: ThemeMode): void;
-    /** Set the color scheme */
-    setScheme(scheme: ThemeScheme): void;
-    /** Cycle through modes: light → dark → system → light */
-    cycleMode(): void;
+
+	/** Subscribe to store changes (for non-runes compatibility) */
+	subscribe: (fn: (value: ThemeStoreSnapshot) => void) => () => void;
+
+	/** Current settings object (reactive) */
+	readonly settings: ThemeSettings;
+
+	/** Current theme mode (reactive) */
+	readonly theme: ThemeMode;
+
+	/** Current color scheme (reactive) */
+	readonly scheme: ThemeScheme;
+
+	/** Available color schemes from config */
+	readonly availableSchemes: SchemeConfig[];
+
+	/** Set the theme mode */
+	setTheme(theme: ThemeMode): void;
+
+	/** Set the color scheme */
+	setScheme(scheme: ThemeScheme): void;
+
+	/** Cycle through modes: light → dark → system → light */
+	cycleMode(): void;
 }
 
 /**
@@ -105,85 +118,86 @@ export interface ThemeStore {
  * - The store is designed for use with Svelte 5 runes
  */
 export function createThemeStore(config: ThemeConfig): ThemeStore {
-    const defaultSettings: ThemeSettings = {
-        theme: 'system',
-        themeScheme: Object.keys(config.schemes)[0] || 'default',
-    };
+	const defaultSettings: ThemeSettings = {
+		theme: 'system',
+		themeScheme: Object.keys(config.schemes)[0] || 'default'
+	}
 
-    let settings = $state<ThemeSettings>(defaultSettings);
+	let settings = $state<ThemeSettings>(defaultSettings)
 
-    // Load saved preferences on initialization (browser only)
-    if (isBrowser()) {
-        const saved = loadThemePreferences();
-        if (saved) {
-            settings = { ...defaultSettings, ...saved };
-        }
-    }
+	// Load saved preferences on initialization (browser only)
+	if (isBrowser()) {
+		const saved = loadThemePreferences()
+		if (saved) {
+			settings = { ...defaultSettings, ...saved }
+		}
+	}
 
-    const theme = $derived(settings.theme);
-    const scheme = $derived(settings.themeScheme);
-    const availableSchemes = $derived(Object.values(config.schemes));
+	const theme = $derived(settings.theme)
+	const scheme = $derived(settings.themeScheme)
+	const availableSchemes = $derived(Object.values(config.schemes))
 
-    function setTheme(newTheme: ThemeMode) {
-        settings.theme = newTheme;
-        saveThemePreferences(settings);
-        notifySubscribers();
-    }
+	function setTheme(newTheme: ThemeMode) {
+		settings.theme = newTheme
+		saveThemePreferences(settings)
+		notifySubscribers()
+	}
 
-    function setScheme(newScheme: ThemeScheme) {
-        settings.themeScheme = newScheme;
-        saveThemePreferences(settings);
-        notifySubscribers();
-    }
+	function setScheme(newScheme: ThemeScheme) {
+		settings.themeScheme = newScheme
+		saveThemePreferences(settings)
+		notifySubscribers()
+	}
 
-    function cycleMode() {
-        const modes: ThemeMode[] = ['light', 'dark', 'system'];
-        const currentIndex = modes.indexOf(settings.theme);
-        const nextIndex = (currentIndex + 1) % modes.length;
-        setTheme(modes[nextIndex]);
-    }
+	function cycleMode() {
+		const modes: ThemeMode[] = [ 'light', 'dark', 'system' ]
+		const currentIndex = modes.indexOf(settings.theme)
+		const nextIndex = (currentIndex + 1) % modes.length
+		setTheme(modes[nextIndex])
+	}
 
-    // Create a subscribe function for backward compatibility with non-runes code
-    let subscribers = new Set<(value: ThemeStoreSnapshot) => void>();
+	// Create a subscribe function for backward compatibility with non-runes code
+	let subscribers = new Set<(value: ThemeStoreSnapshot) => void>()
 
-    const notifySubscribers = () => {
-        const snapshot: ThemeStoreSnapshot = {
-            settings,
-            theme,
-            scheme,
-        };
-        subscribers.forEach(fn => fn(snapshot));
-    };
+	const notifySubscribers = () => {
+		const snapshot: ThemeStoreSnapshot = {
+			settings,
+			theme,
+			scheme
+		}
+		subscribers.forEach(fn => fn(snapshot))
+	}
 
-    const subscribe = (fn: (value: ThemeStoreSnapshot) => void): (() => void) => {
-        subscribers.add(fn);
-        // Immediately call the subscriber with current value
-        fn({
-            settings,
-            theme,
-            scheme,
-        });
-        return () => {
-            subscribers.delete(fn);
-        };
-    };
+	const subscribe = (fn: (value: ThemeStoreSnapshot) => void): (() => void) => {
+		subscribers.add(fn)
 
-    return {
-        subscribe,
-        get settings() {
-            return settings;
-        },
-        get theme() {
-            return theme;
-        },
-        get scheme() {
-            return scheme;
-        },
-        get availableSchemes() {
-            return availableSchemes;
-        },
-        setTheme,
-        setScheme,
-        cycleMode,
-    };
+		// Immediately call the subscriber with current value
+		fn({
+			settings,
+			theme,
+			scheme
+		})
+		return () => {
+			subscribers.delete(fn)
+		}
+	}
+
+	return {
+		subscribe,
+		get settings() {
+			return settings
+		},
+		get theme() {
+			return theme
+		},
+		get scheme() {
+			return scheme
+		},
+		get availableSchemes() {
+			return availableSchemes
+		},
+		setTheme,
+		setScheme,
+		cycleMode
+	}
 }

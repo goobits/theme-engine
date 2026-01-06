@@ -23,11 +23,11 @@
   ```
 -->
 <script lang="ts">
-    import { useTheme } from '../hooks/useTheme.svelte';
+    import { useTheme } from '../hooks/useTheme.svelte'
 
-    const theme = useTheme();
-    const currentScheme = $derived(theme.scheme);
-    const availableSchemes = $derived(theme.availableSchemes);
+    const theme = useTheme()
+    const currentScheme = $derived(theme.scheme)
+    const availableSchemes = $derived(theme.availableSchemes)
 </script>
 
 <select value={currentScheme} onchange={e => theme.setScheme(e.currentTarget.value)}>

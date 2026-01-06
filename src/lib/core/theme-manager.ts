@@ -5,13 +5,13 @@
  * to apply theme classes and handle system theme preference changes.
  */
 
-import { isBrowser } from '../utils/browser';
-import { watchSystemTheme as watchSystemThemeUtil, prefersDarkMode } from '../utils/system-theme';
-import { getHtmlElement } from '../utils/dom';
-import { logger } from '../utils/logger';
-import { applyFullTheme } from './scheme-registry';
-import { getRouteTheme, type RouteThemeConfig } from '../utils/route-themes';
-import type { ThemeMode, FullTheme, ThemeScheme } from './types';
+import { isBrowser } from '../utils/browser'
+import { getHtmlElement } from '../utils/dom'
+import { logger } from '../utils/logger'
+import { getRouteTheme, type RouteThemeConfig } from '../utils/route-themes'
+import { prefersDarkMode,watchSystemTheme as watchSystemThemeUtil } from '../utils/system-theme'
+import { applyFullTheme } from './scheme-registry'
+import type { FullTheme, ThemeMode, ThemeScheme } from './types'
 
 /**
  * Apply a theme with its associated color scheme to the document.
@@ -42,22 +42,22 @@ import type { ThemeMode, FullTheme, ThemeScheme } from './types';
  * @see {@link initializeTheme} for complete theme system initialization
  */
 export function applyThemeWithScheme(theme: ThemeMode, scheme: ThemeScheme): void {
-    const fullTheme: FullTheme = { base: theme, scheme };
-    applyFullTheme(fullTheme);
+	const fullTheme: FullTheme = { base: theme, scheme }
+	applyFullTheme(fullTheme)
 }
 
 /**
  * Apply the resolved system theme preference
  */
 function applySystemTheme(): void {
-    const html = getHtmlElement();
-    if (!html) return;
+	const html = getHtmlElement()
+	if (!html) return
 
-    const isDark = prefersDarkMode();
+	const isDark = prefersDarkMode()
 
-    // Add resolved system theme class for immediate styling
-    html.classList.remove('theme-system-light', 'theme-system-dark');
-    html.classList.add(isDark ? 'theme-system-dark' : 'theme-system-light');
+	// Add resolved system theme class for immediate styling
+	html.classList.remove('theme-system-light', 'theme-system-dark')
+	html.classList.add(isDark ? 'theme-system-dark' : 'theme-system-light')
 }
 
 /**
@@ -97,18 +97,18 @@ function applySystemTheme(): void {
  * @see {@link applyThemeWithScheme} for manually applying theme changes
  */
 export function watchSystemTheme(callback: (systemTheme: 'light' | 'dark') => void): () => void {
-    if (!isBrowser()) return () => {};
+	if (!isBrowser()) return () => {}
 
-    return watchSystemThemeUtil(isDark => {
-        const systemTheme = isDark ? 'dark' : 'light';
-        callback(systemTheme);
+	return watchSystemThemeUtil(isDark => {
+		const systemTheme = isDark ? 'dark' : 'light'
+		callback(systemTheme)
 
-        // If system theme is currently active, update the resolved class
-        const html = getHtmlElement();
-        if (html?.classList.contains('theme-system')) {
-            applySystemTheme();
-        }
-    });
+		// If system theme is currently active, update the resolved class
+		const html = getHtmlElement()
+		if (html?.classList.contains('theme-system')) {
+			applySystemTheme()
+		}
+	})
 }
 
 /**
@@ -150,26 +150,26 @@ export function watchSystemTheme(callback: (systemTheme: 'light' | 'dark') => vo
  * @see {@link watchSystemTheme} for monitoring theme changes separately
  */
 export function initializeTheme(
-    storedTheme: ThemeMode,
-    storedScheme: ThemeScheme = 'default'
+	storedTheme: ThemeMode,
+	storedScheme: ThemeScheme = 'default'
 ): () => void {
-    if (!isBrowser()) return () => {};
+	if (!isBrowser()) return () => {}
 
-    // All scheme CSS is statically imported - no preloading needed
+	// All scheme CSS is statically imported - no preloading needed
 
-    // Apply the stored theme and scheme immediately
-    applyThemeWithScheme(storedTheme, storedScheme);
+	// Apply the stored theme and scheme immediately
+	applyThemeWithScheme(storedTheme, storedScheme)
 
-    // Set up system theme watching for when system mode is active
-    const cleanup = watchSystemTheme(() => {
-        // Only react if system theme is currently active
-        const html = getHtmlElement();
-        if (html?.classList.contains('theme-system')) {
-            applySystemTheme();
-        }
-    });
+	// Set up system theme watching for when system mode is active
+	const cleanup = watchSystemTheme(() => {
+		// Only react if system theme is currently active
+		const html = getHtmlElement()
+		if (html?.classList.contains('theme-system')) {
+			applySystemTheme()
+		}
+	})
 
-    return cleanup;
+	return cleanup
 }
 
 /**
@@ -230,55 +230,55 @@ export function initializeTheme(
  * @see {@link applyThemeWithScheme} for manually applying specific themes
  */
 export function applyRouteTheme(
-    pathname: string,
-    userTheme: ThemeMode,
-    userScheme: ThemeScheme,
-    routeThemes: Record<string, RouteThemeConfig>
+	pathname: string,
+	userTheme: ThemeMode,
+	userScheme: ThemeScheme,
+	routeThemes: Record<string, RouteThemeConfig>
 ): FullTheme {
-    const routeConfig = getRouteTheme(pathname, routeThemes);
+	const routeConfig = getRouteTheme(pathname, routeThemes)
 
-    logger.info('Route theme check', {
-        pathname,
-        routeConfig: routeConfig
-            ? {
-                  theme: routeConfig.theme,
-                  override: routeConfig.override,
-                  description: routeConfig.description,
-              }
-            : null,
-        userTheme,
-        userScheme,
-    });
+	logger.info('Route theme check', {
+		pathname,
+		routeConfig: routeConfig
+			? {
+				theme: routeConfig.theme,
+				override: routeConfig.override,
+				description: routeConfig.description
+			}
+			: null,
+		userTheme,
+		userScheme
+	})
 
-    if (routeConfig) {
-        if (routeConfig.override) {
-            // Route overrides user preferences
-            logger.info('Applying route theme override', {
-                pathname,
-                routeTheme: routeConfig.theme,
-                userTheme: { base: userTheme, scheme: userScheme },
-            });
-            applyFullTheme(routeConfig.theme);
-            return routeConfig.theme;
-        } else {
-            // Route suggests theme but respects user preferences for base theme
-            const suggestedTheme: FullTheme = {
-                base: userTheme,
-                scheme: routeConfig.theme.scheme,
-            };
-            logger.info('Applying route theme suggestion', {
-                pathname,
-                suggestedTheme,
-                userTheme: { base: userTheme, scheme: userScheme },
-            });
-            applyFullTheme(suggestedTheme);
-            return suggestedTheme;
-        }
-    } else {
-        // No route theme, use user preferences
-        logger.debug('No route theme found, using user preferences', { pathname });
-        const userFullTheme: FullTheme = { base: userTheme, scheme: userScheme };
-        applyFullTheme(userFullTheme);
-        return userFullTheme;
-    }
+	if (routeConfig) {
+		if (routeConfig.override) {
+			// Route overrides user preferences
+			logger.info('Applying route theme override', {
+				pathname,
+				routeTheme: routeConfig.theme,
+				userTheme: { base: userTheme, scheme: userScheme }
+			})
+			applyFullTheme(routeConfig.theme)
+			return routeConfig.theme
+		} else {
+			// Route suggests theme but respects user preferences for base theme
+			const suggestedTheme: FullTheme = {
+				base: userTheme,
+				scheme: routeConfig.theme.scheme
+			}
+			logger.info('Applying route theme suggestion', {
+				pathname,
+				suggestedTheme,
+				userTheme: { base: userTheme, scheme: userScheme }
+			})
+			applyFullTheme(suggestedTheme)
+			return suggestedTheme
+		}
+	} else {
+		// No route theme, use user preferences
+		logger.debug('No route theme found, using user preferences', { pathname })
+		const userFullTheme: FullTheme = { base: userTheme, scheme: userScheme }
+		applyFullTheme(userFullTheme)
+		return userFullTheme
+	}
 }

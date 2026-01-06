@@ -20,51 +20,53 @@
   ```
 -->
 <script lang="ts">
-    import { onMount, setContext, untrack } from 'svelte';
-    import { page } from '$app/stores';
-    import { isBrowser } from '../../utils/browser';
-    import { createThemeStore } from '../stores/theme.svelte';
-    import { initializeTheme, applyRouteTheme } from '../../core/theme-manager';
-    import type { ThemeMode, ThemeScheme } from '../../core/types';
-    import type { ThemeConfig } from '../../core/config';
+    import { onMount, setContext, untrack } from 'svelte'
+
+    import { page } from '$app/stores'
+
+    import type { ThemeConfig } from '../../core/config'
+    import { applyRouteTheme,initializeTheme } from '../../core/theme-manager'
+    import type { ThemeMode, ThemeScheme } from '../../core/types'
+    import { isBrowser } from '../../utils/browser'
+    import { createThemeStore } from '../stores/theme.svelte'
 
     const {
-        children,
-        config,
-        serverPreferences,
+    	children,
+    	config,
+    	serverPreferences
     }: {
-        children: import('svelte').Snippet;
-        config: ThemeConfig;
-        serverPreferences: { theme: ThemeMode; themeScheme: ThemeScheme };
-    } = $props();
+    	children: import('svelte').Snippet;
+    	config: ThemeConfig;
+    	serverPreferences: { theme: ThemeMode; themeScheme: ThemeScheme };
+    } = $props()
 
     // Use untrack to explicitly capture initial config value - the store is created once
     // and doesn't need to react to config prop changes during the component's lifetime
-    const themeStore = untrack(() => createThemeStore(config));
-    setContext('theme', themeStore);
+    const themeStore = untrack(() => createThemeStore(config))
+    setContext('theme', themeStore)
 
-    let initialized = $state(false);
+    let initialized = $state(false)
 
     // Initialize theme on the client
     onMount(() => {
-        const cleanup = initializeTheme(serverPreferences.theme, serverPreferences.themeScheme);
-        initialized = true;
-        return cleanup;
-    });
+    	const cleanup = initializeTheme(serverPreferences.theme, serverPreferences.themeScheme)
+    	initialized = true
+    	return cleanup
+    })
 
     // Apply route theme when pathname changes or theme/scheme is changed by user
     // This effect properly tracks all dependencies: pathname, theme, and scheme
     $effect(() => {
-        if (isBrowser() && initialized) {
-            // Access all dependencies at the top level so Svelte tracks them
-            const currentPath = $page.url.pathname;
-            const currentTheme = themeStore.theme;
-            const currentScheme = themeStore.scheme;
+    	if (isBrowser() && initialized) {
+    		// Access all dependencies at the top level so Svelte tracks them
+    		const currentPath = $page.url.pathname
+    		const currentTheme = themeStore.theme
+    		const currentScheme = themeStore.scheme
 
-            // Apply theme based on current route and user preferences
-            applyRouteTheme(currentPath, currentTheme, currentScheme, config.routeThemes || {});
-        }
-    });
+    		// Apply theme based on current route and user preferences
+    		applyRouteTheme(currentPath, currentTheme, currentScheme, config.routeThemes || {})
+    	}
+    })
 </script>
 
 {@render children()}

@@ -19,7 +19,7 @@
  * const userTheme: ThemeMode = 'system'; // Respects OS dark mode setting
  * ```
  */
-export type ThemeMode = 'light' | 'dark' | 'system';
+export type ThemeMode = 'light' | 'dark' | 'system'
 
 /**
  * Theme color scheme identifier.
@@ -37,7 +37,7 @@ export type ThemeMode = 'light' | 'dark' | 'system';
  * const custom: ThemeScheme = 'ocean'; // Custom scheme, no cast needed
  * ```
  */
-export type ThemeScheme = string;
+export type ThemeScheme = string
 
 /**
  * Built-in scheme names provided by the library.
@@ -53,7 +53,7 @@ export type ThemeScheme = string;
  * const builtIn: BuiltInScheme = 'default';
  * ```
  */
-export type BuiltInScheme = 'default' | 'spells';
+export type BuiltInScheme = 'default' | 'spells'
 
 /**
  * Complete theme configuration combining mode and scheme.
@@ -71,10 +71,12 @@ export type BuiltInScheme = 'default' | 'spells';
  * ```
  */
 export interface FullTheme {
-    /** Theme mode: 'light', 'dark', or 'system' */
-    base: ThemeMode;
-    /** Color scheme identifier */
-    scheme: ThemeScheme;
+
+	/** Theme mode: 'light', 'dark', or 'system' */
+	base: ThemeMode;
+
+	/** Color scheme identifier */
+	scheme: ThemeScheme;
 }
 
 /**
@@ -100,25 +102,35 @@ export interface FullTheme {
  * ```
  */
 export interface SchemeConfig {
-    /** Internal scheme identifier (should match the key in schemes record) */
-    name: string;
-    /** Human-readable name shown in UI */
-    displayName: string;
-    /** Brief description of the scheme's visual style */
-    description: string;
-    /** Optional emoji or icon character for visual identification */
-    icon?: string;
-    /** Optional custom page title when this scheme is active */
-    title?: string;
-    /** Preview colors for theme picker thumbnails */
-    preview: {
-        /** Primary brand color in 6-digit hex format (#RRGGBB) */
-        primary: string;
-        /** Accent/secondary color in 6-digit hex format */
-        accent: string;
-        /** Background color in 6-digit hex format */
-        background: string;
-    };
-    /** Optional path to additional CSS file for this scheme */
-    cssFile?: string;
+
+	/** Internal scheme identifier (should match the key in schemes record) */
+	name: string;
+
+	/** Human-readable name shown in UI */
+	displayName: string;
+
+	/** Brief description of the scheme's visual style */
+	description: string;
+
+	/** Optional emoji or icon character for visual identification */
+	icon?: string;
+
+	/** Optional custom page title when this scheme is active */
+	title?: string;
+
+	/** Preview colors for theme picker thumbnails */
+	preview: {
+
+		/** Primary brand color in 6-digit hex format (#RRGGBB) */
+		primary: string;
+
+		/** Accent/secondary color in 6-digit hex format */
+		accent: string;
+
+		/** Background color in 6-digit hex format */
+		background: string;
+	};
+
+	/** Optional path to additional CSS file for this scheme */
+	cssFile?: string;
 }

@@ -4,15 +4,18 @@
  * Provides functions for matching routes against a theme configuration.
  */
 
-import type { FullTheme, ThemeScheme } from '../core/types';
+import type { FullTheme, ThemeScheme } from '../core/types'
 
 export interface RouteThemeConfig {
-    /** The full theme to apply for this route */
-    theme: FullTheme;
-    /** Whether this route theme overrides user preferences */
-    override: boolean;
-    /** Optional description for this route theme */
-    description?: string;
+
+	/** The full theme to apply for this route */
+	theme: FullTheme;
+
+	/** Whether this route theme overrides user preferences */
+	override: boolean;
+
+	/** Optional description for this route theme */
+	description?: string;
 }
 
 /**
@@ -20,7 +23,7 @@ export interface RouteThemeConfig {
  * @internal
  */
 function escapeRegex(str: string): string {
-    return str.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+	return str.replace(/[.+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /**
@@ -28,9 +31,9 @@ function escapeRegex(str: string): string {
  * @internal
  */
 function patternToRegex(pattern: string): RegExp {
-    const escaped = escapeRegex(pattern);
-    const regexPattern = escaped.replace(/\*/g, '.*');
-    return new RegExp(`^${regexPattern}$`);
+	const escaped = escapeRegex(pattern)
+	const regexPattern = escaped.replace(/\*/g, '.*')
+	return new RegExp(`^${ regexPattern }$`)
 }
 
 /**
@@ -83,22 +86,22 @@ function patternToRegex(pattern: string): RegExp {
  * @see {@link applyRouteTheme} for applying the theme from a route configuration
  */
 export function getRouteTheme(
-    pathname: string,
-    routeThemes: Record<string, RouteThemeConfig>
+	pathname: string,
+	routeThemes: Record<string, RouteThemeConfig>
 ): RouteThemeConfig | null {
-    // Direct match first
-    if (routeThemes[pathname]) {
-        return routeThemes[pathname];
-    }
+	// Direct match first
+	if (routeThemes[pathname]) {
+		return routeThemes[pathname]
+	}
 
-    // Check for wildcard matches
-    for (const [routePattern, config] of Object.entries(routeThemes)) {
-        if (routePattern.includes('*') && patternToRegex(routePattern).test(pathname)) {
-            return config;
-        }
-    }
+	// Check for wildcard matches
+	for (const [ routePattern, config ] of Object.entries(routeThemes)) {
+		if (routePattern.includes('*') && patternToRegex(routePattern).test(pathname)) {
+			return config
+		}
+	}
 
-    return null;
+	return null
 }
 
 /**
@@ -136,10 +139,10 @@ export function getRouteTheme(
  * @see {@link routeThemeOverrides} for checking if a route forces theme override
  */
 export function routeHasTheme(
-    pathname: string,
-    routeThemes: Record<string, RouteThemeConfig>
+	pathname: string,
+	routeThemes: Record<string, RouteThemeConfig>
 ): boolean {
-    return getRouteTheme(pathname, routeThemes) !== null;
+	return getRouteTheme(pathname, routeThemes) !== null
 }
 
 /**
@@ -190,12 +193,12 @@ export function routeHasTheme(
  * @see {@link routeHasTheme} for checking if a route has any theme
  */
 export function getRoutesForScheme(
-    scheme: ThemeScheme,
-    routeThemes: Record<string, RouteThemeConfig>
+	scheme: ThemeScheme,
+	routeThemes: Record<string, RouteThemeConfig>
 ): string[] {
-    return Object.entries(routeThemes)
-        .filter(([_, config]) => config.theme.scheme === scheme)
-        .map(([route, _]) => route);
+	return Object.entries(routeThemes)
+		.filter(([ _, config ]) => config.theme.scheme === scheme)
+		.map(([ route, _ ]) => route)
 }
 
 /**
@@ -245,9 +248,9 @@ export function getRoutesForScheme(
  * @see {@link applyRouteTheme} for applying route theme with override logic
  */
 export function routeThemeOverrides(
-    pathname: string,
-    routeThemes: Record<string, RouteThemeConfig>
+	pathname: string,
+	routeThemes: Record<string, RouteThemeConfig>
 ): boolean {
-    const config = getRouteTheme(pathname, routeThemes);
-    return config?.override ?? false;
+	const config = getRouteTheme(pathname, routeThemes)
+	return config?.override ?? false
 }

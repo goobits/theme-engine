@@ -34,13 +34,13 @@
  * 3. Detects system preference via matchMedia for 'system' theme
  * 4. Applies appropriate classes and data-theme attribute to <html>
  */
-export const themeBlockingScript = `(function(){try{var d=document.documentElement,s=localStorage.getItem('theme-preferences'),p=s?JSON.parse(s):{},t=p.theme||(document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/)||[])[1]||'system',c=p.themeScheme||(document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/)||[])[1]||'default',r=t;if(t==='system'){r=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light'}d.setAttribute('data-theme',r);d.className='theme-'+t+' scheme-'+c+(t==='system'?' theme-system-'+r:'')}catch(e){}})();`;
+export const themeBlockingScript = '(function(){try{var d=document.documentElement,s=localStorage.getItem(\'theme-preferences\'),p=s?JSON.parse(s):{},t=p.theme||(document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/)||[])[1]||\'system\',c=p.themeScheme||(document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/)||[])[1]||\'default\',r=t;if(t===\'system\'){r=window.matchMedia(\'(prefers-color-scheme:dark)\').matches?\'dark\':\'light\'}d.setAttribute(\'data-theme\',r);d.className=\'theme-\'+t+\' scheme-\'+c+(t===\'system\'?\' theme-system-\'+r:\'\')}catch(e){}})();'
 
 /**
  * Ready-to-use script tag containing the blocking script.
  * Can be injected directly into HTML.
  */
-export const themeBlockingScriptTag = `<script>${themeBlockingScript}</script>`;
+export const themeBlockingScriptTag = `<script>${ themeBlockingScript }</script>`
 
 /**
  * Unminified version of the blocking script for debugging.
@@ -77,4 +77,4 @@ export const themeBlockingScriptReadable = `
     // Fail silently - SSR classes will be used
   }
 })();
-`;
+`

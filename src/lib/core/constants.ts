@@ -5,25 +5,25 @@
  * used throughout the theme engine.
  */
 
-import type { ThemeMode } from './types';
+import type { ThemeMode } from './types'
 
 /**
  * Duration in milliseconds to disable CSS transitions during theme switching.
  * This prevents visual glitches when rapidly changing themes.
  */
-export const THEME_TRANSITION_DURATION_MS = 100;
+export const THEME_TRANSITION_DURATION_MS = 100
 
 /**
  * Duration in milliseconds to display ARIA announcements for screen readers.
  * After this time, the announcement is cleared to avoid cluttering the live region.
  */
-export const ARIA_ANNOUNCEMENT_DURATION_MS = 3000;
+export const ARIA_ANNOUNCEMENT_DURATION_MS = 3000
 
 /**
  * Local storage key for persisting theme preferences.
  * Versioned to allow for schema migrations in the future.
  */
-export const STORAGE_KEY = 'app_theme_v1';
+export const STORAGE_KEY = 'app_theme_v1'
 
 /**
  * Resolves a theme mode to its visual representation.
@@ -50,8 +50,8 @@ export const STORAGE_KEY = 'app_theme_v1';
  * @see {@link applyFullTheme} for applying themes with this resolution logic
  */
 export function resolveTheme(theme: ThemeMode, prefersDark: boolean): 'light' | 'dark' {
-    if (theme === 'system') {
-        return prefersDark ? 'dark' : 'light';
-    }
-    return theme;
+	if (theme === 'system') {
+		return prefersDark ? 'dark' : 'light'
+	}
+	return theme
 }

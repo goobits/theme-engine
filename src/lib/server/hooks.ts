@@ -1,8 +1,9 @@
-import type { Handle } from '@sveltejs/kit';
-import { loadThemePreferences } from './preferences';
-import { resolveTheme } from '../core/constants';
-import type { ThemeConfig } from '../core/config';
-import type { ThemeMode, ThemeScheme } from '../core/types';
+import type { Handle } from '@sveltejs/kit'
+
+import type { ThemeConfig } from '../core/config'
+import { resolveTheme } from '../core/constants'
+import type { ThemeMode, ThemeScheme } from '../core/types'
+import { loadThemePreferences } from './preferences'
 
 /**
  * Theme preferences interface for extending App.Locals
@@ -20,10 +21,10 @@ import type { ThemeMode, ThemeScheme } from '../core/types';
  * ```
  */
 export interface ThemeLocals {
-    themePreferences: {
-        theme: ThemeMode;
-        themeScheme: ThemeScheme;
-    };
+	themePreferences: {
+		theme: ThemeMode;
+		themeScheme: ThemeScheme;
+	};
 }
 
 /**
@@ -31,12 +32,12 @@ export interface ThemeLocals {
  * Used to sanitize theme values before injection into HTML.
  */
 function escapeHtml(str: string): string {
-    return str
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#039;');
+	return str
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;')
 }
 
 /**
@@ -91,56 +92,56 @@ function escapeHtml(str: string): string {
  * @see {@link ThemeLocals} for TypeScript type definitions
  */
 export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
-    const themeTransform: Handle = async ({ event, resolve }) => {
-        const preferences = loadThemePreferences(event.cookies, config);
+	const themeTransform: Handle = async({ event, resolve }) => {
+		const preferences = loadThemePreferences(event.cookies, config);
 
-        // Populate event.locals for downstream access
-        // This allows +layout.server.ts to access preferences without calling loadThemePreferences again
-        (event.locals as any).themePreferences = preferences;
+		// Populate event.locals for downstream access
+		// This allows +layout.server.ts to access preferences without calling loadThemePreferences again
+		(event.locals as any).themePreferences = preferences
 
-        const response = await resolve(event, {
-            transformPageChunk: ({ html }) => {
-                // Sanitize theme values before injection to prevent XSS
-                const safeTheme = escapeHtml(preferences.theme);
-                const safeScheme = escapeHtml(preferences.themeScheme);
+		const response = await resolve(event, {
+			transformPageChunk: ({ html }) => {
+				// Sanitize theme values before injection to prevent XSS
+				const safeTheme = escapeHtml(preferences.theme)
+				const safeScheme = escapeHtml(preferences.themeScheme)
 
-                let themeClasses = `theme-${safeTheme} scheme-${safeScheme}`;
+				let themeClasses = `theme-${ safeTheme } scheme-${ safeScheme }`
 
-                // Detect dark mode preference for system theme
-                let prefersDark = false;
-                if (preferences.theme === 'system') {
-                    const prefersColorScheme = event.request.headers.get(
-                        'sec-ch-prefers-color-scheme'
-                    );
-                    const userAgent = event.request.headers.get('user-agent')?.toLowerCase() || '';
+				// Detect dark mode preference for system theme
+				let prefersDark = false
+				if (preferences.theme === 'system') {
+					const prefersColorScheme = event.request.headers.get(
+						'sec-ch-prefers-color-scheme'
+					)
+					const userAgent = event.request.headers.get('user-agent')?.toLowerCase() || ''
 
-                    prefersDark =
-                        prefersColorScheme === 'dark' || userAgent.includes('dark') || false;
-                    themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light';
-                }
+					prefersDark =
+                        prefersColorScheme === 'dark' || userAgent.includes('dark') || false
+					themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light'
+				}
 
-                // Resolve theme using shared utility
-                const resolved = resolveTheme(preferences.theme, prefersDark);
+				// Resolve theme using shared utility
+				const resolved = resolveTheme(preferences.theme, prefersDark)
 
-                // Replace theme class placeholder
-                let result = html.replace('%sveltekit.theme%', themeClasses);
+				// Replace theme class placeholder
+				let result = html.replace('%sveltekit.theme%', themeClasses)
 
-                // Inject data-theme attribute into <html> tag
-                // This adds data-theme="light" or data-theme="dark" based on resolved theme
-                const safeResolved = escapeHtml(resolved);
-                result = result.replace(
-                    /<html([\s\S]*?)>/i,
-                    `<html$1 data-theme="${safeResolved}">`
-                );
+				// Inject data-theme attribute into <html> tag
+				// This adds data-theme="light" or data-theme="dark" based on resolved theme
+				const safeResolved = escapeHtml(resolved)
+				result = result.replace(
+					/<html([\s\S]*?)>/i,
+					`<html$1 data-theme="${ safeResolved }">`
+				)
 
-                return result;
-            },
-        });
+				return result
+			}
+		})
 
-        return response;
-    };
+		return response
+	}
 
-    return {
-        transform: themeTransform,
-    };
+	return {
+		transform: themeTransform
+	}
 }

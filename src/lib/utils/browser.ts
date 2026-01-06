@@ -26,7 +26,7 @@
  * ```
  */
 
-import { browser } from '$app/environment';
+import { browser } from '$app/environment'
 
 /**
  * Check if code is running in a browser environment.
@@ -53,7 +53,7 @@ import { browser } from '$app/environment';
  * - Returns `true` in actual browser environments
  */
 export function isBrowser(): boolean {
-    return browser && typeof window !== 'undefined';
+	return browser && typeof window !== 'undefined'
 }
 
 /**
@@ -81,8 +81,8 @@ export function isBrowser(): boolean {
  * - Returns `undefined` during SSR to prevent runtime errors
  */
 export function safeWindow(): Window | undefined {
-    if (!browser || typeof window === 'undefined') return undefined;
-    return window;
+	if (!browser || typeof window === 'undefined') return undefined
+	return window
 }
 
 /**
@@ -110,8 +110,8 @@ export function safeWindow(): Window | undefined {
  * - Returns `undefined` during SSR to prevent runtime errors
  */
 export function safeDocument(): Document | undefined {
-    if (!browser || typeof document === 'undefined') return undefined;
-    return document;
+	if (!browser || typeof document === 'undefined') return undefined
+	return document
 }
 
 /**
@@ -140,8 +140,8 @@ export function safeDocument(): Document | undefined {
  * - Commonly used for setting theme attributes on the root element
  */
 export function getHtmlElement(): HTMLElement | undefined {
-    if (!browser || typeof document === 'undefined') return undefined;
-    return document.documentElement;
+	if (!browser || typeof document === 'undefined') return undefined
+	return document.documentElement
 }
 
 /**
@@ -181,8 +181,8 @@ export function getHtmlElement(): HTMLElement | undefined {
  * - Handle the potential undefined return value appropriately
  */
 export function runInBrowser<T>(callback: () => T): T | undefined {
-    if (!browser) return undefined;
-    return callback();
+	if (!browser) return undefined
+	return callback()
 }
 
 /**
@@ -225,6 +225,6 @@ export function runInBrowser<T>(callback: () => T): T | undefined {
  * - Returns the fallback value during SSR to signal "return early"
  */
 export function requireBrowser<T>(fallback: T): T | null {
-    if (!browser) return fallback;
-    return null;
+	if (!browser) return fallback
+	return null
 }

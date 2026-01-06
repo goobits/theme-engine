@@ -1,9 +1,10 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { isBrowser } from '../../utils/browser';
-    import { getHtmlElement } from '../../utils/dom';
-    import { prefersDarkMode, getDarkModeMediaQuery } from '../../utils/system-theme';
-    import { useTheme } from '../hooks/useTheme.svelte';
+    import { onMount } from 'svelte'
+
+    import { isBrowser } from '../../utils/browser'
+    import { getHtmlElement } from '../../utils/dom'
+    import { getDarkModeMediaQuery,prefersDarkMode } from '../../utils/system-theme'
+    import { useTheme } from '../hooks/useTheme.svelte'
 
     /**
      * ThemeSync - Utility component to keep data-theme attribute synchronized
@@ -43,49 +44,49 @@
      * @see {@link ThemeProvider} for automatic theme and data-theme management
      */
 
-    const theme = useTheme();
+    const theme = useTheme()
 
     // Sync data-theme attribute whenever theme changes
     $effect(() => {
-        if (isBrowser()) {
-            const html = getHtmlElement();
-            if (!html) return;
+    	if (isBrowser()) {
+    		const html = getHtmlElement()
+    		if (!html) return
 
-            // Determine resolved theme (always "light" or "dark", never "system")
-            let resolvedTheme: 'light' | 'dark';
+    		// Determine resolved theme (always "light" or "dark", never "system")
+    		let resolvedTheme: 'light' | 'dark'
 
-            if (theme.theme === 'system') {
-                resolvedTheme = prefersDarkMode() ? 'dark' : 'light';
-            } else {
-                resolvedTheme = theme.theme;
-            }
+    		if (theme.theme === 'system') {
+    			resolvedTheme = prefersDarkMode() ? 'dark' : 'light'
+    		} else {
+    			resolvedTheme = theme.theme
+    		}
 
-            // Set data-theme attribute
-            html.dataset.theme = resolvedTheme;
-        }
-    });
+    		// Set data-theme attribute
+    		html.dataset.theme = resolvedTheme
+    	}
+    })
 
     // Listen for system theme changes when in system mode
     onMount(() => {
-        if (!isBrowser()) return;
+    	if (!isBrowser()) return
 
-        const mediaQuery = getDarkModeMediaQuery();
-        if (!mediaQuery) return;
+    	const mediaQuery = getDarkModeMediaQuery()
+    	if (!mediaQuery) return
 
-        const handleChange = () => {
-            if (theme.theme === 'system') {
-                const html = getHtmlElement();
-                if (!html) return;
-                html.dataset.theme = mediaQuery.matches ? 'dark' : 'light';
-            }
-        };
+    	const handleChange = () => {
+    		if (theme.theme === 'system') {
+    			const html = getHtmlElement()
+    			if (!html) return
+    			html.dataset.theme = mediaQuery.matches ? 'dark' : 'light'
+    		}
+    	}
 
-        mediaQuery.addEventListener('change', handleChange);
+    	mediaQuery.addEventListener('change', handleChange)
 
-        return () => {
-            mediaQuery.removeEventListener('change', handleChange);
-        };
-    });
+    	return () => {
+    		mediaQuery.removeEventListener('change', handleChange)
+    	}
+    })
 </script>
 
 <!-- This component renders nothing, it only syncs the data-theme attribute -->

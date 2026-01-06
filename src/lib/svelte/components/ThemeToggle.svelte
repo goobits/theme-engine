@@ -20,105 +20,108 @@
   - Supports keyboard navigation (Enter/Space to activate)
 -->
 <script lang="ts">
+
     // Use direct imports to avoid bundling all 1400+ lucide icons in dev mode
     // See: https://lucide.dev/guide/packages/lucide-svelte#tree-shaking
-    import Sun from '@lucide/svelte/icons/sun';
-    import Moon from '@lucide/svelte/icons/moon';
-    import Monitor from '@lucide/svelte/icons/monitor';
-    import { useTheme } from '../hooks/useTheme.svelte';
-    import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants';
+    import Monitor from '@lucide/svelte/icons/monitor'
+    import Moon from '@lucide/svelte/icons/moon'
+    import Sun from '@lucide/svelte/icons/sun'
 
-    const theme = useTheme();
-    const currentTheme = $derived(theme.theme);
-    const currentScheme = $derived(theme.scheme);
+    import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants'
+    import { useTheme } from '../hooks/useTheme.svelte'
+
+    const theme = useTheme()
+    const currentTheme = $derived(theme.theme)
+    const currentScheme = $derived(theme.scheme)
 
     // Track if this is the initial load to prevent announcing on page load
-    let isInitialLoad = $state(true);
+    let isInitialLoad = $state(true)
 
     // Announce theme changes to screen readers
     function announce(message: string) {
-        if (typeof document !== 'undefined') {
-            const liveRegion = document.getElementById('aria-live-region');
-            if (liveRegion) {
-                liveRegion.textContent = message;
-                // Clear after specified duration to avoid cluttering screen reader history
-                setTimeout(() => {
-                    if (liveRegion.textContent === message) {
-                        liveRegion.textContent = '';
-                    }
-                }, ARIA_ANNOUNCEMENT_DURATION_MS);
-            }
-        }
+    	if (typeof document !== 'undefined') {
+    		const liveRegion = document.getElementById('aria-live-region')
+    		if (liveRegion) {
+    			liveRegion.textContent = message
+
+    			// Clear after specified duration to avoid cluttering screen reader history
+    			setTimeout(() => {
+    				if (liveRegion.textContent === message) {
+    					liveRegion.textContent = ''
+    				}
+    			}, ARIA_ANNOUNCEMENT_DURATION_MS)
+    		}
+    	}
     }
 
     // Watch for theme changes and announce to screen readers
     $effect(() => {
-        // Skip announcement on initial page load
-        if (isInitialLoad) {
-            isInitialLoad = false;
-            return;
-        }
+    	// Skip announcement on initial page load
+    	if (isInitialLoad) {
+    		isInitialLoad = false
+    		return
+    	}
 
-        // Announce the theme change
-        const schemeConfig = theme.availableSchemes.find(s => s.name === currentScheme);
-        const schemeName = schemeConfig?.displayName || 'Default';
+    	// Announce the theme change
+    	const schemeConfig = theme.availableSchemes.find(s => s.name === currentScheme)
+    	const schemeName = schemeConfig?.displayName || 'Default'
 
-        switch (currentTheme) {
-            case 'light':
-                announce(
-                    `Switched to light theme${schemeName !== 'Default' ? ` with ${schemeName} colors` : ''}`
-                );
-                break;
-            case 'dark':
-                announce(
-                    `Switched to dark theme${schemeName !== 'Default' ? ` with ${schemeName} colors` : ''}`
-                );
-                break;
-            case 'system':
-                announce(
-                    `Switched to system theme${schemeName !== 'Default' ? ` with ${schemeName} colors` : ''}`
-                );
-                break;
-        }
-    });
+    	switch (currentTheme) {
+    		case 'light':
+    			announce(
+    				`Switched to light theme${ schemeName !== 'Default' ? ` with ${ schemeName } colors` : '' }`
+    			)
+    			break
+    		case 'dark':
+    			announce(
+    				`Switched to dark theme${ schemeName !== 'Default' ? ` with ${ schemeName } colors` : '' }`
+    			)
+    			break
+    		case 'system':
+    			announce(
+    				`Switched to system theme${ schemeName !== 'Default' ? ` with ${ schemeName } colors` : '' }`
+    			)
+    			break
+    	}
+    })
 
     function cycleTheme() {
-        theme.cycleMode();
+    	theme.cycleMode()
     }
 
     const themeInfo = $derived(
-        (() => {
-            const schemeConfig = theme.availableSchemes.find(s => s.name === currentScheme);
-            const schemeName = schemeConfig?.displayName || 'Default';
+    	(() => {
+    		const schemeConfig = theme.availableSchemes.find(s => s.name === currentScheme)
+    		const schemeName = schemeConfig?.displayName || 'Default'
 
-            switch (currentTheme) {
-                case 'light':
-                    return {
-                        icon: Sun,
-                        tooltip: `Light theme (${schemeName})`,
-                        ariaLabel: 'Switch to dark theme',
-                    };
-                case 'dark':
-                    return {
-                        icon: Moon,
-                        tooltip: `Dark theme (${schemeName})`,
-                        ariaLabel: 'Switch to system theme',
-                    };
-                case 'system':
-                    return {
-                        icon: Monitor,
-                        tooltip: `System theme (${schemeName})`,
-                        ariaLabel: 'Switch to light theme',
-                    };
-                default:
-                    return {
-                        icon: Monitor,
-                        tooltip: `System theme (${schemeName})`,
-                        ariaLabel: 'Switch to light theme',
-                    };
-            }
-        })()
-    );
+    		switch (currentTheme) {
+    			case 'light':
+    				return {
+    					icon: Sun,
+    					tooltip: `Light theme (${ schemeName })`,
+    					ariaLabel: 'Switch to dark theme'
+    				}
+    			case 'dark':
+    				return {
+    					icon: Moon,
+    					tooltip: `Dark theme (${ schemeName })`,
+    					ariaLabel: 'Switch to system theme'
+    				}
+    			case 'system':
+    				return {
+    					icon: Monitor,
+    					tooltip: `System theme (${ schemeName })`,
+    					ariaLabel: 'Switch to light theme'
+    				}
+    			default:
+    				return {
+    					icon: Monitor,
+    					tooltip: `System theme (${ schemeName })`,
+    					ariaLabel: 'Switch to light theme'
+    				}
+    		}
+    	})()
+    )
 </script>
 
 <button

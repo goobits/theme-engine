@@ -3,22 +3,23 @@
  * Handles reading theme preferences for SSR support
  */
 
-import type { Cookies } from '@sveltejs/kit';
-import type { ThemeMode, ThemeScheme } from '../core/types';
-import type { ThemeConfig } from '../core/config';
+import type { Cookies } from '@sveltejs/kit'
+
+import type { ThemeConfig } from '../core/config'
+import type { ThemeMode, ThemeScheme } from '../core/types'
 
 /** Valid theme mode values for validation */
-const VALID_THEME_MODES: ThemeMode[] = ['light', 'dark', 'system'];
+const VALID_THEME_MODES: ThemeMode[] = [ 'light', 'dark', 'system' ]
 
 /**
  * Validates and sanitizes a theme mode value.
  * Returns the value if valid, otherwise returns the default.
  */
 function validateThemeMode(value: string | undefined, defaultValue: ThemeMode): ThemeMode {
-    if (value && VALID_THEME_MODES.includes(value as ThemeMode)) {
-        return value as ThemeMode;
-    }
-    return defaultValue;
+	if (value && VALID_THEME_MODES.includes(value as ThemeMode)) {
+		return value as ThemeMode
+	}
+	return defaultValue
 }
 
 /**
@@ -27,24 +28,24 @@ function validateThemeMode(value: string | undefined, defaultValue: ThemeMode): 
  * Returns the value if valid, otherwise returns the default.
  */
 function validateThemeScheme(
-    value: string | undefined,
-    validSchemes: string[],
-    defaultValue: ThemeScheme
+	value: string | undefined,
+	validSchemes: string[],
+	defaultValue: ThemeScheme
 ): ThemeScheme {
-    if (!value) return defaultValue;
+	if (!value) return defaultValue
 
-    // Only allow safe characters: alphanumeric, hyphen, underscore
-    const safePattern = /^[a-zA-Z0-9_-]+$/;
-    if (!safePattern.test(value)) {
-        return defaultValue;
-    }
+	// Only allow safe characters: alphanumeric, hyphen, underscore
+	const safePattern = /^[a-zA-Z0-9_-]+$/
+	if (!safePattern.test(value)) {
+		return defaultValue
+	}
 
-    // Check if it's a known scheme
-    if (validSchemes.includes(value)) {
-        return value;
-    }
+	// Check if it's a known scheme
+	if (validSchemes.includes(value)) {
+		return value
+	}
 
-    return defaultValue;
+	return defaultValue
 }
 
 /**
@@ -76,23 +77,23 @@ function validateThemeScheme(
  * - Cookie names: 'theme' and 'themeScheme'
  */
 export function loadThemePreferences(
-    cookies: Cookies,
-    config: ThemeConfig
+	cookies: Cookies,
+	config: ThemeConfig
 ): { theme: ThemeMode; themeScheme: ThemeScheme } {
-    const validSchemes = Object.keys(config.schemes);
-    const defaultScheme = validSchemes[0] || 'default';
+	const validSchemes = Object.keys(config.schemes)
+	const defaultScheme = validSchemes[0] || 'default'
 
-    const defaults = {
-        theme: 'system' as ThemeMode,
-        themeScheme: defaultScheme,
-    };
+	const defaults = {
+		theme: 'system' as ThemeMode,
+		themeScheme: defaultScheme
+	}
 
-    return {
-        theme: validateThemeMode(cookies.get('theme'), defaults.theme),
-        themeScheme: validateThemeScheme(
-            cookies.get('themeScheme'),
-            validSchemes,
-            defaults.themeScheme
-        ),
-    };
+	return {
+		theme: validateThemeMode(cookies.get('theme'), defaults.theme),
+		themeScheme: validateThemeScheme(
+			cookies.get('themeScheme'),
+			validSchemes,
+			defaults.themeScheme
+		)
+	}
 }

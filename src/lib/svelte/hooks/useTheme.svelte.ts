@@ -1,6 +1,7 @@
 // packages/svelte-themes/src/svelte/hooks/useTheme.svelte.ts
-import { getContext } from 'svelte';
-import type { ThemeStore } from '../stores/theme.svelte';
+import { getContext } from 'svelte'
+
+import type { ThemeStore } from '../stores/theme.svelte'
 
 /**
  * Access the theme store from any component.
@@ -54,17 +55,17 @@ import type { ThemeStore } from '../stores/theme.svelte';
  * @see {@link ThemeStore} for the store's type definition and available methods
  */
 export function useTheme(): ThemeStore {
-    const theme = getContext<ThemeStore>('theme');
-    if (!theme) {
-        throw new Error(
-            'useTheme() must be called within a ThemeProvider component.\n\n' +
+	const theme = getContext<ThemeStore>('theme')
+	if (!theme) {
+		throw new Error(
+			'useTheme() must be called within a ThemeProvider component.\n\n' +
                 'Make sure your root layout is wrapped with ThemeProvider:\n\n' +
                 '// src/routes/+layout.svelte\n' +
                 '<ThemeProvider config={themeConfig} serverPreferences={data.preferences}>\n' +
                 '  {@render children()}\n' +
                 '</ThemeProvider>\n\n' +
                 'See: https://github.com/goobits/themes#setup'
-        );
-    }
-    return theme;
+		)
+	}
+	return theme
 }

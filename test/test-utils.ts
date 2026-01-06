@@ -8,22 +8,26 @@
  * @module test-utils
  */
 
-import { vi } from 'vitest';
-import type { ThemeMode, ThemeScheme, SchemeConfig } from '../src/lib/core/types';
-import type { ThemeConfig } from '../src/lib/core/config';
-import type { ThemeStore } from '../src/lib/svelte/stores/theme.svelte';
-import type { RouteThemeConfig } from '../src/lib/utils/route-themes';
+import { vi } from 'vitest'
+
+import type { ThemeConfig } from '../src/lib/core/config'
+import type { SchemeConfig,ThemeMode, ThemeScheme } from '../src/lib/core/types'
+import type { ThemeStore } from '../src/lib/svelte/stores/theme.svelte'
+import type { RouteThemeConfig } from '../src/lib/utils/route-themes'
 
 /**
  * Options for creating a mock theme store
  */
 export interface MockThemeStoreOptions {
-    /** Theme mode (light, dark, or system). Defaults to 'system' */
-    theme?: ThemeMode;
-    /** Color scheme identifier. Defaults to 'default' */
-    scheme?: ThemeScheme;
-    /** Custom list of available schemes. Defaults to default and spells schemes */
-    availableSchemes?: SchemeConfig[];
+
+	/** Theme mode (light, dark, or system). Defaults to 'system' */
+	theme?: ThemeMode;
+
+	/** Color scheme identifier. Defaults to 'default' */
+	scheme?: ThemeScheme;
+
+	/** Custom list of available schemes. Defaults to default and spells schemes */
+	availableSchemes?: SchemeConfig[];
 }
 
 /**
@@ -49,45 +53,47 @@ export interface MockThemeStoreOptions {
  * ```
  */
 export function createMockThemeStore(options: MockThemeStoreOptions = {}): ThemeStore {
-    const {
-        theme = 'system',
-        scheme = 'default',
-        availableSchemes = [
-            {
-                name: 'default',
-                displayName: 'Default',
-                description: 'Default theme',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-            {
-                name: 'spells',
-                displayName: 'Spells',
-                description: 'Spells theme',
-                preview: { primary: '#000', accent: '#fff', background: '#fff' },
-            },
-        ],
-    } = options;
+	const {
+		theme = 'system',
+		scheme = 'default',
+		availableSchemes = [
+			{
+				name: 'default',
+				displayName: 'Default',
+				description: 'Default theme',
+				preview: { primary: '#000', accent: '#fff', background: '#fff' }
+			},
+			{
+				name: 'spells',
+				displayName: 'Spells',
+				description: 'Spells theme',
+				preview: { primary: '#000', accent: '#fff', background: '#fff' }
+			}
+		]
+	} = options
 
-    return {
-        subscribe: vi.fn(),
-        settings: { theme, themeScheme: scheme },
-        theme,
-        scheme,
-        availableSchemes,
-        setTheme: vi.fn(),
-        setScheme: vi.fn(),
-        cycleMode: vi.fn(),
-    };
+	return {
+		subscribe: vi.fn(),
+		settings: { theme, themeScheme: scheme },
+		theme,
+		scheme,
+		availableSchemes,
+		setTheme: vi.fn(),
+		setScheme: vi.fn(),
+		cycleMode: vi.fn()
+	}
 }
 
 /**
  * Options for creating mock config
  */
 export interface MockConfigOptions {
-    /** Route-specific theme configurations */
-    routeThemes?: Record<string, RouteThemeConfig>;
-    /** Custom schemes configuration. Defaults to default and spells schemes */
-    schemes?: Record<string, SchemeConfig>;
+
+	/** Route-specific theme configurations */
+	routeThemes?: Record<string, RouteThemeConfig>;
+
+	/** Custom schemes configuration. Defaults to default and spells schemes */
+	schemes?: Record<string, SchemeConfig>;
 }
 
 /**
@@ -109,36 +115,36 @@ export interface MockConfigOptions {
  * ```
  */
 export function createMockConfig(options: MockConfigOptions = {}): ThemeConfig {
-    const {
-        routeThemes,
-        schemes = {
-            default: {
-                name: 'default',
-                displayName: 'Default',
-                description: 'Default theme',
-                preview: {
-                    primary: '#000',
-                    accent: '#fff',
-                    background: '#fff',
-                },
-            },
-            spells: {
-                name: 'spells',
-                displayName: 'Spells',
-                description: 'Spells theme',
-                preview: {
-                    primary: '#purple',
-                    accent: '#gold',
-                    background: '#dark',
-                },
-            },
-        },
-    } = options;
+	const {
+		routeThemes,
+		schemes = {
+			default: {
+				name: 'default',
+				displayName: 'Default',
+				description: 'Default theme',
+				preview: {
+					primary: '#000',
+					accent: '#fff',
+					background: '#fff'
+				}
+			},
+			spells: {
+				name: 'spells',
+				displayName: 'Spells',
+				description: 'Spells theme',
+				preview: {
+					primary: '#purple',
+					accent: '#gold',
+					background: '#dark'
+				}
+			}
+		}
+	} = options
 
-    return {
-        schemes,
-        ...(routeThemes && { routeThemes }),
-    };
+	return {
+		schemes,
+		...(routeThemes && { routeThemes })
+	}
 }
 
 /**
@@ -160,9 +166,9 @@ export function createMockConfig(options: MockConfigOptions = {}): ThemeConfig {
  * ```
  */
 export async function mockBrowserEnvironment(isBrowser: boolean): Promise<void> {
-    vi.doMock('$app/environment', () => ({
-        browser: isBrowser,
-    }));
+	vi.doMock('$app/environment', () => ({
+		browser: isBrowser
+	}))
 }
 
 /**
@@ -183,19 +189,19 @@ export async function mockBrowserEnvironment(isBrowser: boolean): Promise<void> 
  * ```
  */
 export function mockMatchMedia(prefersDark: boolean): void {
-    Object.defineProperty(window, 'matchMedia', {
-        writable: true,
-        value: vi.fn().mockImplementation((query: string) => ({
-            matches: query === '(prefers-color-scheme: dark)' ? prefersDark : !prefersDark,
-            media: query,
-            onchange: null,
-            addListener: vi.fn(), // Deprecated
-            removeListener: vi.fn(), // Deprecated
-            addEventListener: vi.fn(),
-            removeEventListener: vi.fn(),
-            dispatchEvent: vi.fn(),
-        })),
-    });
+	Object.defineProperty(window, 'matchMedia', {
+		writable: true,
+		value: vi.fn().mockImplementation((query: string) => ({
+			matches: query === '(prefers-color-scheme: dark)' ? prefersDark : !prefersDark,
+			media: query,
+			onchange: null,
+			addListener: vi.fn(), // Deprecated
+			removeListener: vi.fn(), // Deprecated
+			addEventListener: vi.fn(),
+			removeEventListener: vi.fn(),
+			dispatchEvent: vi.fn()
+		}))
+	})
 }
 
 /**
@@ -213,16 +219,16 @@ export function mockMatchMedia(prefersDark: boolean): void {
  * ```
  */
 export function mockDocumentCookie(cookieString: string): void {
-    let mockCookie = cookieString;
+	let mockCookie = cookieString
 
-    Object.defineProperty(document, 'cookie', {
-        writable: true,
-        value: mockCookie,
-        get: () => mockCookie,
-        set: (value: string) => {
-            mockCookie = value;
-        },
-    });
+	Object.defineProperty(document, 'cookie', {
+		writable: true,
+		value: mockCookie,
+		get: () => mockCookie,
+		set: (value: string) => {
+			mockCookie = value
+		}
+	})
 }
 
 /**
@@ -244,16 +250,16 @@ export function mockDocumentCookie(cookieString: string): void {
  * ```
  */
 export function resetDOMMocks(): void {
-    // Reset matchMedia
-    if (typeof window !== 'undefined' && window.matchMedia) {
-        delete (window as any).matchMedia;
-    }
+	// Reset matchMedia
+	if (typeof window !== 'undefined' && window.matchMedia) {
+		delete (window as any).matchMedia
+	}
 
-    // Reset document.cookie
-    if (typeof document !== 'undefined') {
-        Object.defineProperty(document, 'cookie', {
-            writable: true,
-            value: '',
-        });
-    }
+	// Reset document.cookie
+	if (typeof document !== 'undefined') {
+		Object.defineProperty(document, 'cookie', {
+			writable: true,
+			value: ''
+		})
+	}
 }

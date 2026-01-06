@@ -9,8 +9,9 @@
  * @module system-theme
  */
 
-import { browser } from '$app/environment';
-import type { ThemeMode } from '../core/types';
+import { browser } from '$app/environment'
+
+import type { ThemeMode } from '../core/types'
 
 /**
  * The media query string for detecting dark mode preference.
@@ -27,7 +28,7 @@ import type { ThemeMode } from '../core/types';
  * console.log(mql.matches); // true if dark mode is preferred
  * ```
  */
-export const DARK_MODE_MEDIA_QUERY = '(prefers-color-scheme: dark)';
+export const DARK_MODE_MEDIA_QUERY = '(prefers-color-scheme: dark)'
 
 /**
  * Get the MediaQueryList object for dark mode preference detection.
@@ -60,8 +61,8 @@ export const DARK_MODE_MEDIA_QUERY = '(prefers-color-scheme: dark)';
  * @see {@link watchSystemTheme} for monitoring theme changes with a callback
  */
 export function getDarkModeMediaQuery(): MediaQueryList | null {
-    if (!browser || typeof window === 'undefined') return null;
-    return window.matchMedia(DARK_MODE_MEDIA_QUERY);
+	if (!browser || typeof window === 'undefined') return null
+	return window.matchMedia(DARK_MODE_MEDIA_QUERY)
 }
 
 /**
@@ -95,8 +96,8 @@ export function getDarkModeMediaQuery(): MediaQueryList | null {
  * @see {@link watchSystemTheme} for monitoring changes
  */
 export function prefersDarkMode(): boolean {
-    const mql = getDarkModeMediaQuery();
-    return mql?.matches ?? false;
+	const mql = getDarkModeMediaQuery()
+	return mql?.matches ?? false
 }
 
 /**
@@ -130,7 +131,7 @@ export function prefersDarkMode(): boolean {
  * @see {@link resolveThemeMode} for handling ThemeMode values including 'system'
  */
 export function getSystemThemePreference(): 'light' | 'dark' {
-    return prefersDarkMode() ? 'dark' : 'light';
+	return prefersDarkMode() ? 'dark' : 'light'
 }
 
 /**
@@ -169,10 +170,10 @@ export function getSystemThemePreference(): 'light' | 'dark' {
  * @see {@link watchSystemTheme} for monitoring system preference changes
  */
 export function resolveThemeMode(theme: ThemeMode): 'light' | 'dark' {
-    if (theme === 'system') {
-        return getSystemThemePreference();
-    }
-    return theme;
+	if (theme === 'system') {
+		return getSystemThemePreference()
+	}
+	return theme
 }
 
 /**
@@ -227,39 +228,39 @@ export function resolveThemeMode(theme: ThemeMode): 'light' | 'dark' {
  * @see {@link prefersDarkMode} for one-time preference check
  */
 export function watchSystemTheme(callback: (isDark: boolean) => void): () => void {
-    const mql = getDarkModeMediaQuery();
-    if (!mql) return () => {};
+	const mql = getDarkModeMediaQuery()
+	if (!mql) return () => {}
 
-    const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
-        callback(e.matches);
-    };
+	const handleChange = (e: MediaQueryListEvent | MediaQueryList) => {
+		callback(e.matches)
+	}
 
-    // Modern API with addEventListener (standard)
-    if (typeof mql.addEventListener === 'function') {
-        mql.addEventListener('change', handleChange);
-        return () => {
-            if (typeof mql.removeEventListener === 'function') {
-                mql.removeEventListener('change', handleChange);
-            }
-        };
-    }
+	// Modern API with addEventListener (standard)
+	if (typeof mql.addEventListener === 'function') {
+		mql.addEventListener('change', handleChange)
+		return () => {
+			if (typeof mql.removeEventListener === 'function') {
+				mql.removeEventListener('change', handleChange)
+			}
+		}
+	}
 
-    // Legacy API fallback for older browsers
-    interface LegacyMediaQueryList {
-        addListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
-        removeListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
-    }
+	// Legacy API fallback for older browsers
+	interface LegacyMediaQueryList {
+		addListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
+		removeListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
+	}
 
-    const legacyMQL = mql as MediaQueryList & LegacyMediaQueryList;
-    if (typeof legacyMQL.addListener === 'function') {
-        legacyMQL.addListener(handleChange);
-        return () => {
-            if (typeof legacyMQL.removeListener === 'function') {
-                legacyMQL.removeListener(handleChange);
-            }
-        };
-    }
+	const legacyMQL = mql as MediaQueryList & LegacyMediaQueryList
+	if (typeof legacyMQL.addListener === 'function') {
+		legacyMQL.addListener(handleChange)
+		return () => {
+			if (typeof legacyMQL.removeListener === 'function') {
+				legacyMQL.removeListener(handleChange)
+			}
+		}
+	}
 
-    // No event support available
-    return () => {};
+	// No event support available
+	return () => {}
 }
