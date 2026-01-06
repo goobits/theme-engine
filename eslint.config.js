@@ -1,13 +1,45 @@
 import js from '@eslint/js';
+import stylistic from '@stylistic/eslint-plugin';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import tsParser from '@typescript-eslint/parser';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import sveltePlugin from 'eslint-plugin-svelte';
 import svelteParser from 'svelte-eslint-parser';
-import prettierConfig from 'eslint-config-prettier';
 
 export default [
     // JavaScript recommended rules
     js.configs.recommended,
+
+    // Shared stylistic rules (no Prettier)
+    {
+        plugins: {
+            '@stylistic': stylistic,
+            'simple-import-sort': simpleImportSort,
+        },
+        rules: {
+            '@stylistic/indent': ['error', 'tab', { SwitchCase: 1 }],
+            '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+            '@stylistic/semi': ['error', 'never'],
+            '@stylistic/comma-dangle': ['error', 'never'],
+            '@stylistic/object-curly-spacing': ['error', 'always'],
+            '@stylistic/array-bracket-spacing': ['error', 'always'],
+            '@stylistic/template-curly-spacing': ['error', 'always'],
+            '@stylistic/arrow-parens': ['error', 'as-needed'],
+            '@stylistic/space-before-function-paren': ['error', 'never'],
+            '@stylistic/lines-around-comment': [
+                'error',
+                {
+                    beforeLineComment: true,
+                    allowBlockStart: true,
+                    allowClassStart: true,
+                    allowObjectStart: true,
+                    allowArrayStart: true,
+                },
+            ],
+            'simple-import-sort/imports': 'error',
+            'simple-import-sort/exports': 'error',
+        },
+    },
 
     // TypeScript files configuration
     {
@@ -137,7 +169,4 @@ export default [
             'test/mocks/',
         ],
     },
-
-    // Prettier - disable conflicting rules (must be last)
-    prettierConfig,
 ];
