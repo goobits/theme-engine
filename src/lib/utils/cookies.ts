@@ -31,13 +31,13 @@ export const COOKIE_OPTIONS = {
 
 /** Type-safe parser functions for each preference type */
 const PREFERENCE_PARSERS: { [K in keyof UserPreferences]: (value: string) => UserPreferences[K] } =
-    {
-    	theme: v => v as UserPreferences['theme'],
-    	themeScheme: v => v as UserPreferences['themeScheme'],
-    	language: v => v,
-    	languageTheme: v => v as UserPreferences['languageTheme'],
-    	showSidebar: v => [ 'true', '1', 'yes' ].includes(v?.toLowerCase())
-    }
+	{
+		theme: v => v as UserPreferences['theme'],
+		themeScheme: v => v as UserPreferences['themeScheme'],
+		language: v => v,
+		languageTheme: v => v as UserPreferences['languageTheme'],
+		showSidebar: v => [ 'true', '1', 'yes' ].includes(v?.toLowerCase())
+	}
 
 /** Gets a cookie value by name. Returns last occurrence if duplicates exist. */
 function getCookie(name: string): string | undefined {

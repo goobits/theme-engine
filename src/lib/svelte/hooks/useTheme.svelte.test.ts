@@ -222,7 +222,7 @@ describe('useTheme', () => {
 			try {
 				useTheme()
 				expect.fail('Should have thrown an error')
-			} catch (error) {
+			} catch(error) {
 				expect(error).toBeInstanceOf(Error)
 				expect((error as Error).message).toContain(
 					'useTheme() must be called within a ThemeProvider component.'

@@ -57,7 +57,7 @@ export function saveThemePreferences(data: ThemePersistenceData): void {
 			theme: data.theme,
 			themeScheme: data.themeScheme
 		})
-	} catch (err) {
+	} catch(err) {
 		console.error('Failed to save theme settings to localStorage', err)
 	}
 }
@@ -101,7 +101,7 @@ export function loadThemePreferences(): Partial<ThemePersistenceData> | null {
 			// Return parsed data even if partial - caller will merge with defaults
 			return parsed
 		}
-	} catch (err) {
+	} catch(err) {
 		console.warn('Failed to load theme settings from localStorage', err)
 	}
 
@@ -142,7 +142,7 @@ export function clearThemePreferences(): void {
 
 	try {
 		localStorage.removeItem(STORAGE_KEY)
-	} catch (err) {
+	} catch(err) {
 		console.error('Failed to clear theme settings from localStorage', err)
 	}
 }

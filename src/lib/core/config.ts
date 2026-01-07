@@ -186,15 +186,15 @@ function validateScheme(key: string, scheme: unknown): SchemeConfig | null {
 	if (schemeObj.name && schemeObj.name !== key) {
 		logger.warn(
 			`[themes] Warning: Scheme key "${ key }" doesn't match scheme.name "${ schemeObj.name }". ` +
-                `Using key "${ key }" as the scheme name.`
+			`Using key "${ key }" as the scheme name.`
 		)
 	}
 
 	// Apply defaults for optional fields
 	const displayName =
-        typeof schemeObj.displayName === 'string'
-        	? schemeObj.displayName
-        	: key.charAt(0).toUpperCase() + key.slice(1) // Capitalize name as default
+		typeof schemeObj.displayName === 'string'
+			? schemeObj.displayName
+			: key.charAt(0).toUpperCase() + key.slice(1) // Capitalize name as default
 
 	const description = typeof schemeObj.description === 'string' ? schemeObj.description : ''
 
