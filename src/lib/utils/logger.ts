@@ -22,7 +22,7 @@ import { DEV } from 'esm-env'
 // No-op function for suppressed logs
 const noop = () => {}
 
-const debugEnabled = DEV && (
+const isDebug = () => DEV && (
 	typeof globalThis !== 'undefined' &&
 	(globalThis as { __GOOBITS_THEMES_DEBUG__?: boolean }).__GOOBITS_THEMES_DEBUG__ === true
 )
@@ -33,14 +33,14 @@ export const logger = {
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-	info: debugEnabled ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
+	info: (...args: unknown[]) => isDebug() ? console.log('[svelte-themes]', ...args) : noop(),
 
 	/**
      * Log debug messages.
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-	debug: debugEnabled ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
+	debug: (...args: unknown[]) => isDebug() ? console.log('[svelte-themes]', ...args) : noop(),
 
 	/**
      * Log warning messages.

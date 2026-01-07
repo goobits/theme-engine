@@ -5,6 +5,7 @@
 
 import type { Cookies } from '@sveltejs/kit'
 
+import { PREFERENCE_COOKIE_NAMES } from '../core/constants'
 import type { ThemeConfig } from '../core/config'
 import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry'
 
@@ -89,9 +90,12 @@ export function loadThemePreferences(
 	}
 
 	return {
-		theme: validateThemeMode(cookies.get('theme'), defaults.theme),
+		theme: validateThemeMode(
+			cookies.get(PREFERENCE_COOKIE_NAMES.theme),
+			defaults.theme
+		),
 		themeScheme: validateThemeScheme(
-			cookies.get('themeScheme'),
+			cookies.get(PREFERENCE_COOKIE_NAMES.themeScheme),
 			validSchemes,
 			defaults.themeScheme
 		)

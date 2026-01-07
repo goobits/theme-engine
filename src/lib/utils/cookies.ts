@@ -3,7 +3,10 @@
  * Works on both client and server side
  */
 
+import { PREFERENCE_COOKIE_NAMES } from '../core/constants'
 import { isBrowser } from './browser'
+
+export { PREFERENCE_COOKIE_NAMES }
 
 export interface UserPreferences {
 	theme: 'light' | 'dark' | 'system';
@@ -12,14 +15,6 @@ export interface UserPreferences {
 	languageTheme: 'default' | 'spells';
 	showSidebar: boolean;
 }
-
-export const PREFERENCE_COOKIE_NAMES = {
-	theme: 'theme',
-	themeScheme: 'themeScheme',
-	language: 'language',
-	languageTheme: 'languageTheme',
-	showSidebar: 'showSidebar'
-} as const
 
 export const COOKIE_OPTIONS = {
 	path: '/',

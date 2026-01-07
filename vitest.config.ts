@@ -15,7 +15,7 @@ export default defineConfig({
         environment: 'jsdom',
         setupFiles: ['./vitest.setup.ts'],
         include: ['**/*.{test,spec}.{js,ts}'],
-        exclude: ['node_modules/**', 'dist/**', '.svelte-kit/**'],
+        exclude: ['node_modules/**', 'dist/**', '.svelte-kit/**', 'demo/**', '.pnpm-store/**'],
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],

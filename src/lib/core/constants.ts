@@ -26,6 +26,18 @@ export const ARIA_ANNOUNCEMENT_DURATION_MS = 3000
 export const STORAGE_KEY = 'app_theme_v1'
 
 /**
+ * Cookie names used for storing user preferences.
+ * Shared between client (cookies.ts) and server (preferences.ts).
+ */
+export const PREFERENCE_COOKIE_NAMES = {
+	theme: 'theme',
+	themeScheme: 'themeScheme',
+	language: 'language',
+	languageTheme: 'languageTheme',
+	showSidebar: 'showSidebar'
+} as const
+
+/**
  * Resolves a theme mode to its visual representation.
  *
  * Converts the user's theme preference into an actual visual theme (light or dark).

@@ -8,12 +8,14 @@ describe('logger', () => {
 	let consoleErrorSpy: ReturnType<typeof vi.spyOn>
 
 	beforeEach(() => {
+		(globalThis as any).__GOOBITS_THEMES_DEBUG__ = true
 		consoleLogSpy = vi.spyOn(globalThis.console, 'log').mockImplementation(() => {})
 		consoleWarnSpy = vi.spyOn(globalThis.console, 'warn').mockImplementation(() => {})
 		consoleErrorSpy = vi.spyOn(globalThis.console, 'error').mockImplementation(() => {})
 	})
 
 	afterEach(() => {
+		delete (globalThis as any).__GOOBITS_THEMES_DEBUG__
 		consoleLogSpy.mockRestore()
 		consoleWarnSpy.mockRestore()
 		consoleErrorSpy.mockRestore()

@@ -55,9 +55,13 @@
 	)
 
 	// Seed SSR render with server preferences so UI matches initial classes
-	if (!isBrowser() && resolvedPreferences) {
-		themeStore.setTheme(resolvedPreferences.theme)
-		themeStore.setScheme(resolvedPreferences.themeScheme)
+	// Use untrack since we only need initial value during SSR (no reactivity needed)
+	if (!isBrowser()) {
+		const prefs = untrack(() => resolvedPreferences)
+		if (prefs) {
+			themeStore.setTheme(prefs.theme)
+			themeStore.setScheme(prefs.themeScheme)
+		}
 	}
 
 	let appliedServerPreferences = $state(false)
