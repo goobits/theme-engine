@@ -162,8 +162,8 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
 	const notifySubscribers = () => {
 		const snapshot: ThemeStoreSnapshot = {
 			settings,
-			theme,
-			scheme
+			theme: settings.theme,
+			scheme: settings.themeScheme
 		}
 		subscribers.forEach(fn => fn(snapshot))
 	}
@@ -174,8 +174,8 @@ export function createThemeStore(config: ThemeConfig): ThemeStore {
 		// Immediately call the subscriber with current value
 		fn({
 			settings,
-			theme,
-			scheme
+			theme: settings.theme,
+			scheme: settings.themeScheme
 		})
 		return () => {
 			subscribers.delete(fn)
