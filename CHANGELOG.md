@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-01-07
+
+### Added
+- **Redesigned ThemeShowcase** - Modern Apple-inspired demo UI
+  - Ambient glow effect behind content
+  - Collapsible theme picker grid with gradient dots
+  - Inline light/dark toggle switch with sliding thumb
+  - Browser preview with nav bar, hero section, and feature cards
+- **Smart gradient previews** - Theme dots now show gradient from accent to most visually distinct color
+- **Goo presets documentation** - Added docs for using Goo preset themes
+
+### Changed
+- Demo theme config uses color distance algorithm to pick distinct gradient colors
+- Build caches moved under `.artifacts` directory
+- Theme logger output gated behind opt-in flag (less console noise)
+
+### Fixed
+- Theme dots now properly represent each theme's color palette
+
 ## [1.2.0] - 2026-01-07
 
 ### Added
