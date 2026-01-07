@@ -11,8 +11,10 @@
         "moduleResolution": "bundler",
         "verbatimModuleSyntax": false,
         "declaration": true,
-        "lib": ["es2020", "DOM", "DOM.Iterable"],
-        "module": "esnext"
+        "lib": ["es2022", "DOM", "DOM.Iterable"],
+        "module": "esnext",
+        "target": "ES2022",
+        "useDefineForClassFields": true
     },
     "include": ["*.ts", "src/**/*", "core/**/*", "svelte/**/*", "server/**/*", "utils/**/*"],
     "exclude": ["node_modules", "dist", ".svelte-kit", "demo"]
