@@ -11,11 +11,11 @@ import {
 	removeSchemeClasses,
 	removeThemeClasses,
 	setDataThemeAttribute
-} from '../utils/dom'
-import { logger } from '../utils/logger'
-import { prefersDarkMode } from '../utils/systemTheme'
-import type { SchemeConfig } from './config'
-import { resolveTheme, THEME_TRANSITION_DURATION_MS } from './constants'
+} from '../utils/dom.js'
+import { logger } from '../utils/logger.js'
+import { prefersDarkMode } from '../utils/systemTheme.js'
+import type { SchemeConfig } from './config.js'
+import { resolveTheme, THEME_TRANSITION_DURATION_MS } from './constants.js'
 
 /**
  * Theme mode representing the user's light/dark preference.

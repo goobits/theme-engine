@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte'
 
-    import { isBrowser } from '../../utils/browser'
-    import { getHtmlElement } from '../../utils/dom'
-    import { getDarkModeMediaQuery,prefersDarkMode } from '../../utils/systemTheme'
+    import { isBrowser } from '../../utils/browser.js'
+    import { getHtmlElement } from '../../utils/dom.js'
+    import { getDarkModeMediaQuery,prefersDarkMode } from '../../utils/systemTheme.js'
     import { useTheme } from '../hooks/useTheme.svelte'
 
     /**

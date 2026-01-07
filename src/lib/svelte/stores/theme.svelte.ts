@@ -7,11 +7,11 @@
  * @module stores/theme
  */
 
-import type { ThemeConfig } from '../../core/config'
-import type { SchemeConfig } from '../../core/config'
-import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
-import { isBrowser } from '../../utils/browser'
-import { loadThemePreferences, saveThemePreferences } from './themePersistence'
+import type { ThemeConfig } from '../../core/config.js'
+import type { SchemeConfig } from '../../core/config.js'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry.js'
+import { isBrowser } from '../../utils/browser.js'
+import { loadThemePreferences, saveThemePreferences } from './themePersistence.js'
 
 /**
  * Internal theme settings structure.

@@ -5,7 +5,7 @@
  * used throughout the theme engine.
  */
 
-import type { ThemeMode } from './schemeRegistry'
+import type { ThemeMode } from './schemeRegistry.js'
 
 /**
  * Duration in milliseconds to disable CSS transitions during theme switching.

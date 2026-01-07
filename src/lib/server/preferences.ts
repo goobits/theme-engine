@@ -5,9 +5,9 @@
 
 import type { Cookies } from '@sveltejs/kit'
 
-import type { ThemeConfig } from '../core/config'
-import { PREFERENCE_COOKIE_NAMES } from '../core/constants'
-import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry'
+import type { ThemeConfig } from '../core/config.js'
+import { PREFERENCE_COOKIE_NAMES } from '../core/constants.js'
+import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry.js'
 
 /** Valid theme mode values for validation */
 const VALID_THEME_MODES: ThemeMode[] = [ 'light', 'dark', 'system' ]

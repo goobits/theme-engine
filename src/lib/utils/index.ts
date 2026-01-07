@@ -17,10 +17,10 @@
  * ```
  */
 
-export * from './browser'
-export * from './cookies'
-export * from './dom'
-export * from './logger'
-export * from './routeThemes'
-export * from './systemTheme'
-export * from './validation'
+export * from './browser.js'
+export * from './cookies.js'
+export * from './dom.js'
+export * from './logger.js'
+export * from './routeThemes.js'
+export * from './systemTheme.js'
+export * from './validation.js'

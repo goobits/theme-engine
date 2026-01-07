@@ -3,8 +3,8 @@
  * Works on both client and server side
  */
 
-import { PREFERENCE_COOKIE_NAMES } from '../core/constants'
-import { isBrowser } from './browser'
+import { PREFERENCE_COOKIE_NAMES } from '../core/constants.js'
+import { isBrowser } from './browser.js'
 
 export { PREFERENCE_COOKIE_NAMES }
 

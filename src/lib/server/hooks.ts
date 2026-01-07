@@ -1,14 +1,14 @@
 import type { Handle } from '@sveltejs/kit'
 
-import type { ThemeConfig } from '../core/config'
-import { resolveTheme } from '../core/constants'
-import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry'
+import type { ThemeConfig } from '../core/config.js'
+import { resolveTheme } from '../core/constants.js'
+import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry.js'
 import {
 	createThemeBlockingScriptTag,
 	themeBlockingScript,
 	themeBlockingScriptMarker
-} from './blockingScript'
-import { loadThemePreferences } from './preferences'
+} from './blockingScript.js'
+import { loadThemePreferences } from './preferences.js'
 
 /**
  * Theme preferences interface for extending App.Locals

@@ -7,14 +7,14 @@
  * @module stores/themePersistence
  */
 
-import { STORAGE_KEY } from '../../core/constants'
-import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
-import { isBrowser } from '../../utils/browser'
+import { STORAGE_KEY } from '../../core/constants.js'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry.js'
+import { isBrowser } from '../../utils/browser.js'
 import {
 	readPreferenceCookies,
 	type UserPreferences,
 	writePreferenceCookies
-} from '../../utils/cookies'
+} from '../../utils/cookies.js'
 
 /**
  * Theme preference data structure for persistence.

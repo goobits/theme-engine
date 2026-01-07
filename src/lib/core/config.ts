@@ -9,9 +9,9 @@
 
 import { DEV } from 'esm-env'
 
-import { logger } from '../utils/logger'
-import type { RouteThemeConfig } from '../utils/routeThemes'
-import { isValidHexColor } from '../utils/validation'
+import { logger } from '../utils/logger.js'
+import type { RouteThemeConfig } from '../utils/routeThemes.js'
+import { isValidHexColor } from '../utils/validation.js'
 
 /**
  * Default preview colors for schemes that don't specify their own

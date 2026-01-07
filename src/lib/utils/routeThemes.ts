@@ -4,7 +4,7 @@
  * Provides functions for matching routes against a theme configuration.
  */
 
-import type { FullTheme, ThemeScheme } from '../core/schemeRegistry'
+import type { FullTheme, ThemeScheme } from '../core/schemeRegistry.js'
 
 export interface RouteThemeConfig {
 

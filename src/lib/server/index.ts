@@ -15,7 +15,7 @@
  * ```
  */
 
-export * from './blockingScript'
-export * from './gooSsr'
-export * from './hooks'
-export * from './preferences'
+export * from './blockingScript.js'
+export * from './gooSsr.js'
+export * from './hooks.js'
+export * from './preferences.js'

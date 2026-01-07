@@ -27,7 +27,7 @@
     import Moon from '@lucide/svelte/icons/moon'
     import Sun from '@lucide/svelte/icons/sun'
 
-    import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants'
+    import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants.js'
     import { useTheme } from '../hooks/useTheme.svelte'
 
     const theme = useTheme()

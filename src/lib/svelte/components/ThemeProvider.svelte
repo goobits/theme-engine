@@ -24,10 +24,10 @@
 
 	import { page } from '$app/stores'
 
-	import type { ThemeConfig } from '../../core/config'
-	import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
-	import { applyRouteTheme, initializeTheme } from '../../core/themeManager'
-	import { isBrowser } from '../../utils/browser'
+	import type { ThemeConfig } from '../../core/config.js'
+	import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry.js'
+	import { applyRouteTheme, initializeTheme } from '../../core/themeManager.js'
+	import { isBrowser } from '../../utils/browser.js'
 	import { createThemeStore } from '../stores/theme.svelte'
 
 	const {

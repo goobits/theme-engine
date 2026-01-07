@@ -11,7 +11,7 @@
 
 import { browser } from '$app/environment'
 
-import type { ThemeMode } from '../core/schemeRegistry'
+import type { ThemeMode } from '../core/schemeRegistry.js'
 
 /**
  * The media query string for detecting dark mode preference.

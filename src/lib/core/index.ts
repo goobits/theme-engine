@@ -14,7 +14,7 @@
  * ```
  */
 
-export * from './config'
-export * from './constants'
-export * from './schemeRegistry'
-export * from './themeManager'
+export * from './config.js'
+export * from './constants.js'
+export * from './schemeRegistry.js'
+export * from './themeManager.js'
