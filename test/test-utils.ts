@@ -11,7 +11,7 @@
 import { vi } from 'vitest'
 
 import type { ThemeConfig } from '../src/lib/core/config'
-import type { SchemeConfig,ThemeMode, ThemeScheme } from '../src/lib/core/types'
+import type { SchemeConfig, ThemeMode, ThemeScheme } from '../src/lib/core/types'
 import type { ThemeStore } from '../src/lib/svelte/stores/theme.svelte'
 import type { RouteThemeConfig } from '../src/lib/utils/route-themes'
 
@@ -21,13 +21,13 @@ import type { RouteThemeConfig } from '../src/lib/utils/route-themes'
 export interface MockThemeStoreOptions {
 
 	/** Theme mode (light, dark, or system). Defaults to 'system' */
-	theme?: ThemeMode;
+	theme?: ThemeMode
 
 	/** Color scheme identifier. Defaults to 'default' */
-	scheme?: ThemeScheme;
+	scheme?: ThemeScheme
 
 	/** Custom list of available schemes. Defaults to default and spells schemes */
-	availableSchemes?: SchemeConfig[];
+	availableSchemes?: SchemeConfig[]
 }
 
 /**
@@ -90,10 +90,10 @@ export function createMockThemeStore(options: MockThemeStoreOptions = {}): Theme
 export interface MockConfigOptions {
 
 	/** Route-specific theme configurations */
-	routeThemes?: Record<string, RouteThemeConfig>;
+	routeThemes?: Record<string, RouteThemeConfig>
 
 	/** Custom schemes configuration. Defaults to default and spells schemes */
-	schemes?: Record<string, SchemeConfig>;
+	schemes?: Record<string, SchemeConfig>
 }
 
 /**
@@ -252,7 +252,8 @@ export function mockDocumentCookie(cookieString: string): void {
 export function resetDOMMocks(): void {
 	// Reset matchMedia
 	if (typeof window !== 'undefined' && window.matchMedia) {
-		delete (window as any).matchMedia
+		const mutableWindow = window as Window & { matchMedia?: typeof window.matchMedia }
+		delete mutableWindow.matchMedia
 	}
 
 	// Reset document.cookie

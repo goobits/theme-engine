@@ -1,170 +1,277 @@
-<section class="showcase">
-    <div class="showcase__header">
-        <h2>Theme Playground</h2>
-        <p>Switch presets and modes to see tokens update across UI elements.</p>
-    </div>
+<script lang="ts">
+	import { useTheme } from '@goobits/themes/svelte'
 
-    <div class="showcase__grid">
-        <article class="card">
-            <h3>Surface & Borders</h3>
-            <p>Raised panels, subtle borders, and text contrast.</p>
-            <div class="chip-row">
-                <span class="chip">Primary</span>
-                <span class="chip chip--accent">Accent</span>
-                <span class="chip chip--muted">Muted</span>
-            </div>
-        </article>
+	const theme = useTheme()
+	const activeScheme = $derived(theme.scheme)
 
-        <article class="card card--gradient">
-            <h3>Accent Energy</h3>
-            <p>Buttons and links should pop without overpowering.</p>
-            <div class="button-row">
-                <button class="btn btn--primary" type="button">Primary</button>
-                <button class="btn btn--ghost" type="button">Ghost</button>
-            </div>
-        </article>
+	const schemes = [
+		{ key: 'default', label: 'Default' },
+		{ key: 'midnight', label: 'Midnight' },
+		{ key: 'spells', label: 'Spells' },
+		{ key: 'forest', label: 'Forest' },
+		{ key: 'rose', label: 'Rose' }
+	]
 
-        <article class="card card--inset">
-            <h3>Typography</h3>
-            <p class="kicker">System text, readable by default.</p>
-            <p class="quote">“The right theme makes a product feel alive.”</p>
-            <a class="link" href="/docs-demo">See docs demo →</a>
-        </article>
-    </div>
-</section>
+	function setScheme(scheme: string) {
+		theme.setScheme(scheme)
+	}
+</script>
+
+<div class="showcase">
+	<header class="showcase__header">
+		<h1>Theme Engine</h1>
+		<p>Pick a theme. Watch it breathe.</p>
+	</header>
+
+	<div class="showcase__tabs">
+		{#each schemes as scheme}
+			<button
+				class="tab"
+				class:active={activeScheme === scheme.key}
+				onclick={() => setScheme(scheme.key)}
+				type="button"
+			>
+				{scheme.label}
+			</button>
+		{/each}
+	</div>
+
+	<section class="window">
+		<div class="window__bar">
+			<div class="window__lights">
+				<span class="light light--close"></span>
+				<span class="light light--minimize"></span>
+				<span class="light light--expand"></span>
+			</div>
+			<div class="window__title">preview.app</div>
+			<div class="window__spacer"></div>
+		</div>
+
+		<div class="window__body">
+			<div class="card">
+				<h2>Beautiful by default</h2>
+				<p>
+					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod
+					tempor incididunt ut labore.
+				</p>
+			</div>
+
+			<div class="button-row">
+				<button class="button button--primary" type="button">Primary Action</button>
+				<button class="button button--ghost" type="button">Secondary</button>
+			</div>
+
+			<p class="fine-print">
+				Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
+				aliquip ex ea commodo consequat.
+			</p>
+		</div>
+	</section>
+
+	<footer class="showcase__footer">@goobits/themes</footer>
+</div>
 
 <style>
-    .showcase {
-        margin: 2.5rem 0;
-        padding: 2rem;
-        border-radius: 20px;
-        background: var(--bg-raised, #fafafa);
-        border: 2px solid var(--border-primary, #e5e7eb);
-    }
+	.showcase {
+		min-height: 100vh;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 3.5rem 1.5rem 4rem;
+		gap: 2.5rem;
+		background: var(--bg-primary);
+		color: var(--text-primary);
+	}
 
-    .showcase__header h2 {
-        margin: 0 0 0.5rem 0;
-        color: var(--text-primary, #111827);
-    }
+	.showcase__header {
+		text-align: center;
+		max-width: 28rem;
+	}
 
-    .showcase__header p {
-        margin: 0;
-        color: var(--text-secondary, #6b7280);
-    }
+	.showcase__header h1 {
+		font-size: 2.4rem;
+		margin: 0 0 0.75rem 0;
+		font-weight: 600;
+		letter-spacing: -0.02em;
+		color: var(--text-primary);
+	}
 
-    .showcase__grid {
-        margin-top: 1.5rem;
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 1.5rem;
-    }
+	.showcase__header p {
+		margin: 0;
+		color: var(--text-secondary);
+		font-size: 1.125rem;
+		line-height: 1.6;
+	}
 
-    .card {
-        background: var(--bg-primary, #ffffff);
-        border-radius: 16px;
-        padding: 1.5rem;
-        border: 2px solid var(--border-primary, #e5e7eb);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.04);
-    }
+	.showcase__tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		justify-content: center;
+	}
 
-    .card--gradient {
-        background: linear-gradient(
-            135deg,
-            var(--accent-primary, #3b82f6),
-            var(--accent-glow, #8b5cf6)
-        );
-        color: white;
-        border-color: transparent;
-    }
+	.tab {
+		border-radius: 999px;
+		padding: 0.55rem 1.25rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		border: 1px solid var(--border-primary);
+		background: var(--bg-secondary);
+		color: var(--text-secondary);
+		transition: all 200ms ease;
+		cursor: pointer;
+	}
 
-    .card--gradient h3,
-    .card--gradient p {
-        color: white;
-    }
+	.tab:hover {
+		color: var(--text-primary);
+		border-color: var(--accent-primary);
+	}
 
-    .card--inset {
-        background: var(--bg-inset, #f3f4f6);
-    }
+	.tab.active {
+		background: var(--text-primary);
+		color: var(--bg-primary);
+		border-color: var(--text-primary);
+		box-shadow: var(--shadow-md);
+	}
 
-    .chip-row {
-        display: flex;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-    }
+	.window {
+		width: min(100%, 40rem);
+		border-radius: 18px;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-primary);
+		box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px var(--border-primary);
+		overflow: hidden;
+		transition: background 300ms ease, border-color 300ms ease;
+	}
 
-    .chip {
-        padding: 0.35rem 0.75rem;
-        border-radius: 999px;
-        background: var(--accent-soft, rgba(59, 130, 246, 0.15));
-        color: var(--accent-primary, #3b82f6);
-        font-weight: 600;
-        font-size: 0.85rem;
-    }
+	.window__bar {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		padding: 0.75rem 1rem;
+		background: var(--bg-secondary);
+		border-bottom: 1px solid var(--border-primary);
+	}
 
-    .chip--accent {
-        background: var(--accent-primary, #3b82f6);
-        color: white;
-    }
+	.window__lights {
+		display: flex;
+		gap: 0.5rem;
+	}
 
-    .chip--muted {
-        background: var(--bg-inset, #f3f4f6);
-        color: var(--text-secondary, #6b7280);
-    }
+	.light {
+		width: 12px;
+		height: 12px;
+		border-radius: 999px;
+		display: inline-block;
+	}
 
-    .button-row {
-        display: flex;
-        gap: 0.75rem;
-        margin-top: 1rem;
-        flex-wrap: wrap;
-    }
+	.light--close {
+		background: var(--error);
+	}
 
-    .btn {
-        border: none;
-        padding: 0.65rem 1.25rem;
-        border-radius: 10px;
-        font-weight: 600;
-        cursor: pointer;
-    }
+	.light--minimize {
+		background: var(--warning);
+	}
 
-    .btn--primary {
-        background: white;
-        color: var(--accent-primary, #3b82f6);
-    }
+	.light--expand {
+		background: var(--success);
+	}
 
-    .btn--ghost {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        border: 1px solid rgba(255, 255, 255, 0.5);
-    }
+	.window__title {
+		text-align: center;
+		font-size: 0.75rem;
+		font-weight: 600;
+		color: var(--text-secondary);
+	}
 
-    .kicker {
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        font-size: 0.75rem;
-        margin-bottom: 0.5rem;
-        color: var(--text-tertiary, #9ca3af);
-    }
+	.window__spacer {
+		width: 2.5rem;
+	}
 
-    .quote {
-        font-size: 1.1rem;
-        margin: 0 0 1rem 0;
-        color: var(--text-primary, #111827);
-    }
+	.window__body {
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		background: var(--bg-primary);
+	}
 
-    .link {
-        color: var(--accent-primary, #3b82f6);
-        font-weight: 600;
-        text-decoration: none;
-    }
+	.card {
+		border-radius: 14px;
+		padding: 1.5rem;
+		background: var(--bg-secondary);
+		border: 1px solid var(--border-primary);
+	}
 
-    .link:hover {
-        text-decoration: underline;
-    }
+	.card h2 {
+		margin: 0 0 0.75rem 0;
+		font-size: 1.25rem;
+		color: var(--text-primary);
+	}
 
-    @media (max-width: 768px) {
-        .showcase {
-            padding: 1.5rem;
-        }
-    }
+	.card p {
+		margin: 0;
+		color: var(--text-secondary);
+		line-height: 1.6;
+	}
+
+	.button-row {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+
+	.button {
+		border-radius: 10px;
+		padding: 0.65rem 1.3rem;
+		font-size: 0.9rem;
+		font-weight: 600;
+		border: 1px solid var(--border-primary);
+		background: transparent;
+		color: var(--text-primary);
+		cursor: pointer;
+		transition: all 250ms ease;
+	}
+
+	.button--primary {
+		background: var(--accent-primary);
+		border-color: var(--accent-primary);
+		color: var(--color-text-on-primary);
+	}
+
+	.button--primary:hover {
+		box-shadow: var(--shadow-md);
+	}
+
+	.button--ghost:hover {
+		border-color: var(--accent-primary);
+		color: var(--accent-primary);
+	}
+
+	.fine-print {
+		margin: 0;
+		font-size: 0.9rem;
+		color: var(--text-secondary);
+		line-height: 1.6;
+	}
+
+	.showcase__footer {
+		font-size: 0.85rem;
+		color: var(--text-tertiary);
+	}
+
+	@media (max-width: 640px) {
+		.window__body {
+			padding: 1.5rem;
+		}
+
+		.button-row {
+			flex-direction: column;
+		}
+
+		.button {
+			width: 100%;
+		}
+	}
 </style>

@@ -14,17 +14,21 @@
         "preview": "vite preview",
         "prepare": "svelte-kit sync || echo ''",
         "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+        "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+        "test:e2e": "playwright test"
     },
     "dependencies": {
         "@goobits/docs-engine": "^2.0.0",
-        "@goobits/themes": "^1.0.1"
+        "@goobits/themes": "workspace:*"
     },
     "devDependencies": {
+        "@playwright/test": "^1.57.0",
         "@sveltejs/adapter-auto": "^7.0.0",
         "@sveltejs/kit": "^2.47.1",
         "@sveltejs/vite-plugin-svelte": "^6.2.1",
         "mdsvex": "^0.12.6",
+        "postcss": "^8.4.47",
+        "postcss-nested": "^6.0.1",
         "svelte": "^5.41.0",
         "svelte-check": "^4.3.3",
         "typescript": "^5.9.3",

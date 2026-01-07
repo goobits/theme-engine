@@ -232,18 +232,18 @@ html.theme-dark.scheme-ocean {
     }
 
     .callout.note {
-        background: rgba(59, 130, 246, 0.1);
-        border-color: #3b82f6;
+        background: var(--info-bg);
+        border-color: var(--info-border);
     }
 
     .callout.tip {
-        background: rgba(16, 185, 129, 0.1);
-        border-color: #10b981;
+        background: var(--success-bg);
+        border-color: var(--success-border);
     }
 
     .callout.important {
-        background: rgba(168, 85, 247, 0.1);
-        border-color: #a855f7;
+        background: var(--color-primary-100);
+        border-color: var(--color-primary-500);
     }
 
     .callout strong {
@@ -339,15 +339,15 @@ html.theme-dark.scheme-ocean {
     }
 
     .practice-card {
-        background: rgba(34, 197, 94, 0.1);
-        border: 2px solid #22c55e;
+        background: var(--success-bg);
+        border: 2px solid var(--success-border);
         border-radius: 12px;
         padding: 1.5rem;
     }
 
     .practice-card.error {
-        background: rgba(239, 68, 68, 0.1);
-        border-color: #ef4444;
+        background: var(--error-bg);
+        border-color: var(--error-border);
     }
 
     .practice-card h4 {
@@ -369,8 +369,8 @@ html.theme-dark.scheme-ocean {
     }
 
     pre {
-        background: #282a36;
-        color: #f8f8f2;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
         padding: 1.5rem;
         border-radius: 10px;
         overflow-x: auto;

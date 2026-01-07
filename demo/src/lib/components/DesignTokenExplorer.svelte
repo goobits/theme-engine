@@ -219,7 +219,7 @@
     .search-input:focus {
         outline: none;
         border-color: var(--accent-primary);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        box-shadow: var(--focus-ring);
     }
 
     .category-tabs {
@@ -247,7 +247,7 @@
 
     .category-tab.active {
         background: var(--accent-primary);
-        color: white;
+        color: var(--color-text-on-primary);
         border-color: var(--accent-primary);
     }
 
@@ -271,7 +271,7 @@
     .token-card:hover {
         border-color: var(--accent-primary);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-md);
     }
 
     .token-info {
@@ -331,7 +331,7 @@
         height: 60px;
         border-radius: 8px;
         border: 2px solid var(--border-primary);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-sm);
     }
 
     .spacing-bar {
@@ -363,13 +363,13 @@
     .copy-button:hover {
         border-color: var(--accent-primary);
         background: var(--accent-primary);
-        color: white;
+        color: var(--color-text-on-primary);
     }
 
     .copy-button.copied {
-        background: #22c55e;
-        color: white;
-        border-color: #22c55e;
+        background: var(--success);
+        color: var(--color-text-on-primary);
+        border-color: var(--success-border);
     }
 
     .no-results {

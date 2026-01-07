@@ -16,17 +16,17 @@
     }
 
     .docs-content {
-        background: var(--bg-primary, #ffffff);
-        color: var(--text-primary, #000000);
+        background: var(--bg-primary);
+        color: var(--text-primary);
         border-radius: 12px;
         padding: 3rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--shadow-sm);
     }
 
     :global(.docs-content h1) {
         font-size: 2.5rem;
         margin-bottom: 1rem;
-        border-bottom: 2px solid var(--accent-primary, #3b82f6);
+        border-bottom: 2px solid var(--accent-primary);
         padding-bottom: 0.5rem;
     }
 
@@ -34,7 +34,7 @@
         font-size: 2rem;
         margin-top: 3rem;
         margin-bottom: 1rem;
-        color: var(--accent-primary, #3b82f6);
+        color: var(--accent-primary);
     }
 
     :global(.docs-content h3) {
@@ -44,7 +44,7 @@
     }
 
     :global(.docs-content code:not(pre code)) {
-        background: var(--bg-secondary, #f5f5f7);
+        background: var(--bg-secondary);
         padding: 0.2em 0.4em;
         border-radius: 4px;
         font-size: 0.9em;
@@ -59,8 +59,8 @@
     :global(.docs-content blockquote) {
         margin: 1.5rem 0;
         padding: 1rem 1.5rem;
-        border-left: 4px solid var(--accent-primary, #3b82f6);
-        background: var(--bg-secondary, #f5f5f7);
+        border-left: 4px solid var(--accent-primary);
+        background: var(--bg-secondary);
         border-radius: 0 8px 8px 0;
     }
 </style>

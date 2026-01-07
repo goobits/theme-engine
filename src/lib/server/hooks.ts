@@ -22,9 +22,9 @@ import { loadThemePreferences } from './preferences'
  */
 export interface ThemeLocals {
 	themePreferences: {
-		theme: ThemeMode;
-		themeScheme: ThemeScheme;
-	};
+		theme: ThemeMode
+		themeScheme: ThemeScheme
+	}
 }
 
 /**
@@ -93,11 +93,12 @@ function escapeHtml(str: string): string {
  */
 export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
 	const themeTransform: Handle = async({ event, resolve }) => {
-		const preferences = loadThemePreferences(event.cookies, config);
+		const preferences = loadThemePreferences(event.cookies, config)
 
 		// Populate event.locals for downstream access
 		// This allows +layout.server.ts to access preferences without calling loadThemePreferences again
-		(event.locals as any).themePreferences = preferences
+		const locals = event.locals as ThemeLocals
+		locals.themePreferences = preferences
 
 		const response = await resolve(event, {
 			transformPageChunk: ({ html }) => {

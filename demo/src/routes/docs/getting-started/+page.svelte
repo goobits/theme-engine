@@ -321,23 +321,23 @@ export function load({ cookies }) {
     }
 
     .callout.note {
-        background: rgba(59, 130, 246, 0.1);
-        border-color: #3b82f6;
+        background: var(--info-bg);
+        border-color: var(--info-border);
     }
 
     .callout.warning {
-        background: rgba(251, 146, 60, 0.1);
-        border-color: #fb923c;
+        background: var(--warning-bg);
+        border-color: var(--warning-border);
     }
 
     .callout.tip {
-        background: rgba(16, 185, 129, 0.1);
-        border-color: #10b981;
+        background: var(--success-bg);
+        border-color: var(--success-border);
     }
 
     .callout.success {
-        background: rgba(34, 197, 94, 0.1);
-        border-color: #22c55e;
+        background: var(--success-bg);
+        border-color: var(--success-border);
     }
 
     .code-tabs {
@@ -379,7 +379,7 @@ export function load({ cookies }) {
 
     .tab-btn.active {
         background: var(--accent-primary);
-        color: white;
+        color: var(--color-text-on-primary);
         font-weight: 600;
     }
 
@@ -398,8 +398,8 @@ export function load({ cookies }) {
     }
 
     pre {
-        background: #282a36;
-        color: #f8f8f2;
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
         padding: 1.5rem;
         border-radius: 10px;
         overflow-x: auto;

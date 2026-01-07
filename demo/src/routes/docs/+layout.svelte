@@ -55,8 +55,8 @@
     }
 
     .docs-nav {
-        background: var(--bg-raised, #fafafa);
-        border-right: 2px solid var(--border-primary, #e5e7eb);
+        background: var(--bg-raised);
+        border-right: 2px solid var(--border-primary);
         padding: 2rem 1.5rem;
         position: sticky;
         top: 0;
@@ -118,7 +118,7 @@
 
     .nav-link.active {
         background: var(--accent-primary);
-        color: white;
+        color: var(--color-text-on-primary);
         font-weight: 600;
     }
 
@@ -171,7 +171,7 @@
     }
 
     :global(.docs-content code:not(pre code)) {
-        background: var(--bg-secondary, #f5f5f7);
+        background: var(--bg-secondary);
         padding: 0.2em 0.5em;
         border-radius: 4px;
         font-size: 0.9em;
@@ -183,14 +183,14 @@
         margin: 1.5rem 0;
         border-radius: 10px;
         overflow-x: auto;
-        background: #282a36 !important;
+        background: var(--bg-tertiary) !important;
         padding: 1.5rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        box-shadow: var(--shadow-md);
     }
 
     :global(.docs-content pre code) {
         background: transparent;
-        color: #f8f8f2;
+        color: var(--text-primary);
         font-size: 0.9rem;
         line-height: 1.6;
     }
@@ -204,32 +204,32 @@
     }
 
     :global(.docs-content blockquote[data-callout='note']) {
-        background: rgba(59, 130, 246, 0.1);
-        border-color: #3b82f6;
+        background: var(--info-bg);
+        border-color: var(--info-border);
         color: var(--text-primary);
     }
 
     :global(.docs-content blockquote[data-callout='tip']) {
-        background: rgba(16, 185, 129, 0.1);
-        border-color: #10b981;
+        background: var(--success-bg);
+        border-color: var(--success-border);
         color: var(--text-primary);
     }
 
     :global(.docs-content blockquote[data-callout='warning']) {
-        background: rgba(251, 146, 60, 0.1);
-        border-color: #fb923c;
+        background: var(--warning-bg);
+        border-color: var(--warning-border);
         color: var(--text-primary);
     }
 
     :global(.docs-content blockquote[data-callout='important']) {
-        background: rgba(168, 85, 247, 0.1);
-        border-color: #a855f7;
+        background: var(--color-primary-100);
+        border-color: var(--color-primary-500);
         color: var(--text-primary);
     }
 
     :global(.docs-content blockquote[data-callout='success']) {
-        background: rgba(34, 197, 94, 0.1);
-        border-color: #22c55e;
+        background: var(--success-bg);
+        border-color: var(--success-border);
         color: var(--text-primary);
     }
 

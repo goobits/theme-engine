@@ -22,7 +22,7 @@ pnpm --dir demo dev      # Start demo dev server (Vite)
 | Language | TypeScript (strict) |
 | Build | svelte-package + Vite |
 | Testing | Vitest |
-| Lint/Format | ESLint + Prettier (prettier-plugin-svelte) |
+| Lint/Format | ESLint (@stylistic, simple-import-sort) |
 
 ## Code Style
 
@@ -43,6 +43,10 @@ pnpm --dir demo dev      # Start demo dev server (Vite)
 - **No defensive programming** except for external user input
 - **No lazy getters** for circular deps
 - **Types** colocate by default; centralize only when shared
+- **Classes** use `#private` fields (no `private` keyword)
+- **File naming**: `PascalCase.ts` for classes, `_underscoreCamelCase.ts` for internal modules, `camelCase.ts` for everything else
+- **CSS** uses modern nested BEM in `.css` files
+- **EditorConfig**: utf-8, tabs, final newline, trim trailing whitespace
 
 ## Svelte
 

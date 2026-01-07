@@ -20,6 +20,18 @@
    * DEFAULT SCHEME - SUBTLE FX DEFINITIONS
    * ======================================== */
 
+    /* Core palette overrides for demo baseline */
+    --bg-primary: #ffffff;
+    --bg-secondary: #f5f5f7;
+    --bg-tertiary: #ededf0;
+    --text-primary: #1d1d1f;
+    --text-secondary: #86868b;
+    --text-tertiary: #9fa0a6;
+    --border-primary: #d2d2d7;
+    --scheme-accent-primary: #0071e3;
+    --scheme-accent-glow: #2997ff;
+    --accent-soft: color-mix(in srgb, var(--scheme-accent-primary) 18%, transparent);
+
     /* Subtle hover effects */
     --fx-hover-transform: translateY(-2px);
     --fx-hover-lift: -3px;

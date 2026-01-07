@@ -16,4 +16,5 @@
  */
 
 /* Import complete default theme (includes base + default preset) */
+@import './base/index.css';
 @import './presets/default.css';
