@@ -31,8 +31,8 @@ vi.mock('../utils/logger', () => ({
 	}
 }))
 
-// Mock the scheme-registry module
-vi.mock('./scheme-registry', () => ({
+// Mock the schemeRegistry module
+vi.mock('./schemeRegistry', () => ({
 	applyFullTheme: vi.fn(),
 	applyThemeScheme: vi.fn(),
 	getCurrentScheme: vi.fn(() => 'default')
@@ -143,7 +143,7 @@ describe('applyThemeWithScheme', () => {
 		[ 'system', 'default' ],
 		[ 'system', 'spells' ]
 	] as const)('should apply %s theme with %s scheme', async(theme, scheme) => {
-		const { applyFullTheme } = await import('./scheme-registry')
+		const { applyFullTheme } = await import('./schemeRegistry')
 
 		applyThemeWithScheme(theme, scheme)
 
@@ -154,7 +154,7 @@ describe('applyThemeWithScheme', () => {
 	})
 
 	it('should create correct FullTheme structure', async() => {
-		const { applyFullTheme } = await import('./scheme-registry')
+		const { applyFullTheme } = await import('./schemeRegistry')
 
 		applyThemeWithScheme('light', 'default')
 
@@ -533,7 +533,7 @@ describe('initializeTheme', () => {
 		})
 
 		it('should not apply theme when not in browser', async() => {
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 
 			initializeTheme('light', 'default')
 
@@ -547,7 +547,7 @@ describe('initializeTheme', () => {
 		})
 
 		it('should apply stored theme immediately', async() => {
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 			mockMatchMedia(false, true, false)
 
 			initializeTheme('light', 'default')
@@ -559,7 +559,7 @@ describe('initializeTheme', () => {
 		})
 
 		it('should apply dark theme with spells scheme', async() => {
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 			mockMatchMedia(true, true, false)
 
 			initializeTheme('dark', 'spells')
@@ -571,7 +571,7 @@ describe('initializeTheme', () => {
 		})
 
 		it('should use default scheme when not provided', async() => {
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 			mockMatchMedia(false, true, false)
 
 			initializeTheme('light')
@@ -688,7 +688,7 @@ describe('applyRouteTheme', () => {
 	describe('no route configuration', () => {
 		it('should use user preferences when no route theme exists', async() => {
 			const { getRouteTheme } = await import('../utils/route-themes')
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
 			const result = applyRouteTheme('/home', 'light', 'default', {})
@@ -705,7 +705,7 @@ describe('applyRouteTheme', () => {
 
 		it('should use user dark theme with spells scheme', async() => {
 			const { getRouteTheme } = await import('../utils/route-themes')
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
 			const result = applyRouteTheme('/about', 'dark', 'spells', {})
@@ -737,7 +737,7 @@ describe('applyRouteTheme', () => {
 	describe('route configuration with override', () => {
 		it('should override user preferences when route has override', async() => {
 			const { getRouteTheme } = await import('../utils/route-themes')
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'dark', scheme: 'spells' },
@@ -760,7 +760,7 @@ describe('applyRouteTheme', () => {
 
 		it('should ignore user theme when route overrides', async() => {
 			const { getRouteTheme } = await import('../utils/route-themes')
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'light', scheme: 'default' },
@@ -804,7 +804,7 @@ describe('applyRouteTheme', () => {
 	describe('route configuration without override', () => {
 		it('should respect user base theme but use route scheme', async() => {
 			const { getRouteTheme } = await import('../utils/route-themes')
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'dark', scheme: 'spells' },
@@ -827,7 +827,7 @@ describe('applyRouteTheme', () => {
 
 		it('should preserve user system theme with route scheme', async() => {
 			const { getRouteTheme } = await import('../utils/route-themes')
-			const { applyFullTheme } = await import('./scheme-registry')
+			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'light', scheme: 'spells' },
@@ -966,7 +966,7 @@ describe('integration scenarios', () => {
 	})
 
 	it('should initialize theme and watch for system changes', async() => {
-		const { applyFullTheme } = await import('./scheme-registry')
+		const { applyFullTheme } = await import('./schemeRegistry')
 		const mediaQuery = mockMatchMedia(false, true, false)
 		mockHtml.classList.contains = vi.fn((token: string) => token === 'theme-system')
 
@@ -1011,7 +1011,7 @@ describe('integration scenarios', () => {
 
 	it('should handle route theme changes with system watching', async() => {
 		const { getRouteTheme } = await import('../utils/route-themes')
-		const { applyFullTheme } = await import('./scheme-registry')
+		const { applyFullTheme } = await import('./schemeRegistry')
 		mockMatchMedia(false, true, false)
 
 		// Initialize with system theme

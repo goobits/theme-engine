@@ -10,7 +10,7 @@ import { getHtmlElement } from '../utils/dom'
 import { logger } from '../utils/logger'
 import { getRouteTheme, type RouteThemeConfig } from '../utils/route-themes'
 import { prefersDarkMode,watchSystemTheme as watchSystemThemeUtil } from '../utils/system-theme'
-import { applyFullTheme } from './scheme-registry'
+import { applyFullTheme } from './schemeRegistry'
 import type { FullTheme, ThemeMode, ThemeScheme } from './types'
 
 /**

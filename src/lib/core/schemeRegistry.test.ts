@@ -10,7 +10,7 @@ import {
 	applyThemeScheme,
 	getCurrentScheme,
 	THEME_SCHEMES
-} from './scheme-registry'
+} from './schemeRegistry'
 import type { FullTheme } from './types'
 
 // Mock the $app/environment module

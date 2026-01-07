@@ -16,6 +16,6 @@
 
 export * from './config'
 export * from './constants'
-export * from './scheme-registry'
+export * from './schemeRegistry'
 export * from './theme-manager'
 export * from './types'
