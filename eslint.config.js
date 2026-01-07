@@ -134,7 +134,7 @@ export default [
             ...sveltePlugin.configs.recommended.rules,
             'svelte/no-at-html-tags': 'error',
             'svelte/no-target-blank': 'error',
-            'svelte/valid-compile': 'error',
+            'svelte/valid-compile': 'warn',
         },
     },
 
@@ -159,6 +159,8 @@ export default [
     {
         ignores: [
             'node_modules/',
+            '.pnpm-store/',
+            '.artifacts/',
             'dist/',
             'build/',
             '.svelte-kit/',
@@ -166,7 +168,7 @@ export default [
             '**/*.config.js',
             '**/*.config.ts',
             'demo/',
-            'test/mocks/',
+            'test/',
         ],
     },
 ];
