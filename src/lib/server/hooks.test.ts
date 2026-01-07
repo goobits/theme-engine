@@ -7,7 +7,7 @@ import { beforeEach,describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../core/config'
 import type { ThemeScheme } from '../core/types'
-import { themeBlockingScript, themeBlockingScriptMarker } from './blocking-script'
+import { themeBlockingScript, themeBlockingScriptMarker } from './blockingScript'
 import { createThemeHooks } from './hooks'
 import * as preferences from './preferences'
 

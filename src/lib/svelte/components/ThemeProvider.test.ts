@@ -11,7 +11,7 @@
 
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createMockConfig,createMockThemeStore } from '../../../../test/test-utils'
+import { createMockConfig,createMockThemeStore } from '../../../../test/testUtils'
 import type { ThemeConfig } from '../../core/config'
 import type { ThemeMode, ThemeScheme } from '../../core/types'
 
@@ -46,7 +46,7 @@ vi.mock('../stores/theme.svelte', () => ({
 	createThemeStore: vi.fn()
 }))
 
-vi.mock('../../core/theme-manager', () => ({
+vi.mock('../../core/themeManager', () => ({
 	initializeTheme: vi.fn(),
 	applyRouteTheme: vi.fn()
 }))
@@ -66,7 +66,7 @@ describe('ThemeProvider', () => {
 		const themeStoreModule = await import('../stores/theme.svelte')
 		createThemeStoreMock = vi.mocked(themeStoreModule.createThemeStore)
 
-		const themeManagerModule = await import('../../core/theme-manager')
+		const themeManagerModule = await import('../../core/themeManager')
 		initializeThemeMock = vi.mocked(themeManagerModule.initializeTheme)
 
 		// Default mock implementations

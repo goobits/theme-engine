@@ -5,7 +5,7 @@
  * multiple test files. This reduces code duplication and ensures consistency
  * in test setup and mocking patterns.
  *
- * @module test-utils
+ * @module testUtils
  */
 
 import { vi } from 'vitest'
@@ -13,7 +13,7 @@ import { vi } from 'vitest'
 import type { ThemeConfig } from '../src/lib/core/config'
 import type { SchemeConfig, ThemeMode, ThemeScheme } from '../src/lib/core/types'
 import type { ThemeStore } from '../src/lib/svelte/stores/theme.svelte'
-import type { RouteThemeConfig } from '../src/lib/utils/route-themes'
+import type { RouteThemeConfig } from '../src/lib/utils/routeThemes'
 
 /**
  * Options for creating a mock theme store

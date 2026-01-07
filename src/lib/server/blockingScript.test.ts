@@ -6,9 +6,9 @@ import {
 	themeBlockingScriptMarker,
 	themeBlockingScriptReadable,
 	themeBlockingScriptTag
-} from './blocking-script'
+} from './blockingScript'
 
-describe('blocking-script', () => {
+describe('blockingScript', () => {
 	describe('themeBlockingScript', () => {
 		it('should be a non-empty string', () => {
 			expect(themeBlockingScript).toBeDefined()

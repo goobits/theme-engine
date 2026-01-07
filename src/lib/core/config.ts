@@ -10,7 +10,7 @@
 import { DEV } from 'esm-env'
 
 import { logger } from '../utils/logger'
-import type { RouteThemeConfig } from '../utils/route-themes'
+import type { RouteThemeConfig } from '../utils/routeThemes'
 import { isValidHexColor } from '../utils/validation'
 import type { SchemeConfig } from './types'
 

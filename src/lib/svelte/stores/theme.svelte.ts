@@ -10,7 +10,7 @@
 import type { ThemeConfig } from '../../core/config'
 import type { SchemeConfig,ThemeMode, ThemeScheme } from '../../core/types'
 import { isBrowser } from '../../utils/browser'
-import { loadThemePreferences,saveThemePreferences } from './theme-persistence'
+import { loadThemePreferences,saveThemePreferences } from './themePersistence'
 
 /**
  * Internal theme settings structure.

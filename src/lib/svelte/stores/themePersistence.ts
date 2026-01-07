@@ -4,7 +4,7 @@
  * Handles saving and loading theme preferences to/from localStorage and cookies.
  * Separated from state management for cleaner architecture and better testability.
  *
- * @module stores/theme-persistence
+ * @module stores/themePersistence
  */
 
 import { STORAGE_KEY } from '../../core/constants'

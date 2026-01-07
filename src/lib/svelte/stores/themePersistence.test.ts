@@ -11,7 +11,7 @@ import {
 	loadThemePreferences,
 	saveThemePreferences,
 	type ThemePersistenceData
-} from './theme-persistence'
+} from './themePersistence'
 
 // Mock browser utilities
 vi.mock('../../utils/browser', () => ({

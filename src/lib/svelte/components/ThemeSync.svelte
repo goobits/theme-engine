@@ -3,7 +3,7 @@
 
     import { isBrowser } from '../../utils/browser'
     import { getHtmlElement } from '../../utils/dom'
-    import { getDarkModeMediaQuery,prefersDarkMode } from '../../utils/system-theme'
+    import { getDarkModeMediaQuery,prefersDarkMode } from '../../utils/systemTheme'
     import { useTheme } from '../hooks/useTheme.svelte'
 
     /**

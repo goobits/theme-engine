@@ -13,7 +13,7 @@ import {
 	setDataThemeAttribute
 } from '../utils/dom'
 import { logger } from '../utils/logger'
-import { prefersDarkMode } from '../utils/system-theme'
+import { prefersDarkMode } from '../utils/systemTheme'
 import { resolveTheme,THEME_TRANSITION_DURATION_MS } from './constants'
 import type { FullTheme,SchemeConfig, ThemeScheme } from './types'
 

@@ -8,7 +8,7 @@
 
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createMockThemeStore } from '../../../../test/test-utils'
+import { createMockThemeStore } from '../../../../test/testUtils'
 import type { ThemeMode, ThemeScheme } from '../../core/types'
 import type { ThemeStore } from '../stores/theme.svelte'
 

@@ -8,8 +8,8 @@
 import { isBrowser } from '../utils/browser'
 import { getHtmlElement } from '../utils/dom'
 import { logger } from '../utils/logger'
-import { getRouteTheme, type RouteThemeConfig } from '../utils/route-themes'
-import { prefersDarkMode,watchSystemTheme as watchSystemThemeUtil } from '../utils/system-theme'
+import { getRouteTheme, type RouteThemeConfig } from '../utils/routeThemes'
+import { prefersDarkMode,watchSystemTheme as watchSystemThemeUtil } from '../utils/systemTheme'
 import { applyFullTheme } from './schemeRegistry'
 import type { FullTheme, ThemeMode, ThemeScheme } from './types'
 
@@ -129,7 +129,7 @@ export function watchSystemTheme(callback: (systemTheme: 'light' | 'dark') => vo
  * @example
  * ```typescript
  * // In your SvelteKit +layout.svelte or app initialization code
- * import { initializeTheme } from '$lib/core/theme-manager';
+ * import { initializeTheme } from '$lib/core/themeManager';
  *
  * const cleanup = initializeTheme('system', 'default');
  *

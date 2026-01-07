@@ -7,13 +7,13 @@
 
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { RouteThemeConfig } from '../utils/route-themes'
+import type { RouteThemeConfig } from '../utils/routeThemes'
 import {
 	applyRouteTheme,
 	applyThemeWithScheme,
 	initializeTheme,
 	watchSystemTheme
-} from './theme-manager'
+} from './themeManager'
 import type { FullTheme } from './types'
 
 // Mock the $app/environment module
@@ -38,8 +38,8 @@ vi.mock('./schemeRegistry', () => ({
 	getCurrentScheme: vi.fn(() => 'default')
 }))
 
-// Mock the route-themes module
-vi.mock('../utils/route-themes', () => ({
+// Mock the routeThemes module
+vi.mock('../utils/routeThemes', () => ({
 	getRouteTheme: vi.fn()
 }))
 
@@ -687,7 +687,7 @@ describe('applyRouteTheme', () => {
 
 	describe('no route configuration', () => {
 		it('should use user preferences when no route theme exists', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { applyFullTheme } = await import('./schemeRegistry')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
@@ -704,7 +704,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should use user dark theme with spells scheme', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { applyFullTheme } = await import('./schemeRegistry')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
@@ -721,7 +721,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should log debug message when no route theme found', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { logger } = await import('../utils/logger')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
@@ -736,7 +736,7 @@ describe('applyRouteTheme', () => {
 
 	describe('route configuration with override', () => {
 		it('should override user preferences when route has override', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
@@ -759,7 +759,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should ignore user theme when route overrides', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
@@ -780,7 +780,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should log info message when applying override', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { logger } = await import('../utils/logger')
 
 			const routeConfig: RouteThemeConfig = {
@@ -803,7 +803,7 @@ describe('applyRouteTheme', () => {
 
 	describe('route configuration without override', () => {
 		it('should respect user base theme but use route scheme', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
@@ -826,7 +826,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should preserve user system theme with route scheme', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { applyFullTheme } = await import('./schemeRegistry')
 
 			const routeConfig: RouteThemeConfig = {
@@ -846,7 +846,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should log info message when applying suggestion', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { logger } = await import('../utils/logger')
 
 			const routeConfig: RouteThemeConfig = {
@@ -869,7 +869,7 @@ describe('applyRouteTheme', () => {
 
 	describe('logging behavior', () => {
 		it('should log route theme check with all details', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { logger } = await import('../utils/logger')
 
 			const routeConfig: RouteThemeConfig = {
@@ -897,7 +897,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should log null routeConfig when no route matches', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			const { logger } = await import('../utils/logger')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
@@ -917,7 +917,7 @@ describe('applyRouteTheme', () => {
 
 	describe('return value verification', () => {
 		it('should return applied theme for all scenarios', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
 			const result = applyRouteTheme('/test', 'dark', 'spells', {})
@@ -931,7 +931,7 @@ describe('applyRouteTheme', () => {
 		})
 
 		it('should return FullTheme type structure', async() => {
-			const { getRouteTheme } = await import('../utils/route-themes')
+			const { getRouteTheme } = await import('../utils/routeThemes')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'dark', scheme: 'spells' },
@@ -1010,7 +1010,7 @@ describe('integration scenarios', () => {
 	})
 
 	it('should handle route theme changes with system watching', async() => {
-		const { getRouteTheme } = await import('../utils/route-themes')
+		const { getRouteTheme } = await import('../utils/routeThemes')
 		const { applyFullTheme } = await import('./schemeRegistry')
 		mockMatchMedia(false, true, false)
 

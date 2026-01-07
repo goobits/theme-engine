@@ -6,7 +6,7 @@
  * across the codebase into reusable functions with consistent browser environment
  * handling.
  *
- * @module system-theme
+ * @module systemTheme
  */
 
 import { browser } from '$app/environment'
@@ -22,7 +22,7 @@ import type { ThemeMode } from '../core/types'
  *
  * @example
  * ```typescript
- * import { DARK_MODE_MEDIA_QUERY } from './utils/system-theme';
+ * import { DARK_MODE_MEDIA_QUERY } from './utils/systemTheme';
  *
  * const mql = window.matchMedia(DARK_MODE_MEDIA_QUERY);
  * console.log(mql.matches); // true if dark mode is preferred
@@ -41,7 +41,7 @@ export const DARK_MODE_MEDIA_QUERY = '(prefers-color-scheme: dark)'
  *
  * @example
  * ```typescript
- * import { getDarkModeMediaQuery } from './utils/system-theme';
+ * import { getDarkModeMediaQuery } from './utils/systemTheme';
  *
  * const mql = getDarkModeMediaQuery();
  * if (mql) {
@@ -76,7 +76,7 @@ export function getDarkModeMediaQuery(): MediaQueryList | null {
  *
  * @example
  * ```typescript
- * import { prefersDarkMode } from './utils/system-theme';
+ * import { prefersDarkMode } from './utils/systemTheme';
  *
  * if (prefersDarkMode()) {
  *   console.log('User prefers dark mode');
@@ -111,7 +111,7 @@ export function prefersDarkMode(): boolean {
  *
  * @example
  * ```typescript
- * import { getSystemThemePreference } from './utils/system-theme';
+ * import { getSystemThemePreference } from './utils/systemTheme';
  *
  * const systemTheme = getSystemThemePreference();
  * console.log(`System prefers: ${systemTheme}`); // 'light' or 'dark'
@@ -146,7 +146,7 @@ export function getSystemThemePreference(): 'light' | 'dark' {
  *
  * @example
  * ```typescript
- * import { resolveThemeMode } from './utils/system-theme';
+ * import { resolveThemeMode } from './utils/systemTheme';
  *
  * // Direct theme values pass through unchanged
  * resolveThemeMode('light');  // returns 'light'
@@ -189,7 +189,7 @@ export function resolveThemeMode(theme: ThemeMode): 'light' | 'dark' {
  *
  * @example
  * ```typescript
- * import { watchSystemTheme } from './utils/system-theme';
+ * import { watchSystemTheme } from './utils/systemTheme';
  * import { onDestroy } from 'svelte';
  *
  * // Set up watcher

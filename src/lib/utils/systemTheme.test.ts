@@ -11,7 +11,7 @@ import {
 	prefersDarkMode,
 	resolveThemeMode,
 	watchSystemTheme
-} from './system-theme'
+} from './systemTheme'
 
 // Mock the $app/environment module
 vi.mock('$app/environment', () => ({

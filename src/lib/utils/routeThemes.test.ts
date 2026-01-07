@@ -11,7 +11,7 @@ import {
 	routeHasTheme,
 	type RouteThemeConfig,
 	routeThemeOverrides
-} from './route-themes'
+} from './routeThemes'
 
 // Test fixtures
 const createTheme = (scheme: 'default' | 'spells' = 'default'): FullTheme => ({

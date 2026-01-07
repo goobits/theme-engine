@@ -15,6 +15,6 @@
  * ```
  */
 
-export * from './blocking-script'
+export * from './blockingScript'
 export * from './hooks'
 export * from './preferences'

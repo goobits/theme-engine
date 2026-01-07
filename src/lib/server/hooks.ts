@@ -7,7 +7,7 @@ import {
 	createThemeBlockingScriptTag,
 	themeBlockingScript,
 	themeBlockingScriptMarker
-} from './blocking-script'
+} from './blockingScript'
 import { loadThemePreferences } from './preferences'
 
 /**

@@ -5,7 +5,7 @@
  * It synchronously detects the user's theme preference and applies classes to prevent
  * flash of unstyled content (FOUC) when using theme='system'.
  *
- * @module server/blocking-script
+ * @module server/blockingScript
  *
  * @example
  * ```html
