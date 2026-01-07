@@ -5,6 +5,8 @@
  * for easy identification in console output. Debug and info logs are
  * suppressed in production builds to reduce console noise.
  *
+ * Set `globalThis.__GOOBITS_THEMES_DEBUG__ = true` to enable debug logs in dev.
+ *
  * @example
  * ```typescript
  * import { logger } from './utils/logger';
@@ -20,20 +22,25 @@ import { DEV } from 'esm-env'
 // No-op function for suppressed logs
 const noop = () => {}
 
+const debugEnabled = DEV && (
+	typeof globalThis !== 'undefined' &&
+	(globalThis as { __GOOBITS_THEMES_DEBUG__?: boolean }).__GOOBITS_THEMES_DEBUG__ === true
+)
+
 export const logger = {
 	/**
      * Log informational messages.
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-	info: DEV ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
+	info: debugEnabled ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
 	/**
      * Log debug messages.
      * Only logs in development mode.
      * @param args - Arguments to log (forwarded to console.log)
      */
-	debug: DEV ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
+	debug: debugEnabled ? (...args: unknown[]) => console.log('[svelte-themes]', ...args) : noop,
 
 	/**
      * Log warning messages.

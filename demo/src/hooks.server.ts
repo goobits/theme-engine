@@ -1,4 +1,4 @@
-import { createThemeHooks } from '../../src/lib/server/index.js'
+import { createThemeHooks } from '@goobits/themes/server'
 import { themeConfig } from '$lib/config/theme.js'
 
 const { transform } = createThemeHooks(themeConfig)

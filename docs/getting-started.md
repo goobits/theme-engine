@@ -224,6 +224,18 @@ Wrap your app with the ThemeProvider component:
 </ThemeProvider>
 ```
 
+### Optional: Goo Presets
+
+If you want the Goo preset collection (light + dark variants for each theme), import the Goo bundle:
+
+```svelte
+<script>
+    import '@goobits/themes/themes/goo/bundle.css';
+</script>
+```
+
+For non-SvelteKit SSR, Goo helpers are available under `@goobits/themes/server/goo`.
+
 > **SvelteKit note:** ThemeProvider reads `data.preferences` from `$page` when running in SvelteKit. If you're not using SvelteKit, pass `serverPreferences` explicitly.
 
 ## Preventing Flash of Unstyled Content (FOUC)

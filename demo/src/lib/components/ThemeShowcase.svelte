@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { ThemeToggle, useTheme } from '../../../../src/lib/svelte/index.js'
+	import { ThemeToggle, useTheme } from '@goobits/themes/svelte'
 
 	const theme = useTheme()
 	const activeScheme = $derived(theme.scheme)

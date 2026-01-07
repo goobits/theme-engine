@@ -54,6 +54,12 @@
 		() => serverPreferences ?? $page.data?.preferences
 	)
 
+	// Seed SSR render with server preferences so UI matches initial classes
+	if (!isBrowser() && resolvedPreferences) {
+		themeStore.setTheme(resolvedPreferences.theme)
+		themeStore.setScheme(resolvedPreferences.themeScheme)
+	}
+
 	let appliedServerPreferences = $state(false)
 
 	// Apply server preferences once to seed client state without overriding user changes

@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-01-07
+
+### Added
+- Goo presets bundle with light/dark variants for each theme
+- Goo SSR helpers via `@goobits/themes/server/goo`
+- Goo preset generator and consistency checks
+
+### Changed
+- Theme store reactivity now uses direct `$state` fields for scheme switching
+- Demo uses Goo preset bundle
+- Theme logger info/debug output gated behind an opt-in flag
+
+### Fixed
+- Scheme selection now updates UI immediately when switching within the same mode
+
 ## [1.1.0] - 2025-11-16
 
 ### Added

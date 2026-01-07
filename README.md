@@ -72,6 +72,18 @@ export function load({ locals }) {
 </ThemeProvider>
 ```
 
+**Optional: Goo presets + SSR helpers**
+
+```svelte
+<script>
+    import '@goobits/themes/themes/goo/bundle.css';
+</script>
+```
+
+```typescript
+import { generateBlockingThemeScript } from '@goobits/themes/server/goo';
+```
+
 **7. Add controls** (optional)
 
 ```svelte

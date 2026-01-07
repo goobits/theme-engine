@@ -1,5 +1,5 @@
-import type { ThemeConfig } from '../../../../src/lib/core/config.js'
-import { themePairs } from '../../../../src/lib/goo/presets.js'
+import type { ThemeConfig } from '@goobits/themes/core'
+import { themePairs } from '@goobits/themes/goo'
 
 const toDisplayName = (name: string): string =>
 	name

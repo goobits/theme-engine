@@ -9,6 +9,8 @@ Complete reference for all @goobits/themes modules, types, and functions.
 - **core** - Framework-agnostic theme logic and configuration
 - **svelte** - Svelte 5 components and reactive stores
 - **server** - SvelteKit server-side hooks and utilities
+- **goo** - GooTheme presets and helpers
+- **server/goo** - GooTheme SSR helpers
 - **utils** - Cookie management and routing helpers
 
 ## Core Module
