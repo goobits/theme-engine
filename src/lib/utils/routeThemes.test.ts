@@ -4,7 +4,7 @@
 
 import { describe, expect,it } from 'vitest'
 
-import type { FullTheme } from '../core/types'
+import type { FullTheme } from '../core/schemeRegistry'
 import {
 	getRoutesForScheme,
 	getRouteTheme,

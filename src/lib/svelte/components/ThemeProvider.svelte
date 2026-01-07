@@ -25,8 +25,8 @@
 	import { page } from '$app/stores'
 
 	import type { ThemeConfig } from '../../core/config'
+	import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 	import { applyRouteTheme, initializeTheme } from '../../core/themeManager'
-	import type { ThemeMode, ThemeScheme } from '../../core/types'
 	import { isBrowser } from '../../utils/browser'
 	import { createThemeStore } from '../stores/theme.svelte'
 

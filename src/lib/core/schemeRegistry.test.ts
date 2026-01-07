@@ -5,13 +5,13 @@
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { THEME_TRANSITION_DURATION_MS } from './constants'
+import type { FullTheme } from './schemeRegistry'
 import {
 	applyFullTheme,
 	applyThemeScheme,
 	getCurrentScheme,
 	THEME_SCHEMES
 } from './schemeRegistry'
-import type { FullTheme } from './types'
 
 // Mock the $app/environment module
 vi.mock('$app/environment', () => ({

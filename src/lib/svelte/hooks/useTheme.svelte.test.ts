@@ -7,7 +7,7 @@
 
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { ThemeMode, ThemeScheme } from '../../core/types'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import type { ThemeStore } from '../stores/theme.svelte'
 import { useTheme } from './useTheme.svelte'
 

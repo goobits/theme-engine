@@ -6,7 +6,7 @@ import type { Cookies,RequestEvent } from '@sveltejs/kit'
 import { beforeEach,describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../core/config'
-import type { ThemeScheme } from '../core/types'
+import type { ThemeScheme } from '../core/schemeRegistry'
 import { themeBlockingScript, themeBlockingScriptMarker } from './blockingScript'
 import { createThemeHooks } from './hooks'
 import * as preferences from './preferences'

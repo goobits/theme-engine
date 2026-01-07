@@ -8,7 +8,7 @@
  */
 
 import { STORAGE_KEY } from '../../core/constants'
-import type { ThemeMode, ThemeScheme } from '../../core/types'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import { isBrowser } from '../../utils/browser'
 import {
 	readPreferenceCookies,

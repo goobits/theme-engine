@@ -9,9 +9,9 @@ import { isBrowser } from '../utils/browser'
 import { getHtmlElement } from '../utils/dom'
 import { logger } from '../utils/logger'
 import { getRouteTheme, type RouteThemeConfig } from '../utils/routeThemes'
-import { prefersDarkMode,watchSystemTheme as watchSystemThemeUtil } from '../utils/systemTheme'
+import { prefersDarkMode, watchSystemTheme as watchSystemThemeUtil } from '../utils/systemTheme'
+import type { FullTheme, ThemeMode, ThemeScheme } from './schemeRegistry'
 import { applyFullTheme } from './schemeRegistry'
-import type { FullTheme, ThemeMode, ThemeScheme } from './types'
 
 /**
  * Apply a theme with its associated color scheme to the document.

@@ -9,7 +9,7 @@
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createMockThemeStore } from '../../../../test/testUtils'
-import type { ThemeMode, ThemeScheme } from '../../core/types'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import type { ThemeStore } from '../stores/theme.svelte'
 
 // Mock lucide-svelte icons (individual imports for tree-shaking)

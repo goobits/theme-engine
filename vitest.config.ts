@@ -22,8 +22,8 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            '$app/environment': resolve(__dirname, 'test/mocks/$app-environment.ts'),
-            '$app/stores': resolve(__dirname, 'test/mocks/$app-stores.ts'),
+			'$app/environment': resolve(__dirname, 'test/mocks/$appEnvironment.ts'),
+			'$app/stores': resolve(__dirname, 'test/mocks/$appStores.ts'),
         },
     },
 });

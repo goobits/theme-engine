@@ -10,8 +10,8 @@
 
 import { vi } from 'vitest'
 
-import type { ThemeConfig } from '../src/lib/core/config'
-import type { SchemeConfig, ThemeMode, ThemeScheme } from '../src/lib/core/types'
+import type { SchemeConfig, ThemeConfig } from '../src/lib/core/config'
+import type { ThemeMode, ThemeScheme } from '../src/lib/core/schemeRegistry'
 import type { ThemeStore } from '../src/lib/svelte/stores/theme.svelte'
 import type { RouteThemeConfig } from '../src/lib/utils/routeThemes'
 

@@ -8,7 +8,7 @@
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../../core/config'
-import type { ThemeMode, ThemeScheme } from '../../core/types'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import { createThemeStore } from './theme.svelte'
 
 // Mock the $app/environment module

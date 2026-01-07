@@ -8,13 +8,13 @@
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { RouteThemeConfig } from '../utils/routeThemes'
+import type { FullTheme } from './schemeRegistry'
 import {
 	applyRouteTheme,
 	applyThemeWithScheme,
 	initializeTheme,
 	watchSystemTheme
 } from './themeManager'
-import type { FullTheme } from './types'
 
 // Mock the $app/environment module
 vi.mock('$app/environment', () => ({

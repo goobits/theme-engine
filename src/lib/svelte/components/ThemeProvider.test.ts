@@ -13,7 +13,7 @@ import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createMockConfig,createMockThemeStore } from '../../../../test/testUtils'
 import type { ThemeConfig } from '../../core/config'
-import type { ThemeMode, ThemeScheme } from '../../core/types'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 
 // Mock dependencies before importing component
 let cleanupFunction: any = null

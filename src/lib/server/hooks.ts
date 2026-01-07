@@ -2,7 +2,7 @@ import type { Handle } from '@sveltejs/kit'
 
 import type { ThemeConfig } from '../core/config'
 import { resolveTheme } from '../core/constants'
-import type { ThemeMode, ThemeScheme } from '../core/types'
+import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry'
 import {
 	createThemeBlockingScriptTag,
 	themeBlockingScript,

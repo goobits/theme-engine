@@ -8,7 +8,8 @@
  */
 
 import type { ThemeConfig } from '../../core/config'
-import type { SchemeConfig,ThemeMode, ThemeScheme } from '../../core/types'
+import type { SchemeConfig } from '../../core/config'
+import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import { isBrowser } from '../../utils/browser'
 import { loadThemePreferences,saveThemePreferences } from './themePersistence'
 

@@ -14,8 +14,80 @@ import {
 } from '../utils/dom'
 import { logger } from '../utils/logger'
 import { prefersDarkMode } from '../utils/systemTheme'
-import { resolveTheme,THEME_TRANSITION_DURATION_MS } from './constants'
-import type { FullTheme,SchemeConfig, ThemeScheme } from './types'
+import type { SchemeConfig } from './config'
+import { resolveTheme, THEME_TRANSITION_DURATION_MS } from './constants'
+
+/**
+ * Theme mode representing the user's light/dark preference.
+ *
+ * - `'light'` - Force light theme regardless of system preference
+ * - `'dark'` - Force dark theme regardless of system preference
+ * - `'system'` - Follow the user's operating system preference
+ *
+ * @example
+ * ```typescript
+ * const userTheme: ThemeMode = 'system'; // Respects OS dark mode setting
+ * ```
+ */
+export type ThemeMode = 'light' | 'dark' | 'system'
+
+/**
+ * Theme color scheme identifier.
+ *
+ * Schemes provide distinct visual identities while maintaining
+ * the same light/dark mode behavior. Each scheme maps to a CSS
+ * class (`scheme-{name}`) applied to the document root.
+ *
+ * This type is extensible - you can use any string value to define
+ * custom scheme names without type casts.
+ *
+ * @example
+ * ```typescript
+ * const scheme: ThemeScheme = 'spells'; // Applies .scheme-spells class
+ * const custom: ThemeScheme = 'ocean'; // Custom scheme, no cast needed
+ * ```
+ */
+export type ThemeScheme = string
+
+/**
+ * Built-in scheme names provided by the library.
+ *
+ * These schemes are included with the library and have
+ * corresponding CSS definitions.
+ *
+ * - `'default'` - Clean, minimal design system
+ * - `'spells'` - Magical purple theme for enchanted experiences
+ *
+ * @example
+ * ```typescript
+ * const builtIn: BuiltInScheme = 'default';
+ * ```
+ */
+export type BuiltInScheme = 'default' | 'spells'
+
+/**
+ * Complete theme configuration combining mode and scheme.
+ *
+ * Represents the full theme state applied to the application.
+ * The `base` property controls light/dark appearance, while
+ * `scheme` determines the color palette and visual style.
+ *
+ * @example
+ * ```typescript
+ * const theme: FullTheme = {
+ *   base: 'dark',      // Dark mode
+ *   scheme: 'spells'   // With magical purple colors
+ * };
+ * ```
+ */
+export interface FullTheme {
+
+	/** Theme mode: 'light', 'dark', or 'system' */
+	base: ThemeMode
+
+	/** Color scheme identifier */
+	scheme: ThemeScheme
+}
 
 // Track the transition timeout to cancel it on rapid theme changes
 let transitionTimeoutId: ReturnType<typeof setTimeout> | undefined

@@ -12,7 +12,6 @@ import { DEV } from 'esm-env'
 import { logger } from '../utils/logger'
 import type { RouteThemeConfig } from '../utils/routeThemes'
 import { isValidHexColor } from '../utils/validation'
-import type { SchemeConfig } from './types'
 
 /**
  * Default preview colors for schemes that don't specify their own
@@ -22,6 +21,62 @@ const DEFAULT_PREVIEW_COLORS = {
 	accent: '#8b5cf6',
 	background: '#ffffff'
 } as const
+
+/**
+ * Configuration for a color scheme.
+ *
+ * Defines the metadata and preview colors for a theme scheme.
+ * Used by the theme picker UI and for validation.
+ *
+ * @example
+ * ```typescript
+ * const spellsConfig: SchemeConfig = {
+ *   name: 'spells',
+ *   displayName: 'Grimoire',
+ *   description: 'Magical purple theme',
+ *   icon: '✨',
+ *   title: 'Spell Library',
+ *   preview: {
+ *     primary: '#7c3aed',
+ *     accent: '#a78bfa',
+ *     background: '#0a0a0f'
+ *   }
+ * };
+ * ```
+ */
+export interface SchemeConfig {
+
+	/** Internal scheme identifier (should match the key in schemes record) */
+	name: string
+
+	/** Human-readable name shown in UI */
+	displayName: string
+
+	/** Brief description of the scheme's visual style */
+	description: string
+
+	/** Optional emoji or icon character for visual identification */
+	icon?: string
+
+	/** Optional custom page title when this scheme is active */
+	title?: string
+
+	/** Preview colors for theme picker thumbnails */
+	preview: {
+
+		/** Primary brand color in 6-digit hex format (#RRGGBB) */
+		primary: string
+
+		/** Accent/secondary color in 6-digit hex format */
+		accent: string
+
+		/** Background color in 6-digit hex format */
+		background: string
+	}
+
+	/** Optional path to additional CSS file for this scheme */
+	cssFile?: string
+}
 
 /**
  * Root configuration object for the theme engine.
