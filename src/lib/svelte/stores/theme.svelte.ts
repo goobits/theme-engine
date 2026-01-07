@@ -85,6 +85,105 @@ export interface ThemeStore {
 }
 
 /**
+ * Reactive theme store class implementation.
+ *
+ * Uses Svelte 5 $state fields for proper reactivity across component boundaries.
+ * Class instances with $state fields are tracked when accessed from other components,
+ * unlike plain objects with getters.
+ */
+class ThemeStoreImpl implements ThemeStore {
+	#config: ThemeConfig
+	#subscribers = new Set<(value: ThemeStoreSnapshot) => void>()
+
+	// Reactive state fields - these are tracked across component boundaries
+	// $state cannot be used with #private fields after TS downleveling.
+	_theme = $state<ThemeMode>('system')
+	_scheme = $state<ThemeScheme>('default')
+
+	constructor(config: ThemeConfig) {
+		this.#config = config
+		const defaultScheme = Object.keys(config.schemes)[0] || 'default'
+		this._scheme = defaultScheme
+
+		// Load saved preferences on initialization (browser only)
+		if (isBrowser()) {
+			const saved = loadThemePreferences()
+			if (saved) {
+				// Use 'in' check to preserve explicit null values (matches spread behavior)
+				// while using defaults for missing/undefined properties
+				if ('theme' in saved) {
+					this._theme = saved.theme
+				}
+				if ('themeScheme' in saved) {
+					this._scheme = saved.themeScheme
+				}
+			}
+		}
+	}
+
+	get settings(): ThemeSettings {
+		return {
+			theme: this._theme,
+			themeScheme: this._scheme
+		}
+	}
+
+	get theme(): ThemeMode {
+		return this._theme
+	}
+
+	get scheme(): ThemeScheme {
+		return this._scheme
+	}
+
+	get availableSchemes(): SchemeConfig[] {
+		return Object.values(this.#config.schemes)
+	}
+
+	setTheme(newTheme: ThemeMode): void {
+		this._theme = newTheme
+		saveThemePreferences(this.settings)
+		this.#notifySubscribers()
+	}
+
+	setScheme(newScheme: ThemeScheme): void {
+		this._scheme = newScheme
+		saveThemePreferences(this.settings)
+		this.#notifySubscribers()
+	}
+
+	cycleMode(): void {
+		const modes: ThemeMode[] = [ 'light', 'dark', 'system' ]
+		const currentIndex = modes.indexOf(this._theme)
+		const nextIndex = (currentIndex + 1) % modes.length
+		this.setTheme(modes[nextIndex])
+	}
+
+	subscribe(fn: (value: ThemeStoreSnapshot) => void): () => void {
+		this.#subscribers.add(fn)
+
+		// Immediately call the subscriber with current value
+		fn({
+			settings: this.settings,
+			theme: this._theme,
+			scheme: this._scheme
+		})
+		return () => {
+			this.#subscribers.delete(fn)
+		}
+	}
+
+	#notifySubscribers(): void {
+		const snapshot: ThemeStoreSnapshot = {
+			settings: this.settings,
+			theme: this._theme,
+			scheme: this._scheme
+		}
+		this.#subscribers.forEach(fn => fn(snapshot))
+	}
+}
+
+/**
  * Creates a reactive theme store with persistence.
  *
  * The store automatically syncs theme preferences to both localStorage
@@ -118,86 +217,5 @@ export interface ThemeStore {
  * - The store is designed for use with Svelte 5 runes
  */
 export function createThemeStore(config: ThemeConfig): ThemeStore {
-	const defaultSettings: ThemeSettings = {
-		theme: 'system',
-		themeScheme: Object.keys(config.schemes)[0] || 'default'
-	}
-
-	let settings = $state<ThemeSettings>(defaultSettings)
-
-	// Load saved preferences on initialization (browser only)
-	if (isBrowser()) {
-		const saved = loadThemePreferences()
-		if (saved) {
-			settings = { ...defaultSettings, ...saved }
-		}
-	}
-
-	const theme = $derived(settings.theme)
-	const scheme = $derived(settings.themeScheme)
-	const availableSchemes = $derived(Object.values(config.schemes))
-
-	function setTheme(newTheme: ThemeMode) {
-		settings.theme = newTheme
-		saveThemePreferences(settings)
-		notifySubscribers()
-	}
-
-	function setScheme(newScheme: ThemeScheme) {
-		settings.themeScheme = newScheme
-		saveThemePreferences(settings)
-		notifySubscribers()
-	}
-
-	function cycleMode() {
-		const modes: ThemeMode[] = [ 'light', 'dark', 'system' ]
-		const currentIndex = modes.indexOf(settings.theme)
-		const nextIndex = (currentIndex + 1) % modes.length
-		setTheme(modes[nextIndex])
-	}
-
-	// Create a subscribe function for backward compatibility with non-runes code
-	let subscribers = new Set<(value: ThemeStoreSnapshot) => void>()
-
-	const notifySubscribers = () => {
-		const snapshot: ThemeStoreSnapshot = {
-			settings,
-			theme: settings.theme,
-			scheme: settings.themeScheme
-		}
-		subscribers.forEach(fn => fn(snapshot))
-	}
-
-	const subscribe = (fn: (value: ThemeStoreSnapshot) => void): (() => void) => {
-		subscribers.add(fn)
-
-		// Immediately call the subscriber with current value
-		fn({
-			settings,
-			theme: settings.theme,
-			scheme: settings.themeScheme
-		})
-		return () => {
-			subscribers.delete(fn)
-		}
-	}
-
-	return {
-		subscribe,
-		get settings() {
-			return settings
-		},
-		get theme() {
-			return theme
-		},
-		get scheme() {
-			return scheme
-		},
-		get availableSchemes() {
-			return availableSchemes
-		},
-		setTheme,
-		setScheme,
-		cycleMode
-	}
+	return new ThemeStoreImpl(config)
 }

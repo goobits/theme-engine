@@ -46,9 +46,8 @@
 	setContext('theme', themeStore)
 
 	let initialized = $state(false)
-	let currentTheme = $state(themeStore.theme)
-	let currentScheme = $state(themeStore.scheme)
 
+	// Apply server preferences if provided
 	if (serverPreferences) {
 		themeStore.setTheme(serverPreferences.theme)
 		themeStore.setScheme(serverPreferences.themeScheme)
@@ -56,29 +55,20 @@
 
 	// Initialize theme on the client
 	onMount(() => {
-		const unsubscribe = themeStore.subscribe(snapshot => {
-			currentTheme = snapshot.theme
-			currentScheme = snapshot.scheme
-		})
-
 		const preferences = serverPreferences ?? themeStore.settings
 		const cleanup = initializeTheme(preferences.theme, preferences.themeScheme)
 		initialized = true
-		return () => {
-			unsubscribe()
-			cleanup()
-		}
+		return cleanup
 	})
 
 	// Apply route theme when pathname changes or theme/scheme is changed by user
-	// This effect properly tracks all dependencies: pathname, theme, and scheme
+	// The store's theme/scheme properties are now reactive via class $state fields
 	$effect(() => {
 		if (isBrowser() && initialized) {
-			// Access all dependencies at the top level so Svelte tracks them
 			const currentPath = $page.url.pathname
 
-			// Apply theme based on current route and user preferences
-			applyRouteTheme(currentPath, currentTheme, currentScheme, config.routeThemes || {})
+			// themeStore.theme and themeStore.scheme are reactive - Svelte tracks them
+			applyRouteTheme(currentPath, themeStore.theme, themeStore.scheme, config.routeThemes || {})
 		}
 	})
 </script>
