@@ -11,6 +11,16 @@
             "svelte": "./dist/index.js",
             "default": "./dist/index.js"
         },
+        "./goo": {
+            "types": "./dist/goo/index.d.ts",
+            "svelte": "./dist/goo/index.js",
+            "default": "./dist/goo/index.js"
+        },
+        "./goo/*": {
+            "types": "./dist/goo/*.d.ts",
+            "svelte": "./dist/goo/*",
+            "default": "./dist/goo/*"
+        },
         "./core": {
             "types": "./dist/core/index.d.ts",
             "svelte": "./dist/core/index.js",
@@ -35,6 +45,10 @@
             "types": "./dist/server/index.d.ts",
             "default": "./dist/server/index.js"
         },
+        "./server/goo": {
+            "types": "./dist/server/gooSsr.d.ts",
+            "default": "./dist/server/gooSsr.js"
+        },
         "./server/*": {
             "types": "./dist/server/*.d.ts",
             "default": "./dist/server/*"
@@ -50,6 +64,11 @@
         "./themes/bundle.css": "./themes/bundle.css",
         "./themes": "./themes/index.css",
         "./themes/*": "./themes/*",
+        "./themes/goo": "./themes/goo/index.css",
+        "./themes/goo/base.css": "./themes/goo/base.css",
+        "./themes/goo/bundle.css": "./themes/goo/bundle.css",
+        "./themes/goo/pairs.json": "./themes/goo/pairs.json",
+        "./themes/goo/presets/*": "./themes/goo/presets/*",
         "./themes/base": "./themes/base/index.css",
         "./themes/base/*": "./themes/base/*",
         "./themes/base/design-tokens.css": "./themes/base/design-tokens.css",
@@ -81,14 +100,16 @@
     "scripts": {
         "package": "svelte-package",
         "build": "svelte-package",
-        "prepublishOnly": "pnpm run package",
+        "prepublishOnly": "pnpm run generate:goo && pnpm run package",
         "test": "vitest run",
         "test:watch": "vitest watch",
         "test:ui": "vitest --ui",
         "test:coverage": "vitest run --coverage",
         "lint": "eslint . --max-warnings 10",
         "lint:fix": "eslint . --fix",
-        "check": "npm run build && npm run lint && npm run test"
+        "check": "npm run build && npm run lint && npm run test",
+        "generate:goo": "tsx scripts/generateGooPresets.ts",
+        "check:goo": "tsx scripts/checkGooPresets.ts"
     },
     "devDependencies": {
         "@eslint/js": "^9.39.2",
@@ -112,6 +133,7 @@
         "svelte": "^5.46.1",
         "svelte-eslint-parser": "^1.4.1",
         "typescript": "^5.9.3",
+        "tsx": "^4.19.2",
         "vite": "^7.3.1",
         "vitest": "^4.0.16"
     },

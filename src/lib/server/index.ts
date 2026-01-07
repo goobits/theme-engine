@@ -16,5 +16,6 @@
  */
 
 export * from './blockingScript'
+export * from './gooSsr'
 export * from './hooks'
 export * from './preferences'

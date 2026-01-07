@@ -1,0 +1,148 @@
+/**
+ * GooTheme Base CSS
+ *
+ * Default theme variables using CSS custom properties.
+ * Components should reference these variables for consistent theming.
+ *
+ * Usage in components:
+ *   background: var(--goo-theme-bg);
+ *   color: var(--goo-theme-fg);
+ *   border-color: var(--goo-theme-border);
+ */
+
+:root {
+	/* Core colors */
+	--goo-theme-bg: #1a1a1a;
+	--goo-theme-fg: #ffffff;
+	--goo-theme-border: rgba(255, 255, 255, 0.1);
+	--goo-theme-muted: rgba(255, 255, 255, 0.5);
+	--goo-theme-heading: #60a5fa;
+
+	/* Accent (primary action, attention) */
+	--goo-theme-accent: #3b82f6;
+	--goo-theme-accent-fg: #ffffff;
+
+	/* Selected (selection states, active items) */
+	--goo-theme-selected: #3b82f6;
+	--goo-theme-selected-fg: #ffffff;
+
+	/* Secondary accent */
+	--goo-theme-secondary: #8b5cf6;
+	--goo-theme-secondary-fg: #ffffff;
+
+	/* Status colors with foregrounds */
+	--goo-theme-positive: #22c55e;
+	--goo-theme-positive-fg: #000000;
+	--goo-theme-negative: #ef4444;
+	--goo-theme-negative-fg: #ffffff;
+	--goo-theme-warning: #f59e0b;
+	--goo-theme-warning-fg: #000000;
+
+	/* Interactive states */
+	--goo-theme-hover-bg: color-mix(in srgb, var(--goo-theme-accent) 15%, var(--goo-theme-bg));
+	--goo-theme-active: color-mix(in srgb, var(--goo-theme-accent) 25%, var(--goo-theme-bg));
+	--goo-theme-focus-ring: color-mix(in srgb, var(--goo-theme-accent) 40%, transparent);
+	--goo-theme-accent-subtle: color-mix(in srgb, var(--goo-theme-accent) 15%, var(--goo-theme-bg));
+
+	/* Surfaces - layered backgrounds for UI depth */
+	--goo-theme-surface: var(--goo-theme-bg);
+	--goo-theme-surface-raised: color-mix(in srgb, var(--goo-theme-fg) 5%, var(--goo-theme-bg));
+	--goo-theme-surface-sunken: color-mix(in srgb, black 5%, var(--goo-theme-bg));
+	--goo-theme-bg-elevated: color-mix(in srgb, var(--goo-theme-fg) 8%, var(--goo-theme-bg));
+
+	/* Neutral hover/active states (not accent-based) */
+	--goo-theme-bg-hover: color-mix(in srgb, var(--goo-theme-fg) 5%, var(--goo-theme-bg));
+	--goo-theme-bg-active: color-mix(in srgb, var(--goo-theme-fg) 10%, var(--goo-theme-bg));
+
+	/* Text variations */
+	--goo-theme-text-primary: var(--goo-theme-fg);
+	--goo-theme-text-secondary: var(--goo-theme-muted);
+	--goo-theme-text-disabled: color-mix(in srgb, var(--goo-theme-fg) 25%, transparent);
+	--goo-theme-fg-secondary: var(--goo-theme-muted); /* alias for components using fg-* pattern */
+
+	/* Borders */
+	--goo-theme-border-subtle: color-mix(in srgb, var(--goo-theme-fg) 10%, transparent);
+	--goo-theme-border-strong: color-mix(in srgb, var(--goo-theme-fg) 20%, transparent);
+
+	/* Shadows */
+	--goo-theme-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+	--goo-theme-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
+	--goo-theme-shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.25);
+
+	/* Radii */
+	--goo-theme-radius-sm: 0.25rem;
+	--goo-theme-radius-md: 0.375rem;
+	--goo-theme-radius-lg: 0.5rem;
+	--goo-theme-radius-xl: 0.75rem;
+	--goo-theme-radius-full: 9999px;
+
+	/* Spacing */
+	--goo-theme-space-xs: 0.25rem;
+	--goo-theme-space-sm: 0.5rem;
+	--goo-theme-space-md: 0.75rem;
+	--goo-theme-space-lg: 1rem;
+	--goo-theme-space-xl: 1.5rem;
+
+	/* Typography */
+	--goo-theme-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	--goo-theme-font-mono: 'SF Mono', Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+	--goo-theme-font-size-xs: 0.6875rem;  /* 11px - hints, labels */
+	--goo-theme-font-size-sm: 0.75rem;    /* 12px - buttons, controls */
+	--goo-theme-font-size-md: 0.875rem;   /* 14px - body text */
+	--goo-theme-font-size-lg: 1rem;       /* 16px - headings */
+	--goo-theme-font-size-xl: 1.125rem;   /* 18px - large headings */
+
+	/* Transitions */
+	--goo-theme-transition-fast: 0.1s ease;
+	--goo-theme-transition-normal: 0.15s ease;
+	--goo-theme-transition-slow: 0.3s ease;
+
+	/* Icon sizes */
+	--goo-theme-icon-sm: 0.875rem;  /* 14px */
+	--goo-theme-icon-md: 1rem;      /* 16px */
+	--goo-theme-icon-lg: 1.25rem;   /* 20px */
+
+	/* Control heights - for buttons, inputs, selects */
+	--goo-theme-control-height-sm: 1.5rem;  /* 24px */
+	--goo-theme-control-height-md: 2rem;    /* 32px */
+	--goo-theme-control-height: var(--goo-theme-control-height-md);
+	--goo-theme-control-height-lg: 2.5rem;  /* 40px */
+
+	/* Control sizing + label styling */
+	--goo-theme-control-padding-sm: 0 var(--goo-theme-space-sm);
+	--goo-theme-control-padding-md: 0 var(--goo-theme-space-md);
+	--goo-theme-control-padding-lg: var(--goo-theme-space-sm) var(--goo-theme-space-md);
+	--goo-theme-control-row-padding: var(--goo-theme-space-sm) var(--goo-theme-space-md);
+	--goo-theme-control-label-size: var(--goo-theme-font-size-sm);
+	--goo-theme-control-label-weight: 600;
+	--goo-theme-control-label-color: var(--goo-theme-text-primary);
+	--goo-theme-control-divider: var(--goo-theme-border-subtle);
+
+	/* Canvas/Visualization - for interactive graph editors */
+	--goo-theme-canvas-bg: var(--goo-theme-surface-sunken);
+	--goo-theme-canvas-stroke: var(--goo-theme-fg);
+	--goo-theme-canvas-stroke-muted: color-mix(in srgb, var(--goo-theme-fg) 30%, transparent);
+	--goo-theme-canvas-primary: var(--goo-theme-accent);
+	--goo-theme-canvas-secondary: var(--goo-theme-secondary);
+
+	/* Handles - draggable control points */
+	--goo-theme-handle-bg: var(--goo-theme-bg);
+	--goo-theme-handle-border: var(--goo-theme-fg);
+	--goo-theme-handle-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+
+	/* Interactive regions */
+	--goo-theme-region-hover: color-mix(in srgb, var(--goo-theme-accent) 10%, transparent);
+}
+
+/* Light theme adjustment - add [data-theme="light"] to root */
+:root[data-theme="light"],
+[data-theme="light"] {
+	--goo-theme-bg: #ffffff;
+	--goo-theme-fg: #1a1a1a;
+	--goo-theme-border: rgba(0, 0, 0, 0.1);
+	--goo-theme-muted: rgba(0, 0, 0, 0.5);
+	--goo-theme-secondary: #2563eb;
+	--goo-theme-positive: #16a34a;
+	--goo-theme-negative: #dc2626;
+	--goo-theme-warning: #d97706;
+}

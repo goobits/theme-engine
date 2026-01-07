@@ -1,0 +1,87 @@
+:root.theme-light.scheme-goo-rose,
+:root.theme-system-light.scheme-goo-rose {
+	--goo-theme-bg: #fff1f2;
+	--goo-theme-fg: #1f0f14;
+	--goo-theme-bg-elevated: #ffe4e6;
+	--goo-theme-muted: rgba(159, 18, 57, 0.65);
+	--goo-theme-border: rgba(244, 63, 94, 0.15);
+	--goo-theme-heading: #9f1239;
+	--goo-theme-accent: #be123c;
+	--goo-theme-accent-fg: #ffffff;
+	--goo-theme-selected: #be123c;
+	--goo-theme-selected-fg: #ffffff;
+	--goo-theme-secondary: #be185d;
+	--goo-theme-secondary-fg: #ffffff;
+	--goo-theme-positive: #059669;
+	--goo-theme-positive-fg: #ffffff;
+	--goo-theme-negative: #b91c1c;
+	--goo-theme-negative-fg: #ffffff;
+	--goo-theme-warning: #b45309;
+	--goo-theme-warning-fg: #ffffff;
+	--bg-primary: var(--goo-theme-bg);
+	--bg-secondary: var(--goo-theme-bg-elevated);
+	--bg-tertiary: var(--goo-theme-bg-elevated);
+	--text-primary: var(--goo-theme-fg);
+	--text-secondary: var(--goo-theme-muted);
+	--border-primary: var(--goo-theme-border);
+	--scheme-accent-primary: var(--goo-theme-accent);
+	--scheme-accent-secondary: var(--goo-theme-secondary);
+	--scheme-accent-glow: var(--goo-theme-accent);
+	--accent-primary: var(--scheme-accent-primary);
+	--accent-glow: var(--scheme-accent-glow);
+	--accent-soft: color-mix(in srgb, var(--scheme-accent-primary) 18%, transparent);
+	--success: var(--goo-theme-positive);
+	--success-border: var(--goo-theme-positive);
+	--success-bg: color-mix(in srgb, var(--goo-theme-positive) 15%, transparent);
+	--error: var(--goo-theme-negative);
+	--error-border: var(--goo-theme-negative);
+	--error-bg: color-mix(in srgb, var(--goo-theme-negative) 15%, transparent);
+	--warning: var(--goo-theme-warning);
+	--warning-border: var(--goo-theme-warning);
+	--warning-bg: color-mix(in srgb, var(--goo-theme-warning) 15%, transparent);
+	color-scheme: light;
+}
+
+:root.theme-dark.scheme-goo-rose,
+:root.theme-system-dark.scheme-goo-rose {
+	--goo-theme-bg: #1f0f14;
+	--goo-theme-fg: #fff1f2;
+	--goo-theme-bg-elevated: #301a20;
+	--goo-theme-muted: rgba(251, 113, 133, 0.6);
+	--goo-theme-border: rgba(244, 63, 94, 0.2);
+	--goo-theme-heading: #fda4af;
+	--goo-theme-accent: #fb7185;
+	--goo-theme-accent-fg: #1f0f14;
+	--goo-theme-selected: #fb7185;
+	--goo-theme-selected-fg: #1f0f14;
+	--goo-theme-secondary: #f472b6;
+	--goo-theme-secondary-fg: #000000;
+	--goo-theme-positive: #34d399;
+	--goo-theme-positive-fg: #000000;
+	--goo-theme-negative: #fca5a5;
+	--goo-theme-negative-fg: #000000;
+	--goo-theme-warning: #fcd34d;
+	--goo-theme-warning-fg: #000000;
+	--bg-primary: var(--goo-theme-bg);
+	--bg-secondary: var(--goo-theme-bg-elevated);
+	--bg-tertiary: var(--goo-theme-bg-elevated);
+	--text-primary: var(--goo-theme-fg);
+	--text-secondary: var(--goo-theme-muted);
+	--border-primary: var(--goo-theme-border);
+	--scheme-accent-primary: var(--goo-theme-accent);
+	--scheme-accent-secondary: var(--goo-theme-secondary);
+	--scheme-accent-glow: var(--goo-theme-accent);
+	--accent-primary: var(--scheme-accent-primary);
+	--accent-glow: var(--scheme-accent-glow);
+	--accent-soft: color-mix(in srgb, var(--scheme-accent-primary) 18%, transparent);
+	--success: var(--goo-theme-positive);
+	--success-border: var(--goo-theme-positive);
+	--success-bg: color-mix(in srgb, var(--goo-theme-positive) 15%, transparent);
+	--error: var(--goo-theme-negative);
+	--error-border: var(--goo-theme-negative);
+	--error-bg: color-mix(in srgb, var(--goo-theme-negative) 15%, transparent);
+	--warning: var(--goo-theme-warning);
+	--warning-border: var(--goo-theme-warning);
+	--warning-bg: color-mix(in srgb, var(--goo-theme-warning) 15%, transparent);
+	color-scheme: dark;
+}

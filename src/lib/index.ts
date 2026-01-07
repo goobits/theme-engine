@@ -5,6 +5,7 @@
  */
 
 export * from './core/index.js'
+export * from './goo/index.js'
 export * from './server/index.js'
 export * from './svelte/index.js'
 export * from './utils/index.js'

@@ -1,0 +1,5 @@
+@import './base.css';
+@import './presets/neutral.css';
+@import './presets/blue.css';
+@import './presets/dracula.css';
+@import './presets/purple.css';

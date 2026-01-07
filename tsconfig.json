@@ -16,6 +16,6 @@
         "target": "ES2022",
         "useDefineForClassFields": true
     },
-    "include": ["*.ts", "src/**/*", "core/**/*", "svelte/**/*", "server/**/*", "utils/**/*"],
+    "include": ["*.ts", "scripts/**/*", "src/**/*", "core/**/*", "svelte/**/*", "server/**/*", "utils/**/*"],
     "exclude": ["node_modules", "dist", ".svelte-kit", "demo"]
 }
