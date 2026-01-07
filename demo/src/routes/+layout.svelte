@@ -1,19 +1,10 @@
 <script lang="ts">
 	import { ThemeProvider } from '@goobits/themes/svelte'
-	import '@goobits/themes/themes'
-	import '@goobits/themes/themes/spells.css'
+	import '@goobits/themes/themes/bundle.css'
 	import favicon from '$lib/assets/favicon.svg'
 	import { themeConfig } from '$lib/config/theme.js'
-	import type { ThemeMode, ThemeScheme } from '@goobits/themes'
 
-	const { children, data } = $props()
-	const fallbackPreferences: { theme: ThemeMode; themeScheme: ThemeScheme } = {
-		theme: 'system',
-		themeScheme: 'default'
-	}
-
-	const serverPreferences: { theme: ThemeMode; themeScheme: ThemeScheme } =
-		data?.preferences ?? fallbackPreferences
+	const { children } = $props()
 </script>
 
 <svelte:head>
@@ -21,7 +12,7 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-<ThemeProvider config={themeConfig} {serverPreferences}>
+<ThemeProvider config={themeConfig}>
     <div class="app">
         <main class="content">
             {@render children()}

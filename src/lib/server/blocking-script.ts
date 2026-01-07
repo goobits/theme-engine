@@ -37,10 +37,27 @@
 export const themeBlockingScript = '(function(){try{var d=document.documentElement,s=localStorage.getItem(\'theme-preferences\'),p=s?JSON.parse(s):{},t=p.theme||(document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/)||[])[1]||\'system\',c=p.themeScheme||(document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/)||[])[1]||\'default\',r=t;if(t===\'system\'){r=window.matchMedia(\'(prefers-color-scheme:dark)\').matches?\'dark\':\'light\'}d.setAttribute(\'data-theme\',r);d.className=\'theme-\'+t+\' scheme-\'+c+(t===\'system\'?\' theme-system-\'+r:\'\')}catch(e){}})();'
 
 /**
+ * Marker comment used to detect the blocking script in HTML.
+ */
+export const themeBlockingScriptMarker = '<!-- @goobits/themes-blocking -->'
+
+/**
+ * Create a ready-to-use script tag containing the blocking script.
+ * Can be injected directly into HTML.
+ */
+export function createThemeBlockingScriptTag(
+	{ nonce, marker = themeBlockingScriptMarker }: { nonce?: string; marker?: string } = {}
+): string {
+	const markerPrefix = marker ? `${ marker }` : ''
+	const nonceAttribute = nonce ? ` nonce="${ nonce }"` : ''
+	return `${ markerPrefix }<script${ nonceAttribute }>${ themeBlockingScript }</script>`
+}
+
+/**
  * Ready-to-use script tag containing the blocking script.
  * Can be injected directly into HTML.
  */
-export const themeBlockingScriptTag = `<script>${ themeBlockingScript }</script>`
+export const themeBlockingScriptTag = createThemeBlockingScriptTag()
 
 /**
  * Unminified version of the blocking script for debugging.

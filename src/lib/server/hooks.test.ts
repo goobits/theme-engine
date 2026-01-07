@@ -7,6 +7,7 @@ import { beforeEach,describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../core/config'
 import type { ThemeScheme } from '../core/types'
+import { themeBlockingScript, themeBlockingScriptMarker } from './blocking-script'
 import { createThemeHooks } from './hooks'
 import * as preferences from './preferences'
 
@@ -72,7 +73,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"><body></body></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -101,7 +102,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html><body>No placeholder here</body></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -131,10 +132,10 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html =
-                    '<html class="%sveltekit.theme%"><body class="%sveltekit.theme%"></body></html>'
+					'<html class="%sveltekit.theme%"><body class="%sveltekit.theme%"></body></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
 				return {
 					status: 200,
@@ -164,7 +165,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = ''
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -184,6 +185,126 @@ describe('createThemeHooks', () => {
 		})
 	})
 
+	describe('blocking script injection', () => {
+		it('should inject blocking script in head by default', async() => {
+			const config = createMockConfig([ 'default' ])
+			const event = createMockRequestEvent()
+
+			vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+				theme: 'light',
+				themeScheme: 'default'
+			})
+
+			const hooks = createThemeHooks(config)
+			const mockResolve = vi.fn(async(_, options) => {
+				const html = '<html><head>%sveltekit.head%</head><body></body></html>'
+				const transformed = options?.transformPageChunk?.({ html }) || html
+				return {
+					status: 200,
+					headers: new Headers(),
+					body: transformed
+				}
+			})
+
+			const result = await hooks.transform({
+				event,
+				resolve: mockResolve as any
+			})
+
+			expect(result.body).toContain(themeBlockingScriptMarker)
+			expect(result.body).toContain(themeBlockingScript)
+		})
+
+		it('should not inject when disabled', async() => {
+			const config = createMockConfig([ 'default' ])
+			const event = createMockRequestEvent()
+
+			vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+				theme: 'dark',
+				themeScheme: 'default'
+			})
+
+			const hooks = createThemeHooks(config, { blockingScript: false })
+			const mockResolve = vi.fn(async(_, options) => {
+				const html = '<html><head>%sveltekit.head%</head><body></body></html>'
+				const transformed = options?.transformPageChunk?.({ html }) || html
+				return {
+					status: 200,
+					headers: new Headers(),
+					body: transformed
+				}
+			})
+
+			const result = await hooks.transform({
+				event,
+				resolve: mockResolve as any
+			})
+
+			expect(result.body).not.toContain(themeBlockingScriptMarker)
+			expect(result.body).not.toContain(themeBlockingScript)
+		})
+
+		it('should not inject when marker is already present', async() => {
+			const config = createMockConfig([ 'default' ])
+			const event = createMockRequestEvent()
+
+			vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+				theme: 'light',
+				themeScheme: 'default'
+			})
+
+			const hooks = createThemeHooks(config)
+			const mockResolve = vi.fn(async(_, options) => {
+				const html = `<html><head>${ themeBlockingScriptMarker }%sveltekit.head%</head></html>`
+				const transformed = options?.transformPageChunk?.({ html }) || html
+				return {
+					status: 200,
+					headers: new Headers(),
+					body: transformed
+				}
+			})
+
+			const result = await hooks.transform({
+				event,
+				resolve: mockResolve as any
+			})
+
+			const occurrences =
+				(result.body as unknown as string).match(/@goobits\/themes-blocking/g) || []
+			expect(occurrences.length).toBe(1)
+		})
+
+		it('should include nonce when provided', async() => {
+			const config = createMockConfig([ 'default' ])
+			const event = createMockRequestEvent()
+
+			vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+				theme: 'light',
+				themeScheme: 'default'
+			})
+
+			const hooks = createThemeHooks(config, {
+				blockingScript: { enabled: true, nonce: 'nonce-123' }
+			})
+			const mockResolve = vi.fn(async(_, options) => {
+				const html = '<html><head>%sveltekit.head%</head></html>'
+				const transformed = options?.transformPageChunk?.({ html }) || html
+				return {
+					status: 200,
+					headers: new Headers(),
+					body: transformed
+				}
+			})
+
+			const result = await hooks.transform({
+				event,
+				resolve: mockResolve as any
+			})
+
+			expect(result.body).toContain('nonce="nonce-123"')
+		})
+	})
+
 	describe('theme class injection', () => {
 		it('should inject theme-light class for light theme', async() => {
 			const config = createMockConfig([ 'default' ])
@@ -194,7 +315,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -222,7 +343,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -250,7 +371,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -280,7 +401,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -308,7 +429,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'spells'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -336,7 +457,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'custom-theme' as ThemeScheme
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -364,7 +485,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'spells'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -396,7 +517,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -428,7 +549,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -458,7 +579,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -492,7 +613,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -522,7 +643,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -552,7 +673,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -581,7 +702,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -612,7 +733,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -644,7 +765,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async() => ({
 				status: 200,
 				headers: new Headers(),
@@ -668,7 +789,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'spells'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -697,7 +818,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'custom' as ThemeScheme
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -730,7 +851,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -762,7 +883,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -794,10 +915,10 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html =
-                    '<html class="%sveltekit.theme%"><body>Special: &amp; &lt; &gt;</body></html>'
+					'<html class="%sveltekit.theme%"><body>Special: &amp; &lt; &gt;</body></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
 				return {
 					status: 200,
@@ -824,7 +945,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const longContent = '<div>content</div>'.repeat(1000)
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = `<html class="%sveltekit.theme%"><body>${ longContent }</body></html>`
@@ -854,7 +975,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '%sveltekit.theme%<html><body class="test"></body></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -885,7 +1006,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -913,7 +1034,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'my-custom_scheme.v2' as ThemeScheme
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -941,7 +1062,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async() => ({
 				status: 200,
 				headers: new Headers(),
@@ -967,7 +1088,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const customHeaders = new Headers()
 			customHeaders.set('X-Custom-Header', 'test-value')
 
@@ -997,7 +1118,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async() => ({
 				status: 200,
 				headers: new Headers(),
@@ -1024,7 +1145,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'spells'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async() => ({
 				status: 200,
 				headers: new Headers(),
@@ -1051,7 +1172,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async() => ({
 				status: 200,
 				headers: new Headers(),
@@ -1078,7 +1199,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async evt => {
 				// Verify that event.locals is populated when resolve is called
 				expect((evt.locals as any).themePreferences).toEqual({
@@ -1110,7 +1231,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'custom-scheme' as ThemeScheme
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async() => ({
 				status: 200,
 				headers: new Headers(),
@@ -1139,7 +1260,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = `<!DOCTYPE html>
 <html lang="en" class="%sveltekit.theme%">
@@ -1178,7 +1299,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'spells'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = `<!DOCTYPE html>
 <html lang="en" class="%sveltekit.theme%">
@@ -1219,7 +1340,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html
@@ -1252,7 +1373,7 @@ describe('createThemeHooks', () => {
 				themeScheme: 'default'
 			})
 
-			const hooks = createThemeHooks(config)
+			const hooks = createThemeHooks(config, { blockingScript: false })
 			const mockResolve = vi.fn(async(_, options) => {
 				const html = '<html class="%sveltekit.theme%"></html>'
 				const transformed = options?.transformPageChunk?.({ html }) || html

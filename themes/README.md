@@ -11,7 +11,14 @@ This package includes 2 ready-to-use color schemes:
 
 ## 🚀 Quick Start
 
-### Using Preset Themes
+### Using All Presets (Bundle)
+
+```typescript
+// Import base + all included presets
+import '@goobits/themes/themes/bundle.css';
+```
+
+### Using Preset Themes (Selective)
 
 ```typescript
 // Import preset themes in your root layout

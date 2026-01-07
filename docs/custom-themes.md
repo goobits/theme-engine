@@ -22,6 +22,10 @@ Creating a custom theme involves three steps:
 ### Using Preset Themes
 
 ```typescript
+// Import base + all included presets
+import '@goobits/themes/themes/bundle.css';
+
+// Or import specific presets
 // Import in your root layout
 import '@goobits/themes/themes/default.css';
 import '@goobits/themes/themes/spells.css';

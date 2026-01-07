@@ -37,7 +37,9 @@ export const themeConfig = createThemeConfig({
 import { createThemeHooks } from '@goobits/themes/server';
 import { themeConfig } from '$lib/config/theme';
 
-export const handle = createThemeHooks(themeConfig).transform;
+export const handle = createThemeHooks(themeConfig, {
+    blockingScript: true
+}).transform;
 ```
 
 **4. Add layout loader** → `src/routes/+layout.server.ts`
@@ -60,12 +62,12 @@ export function load({ locals }) {
 <script>
     import { ThemeProvider } from '@goobits/themes/svelte';
     import { themeConfig } from '$lib/config/theme';
-    import '@goobits/themes/themes/default.css';
+    import '@goobits/themes/themes/bundle.css';
 
-    const { data, children } = $props();
+    const { children } = $props();
 </script>
 
-<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
+<ThemeProvider config={themeConfig}>
     {@render children?.()}
 </ThemeProvider>
 ```

@@ -1,7 +1,9 @@
 import { describe, expect,it } from 'vitest'
 
 import {
+	createThemeBlockingScriptTag,
 	themeBlockingScript,
+	themeBlockingScriptMarker,
 	themeBlockingScriptReadable,
 	themeBlockingScriptTag
 } from './blocking-script'
@@ -63,12 +65,30 @@ describe('blocking-script', () => {
 			expect(themeBlockingScriptTag).toContain('</script>')
 		})
 
+		it('should include the marker comment', () => {
+			expect(themeBlockingScriptTag).toContain(themeBlockingScriptMarker)
+		})
+
 		it('should wrap the blocking script', () => {
 			expect(themeBlockingScriptTag).toContain(themeBlockingScript)
 		})
 
 		it('should be a complete script tag', () => {
-			expect(themeBlockingScriptTag).toMatch(/^<script>.*<\/script>$/)
+			expect(themeBlockingScriptTag).toMatch(
+				/^<!-- @goobits\/themes-blocking --><script>.*<\/script>$/
+			)
+		})
+	})
+
+	describe('createThemeBlockingScriptTag', () => {
+		it('should include nonce attribute when provided', () => {
+			const tag = createThemeBlockingScriptTag({ nonce: 'nonce-123' })
+			expect(tag).toContain('nonce="nonce-123"')
+		})
+
+		it('should allow marker override', () => {
+			const tag = createThemeBlockingScriptTag({ marker: '<!-- custom -->' })
+			expect(tag).toContain('<!-- custom -->')
 		})
 	})
 

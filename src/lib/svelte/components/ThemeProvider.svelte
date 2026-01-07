@@ -46,16 +46,25 @@
 	setContext('theme', themeStore)
 
 	let initialized = $state(false)
+	const fallbackPreferences: { theme: ThemeMode; themeScheme: ThemeScheme } = {
+		theme: 'system',
+		themeScheme: 'default'
+	}
+	const resolvedPreferences = $derived.by(
+		() => serverPreferences ?? $page.data?.preferences
+	)
 
 	// Apply server preferences if provided
-	if (serverPreferences) {
-		themeStore.setTheme(serverPreferences.theme)
-		themeStore.setScheme(serverPreferences.themeScheme)
-	}
+	$effect(() => {
+		if (resolvedPreferences) {
+			themeStore.setTheme(resolvedPreferences.theme)
+			themeStore.setScheme(resolvedPreferences.themeScheme)
+		}
+	})
 
 	// Initialize theme on the client
 	onMount(() => {
-		const preferences = serverPreferences ?? themeStore.settings
+		const preferences = resolvedPreferences ?? themeStore.settings ?? fallbackPreferences
 		const cleanup = initializeTheme(preferences.theme, preferences.themeScheme)
 		initialized = true
 		return cleanup

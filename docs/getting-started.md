@@ -158,7 +158,10 @@ Configure server hooks to prevent theme flash on page load.
 import { createThemeHooks } from '@goobits/themes/server';
 import { themeConfig } from '$lib/config/theme';
 
-const { transform } = createThemeHooks(themeConfig);
+const { transform } = createThemeHooks(themeConfig, {
+    // Injects a blocking script in <head> to prevent system-mode flashes
+    blockingScript: true
+});
 
 export const handle = transform;
 ```
@@ -210,23 +213,42 @@ Wrap your app with the ThemeProvider component:
     import { ThemeProvider } from '@goobits/themes/svelte';
     import { themeConfig } from '$lib/config/theme';
 
-    // Import preset theme CSS (optional)
-    import '@goobits/themes/themes/default.css';
-    import '@goobits/themes/themes/spells.css';
+    // Import base + all included presets
+    import '@goobits/themes/themes/bundle.css';
 
-    const { data, children } = $props();
+    const { children } = $props();
 </script>
 
-<ThemeProvider config={themeConfig} serverPreferences={data?.preferences}>
+<ThemeProvider config={themeConfig}>
     {@render children?.()}
 </ThemeProvider>
 ```
 
+> **SvelteKit note:** ThemeProvider reads `data.preferences` from `$page` when running in SvelteKit. If you're not using SvelteKit, pass `serverPreferences` explicitly.
+
 ## Preventing Flash of Unstyled Content (FOUC)
 
-For users with `theme='system'`, the server cannot detect their OS preference on the initial page load. To prevent a flash of incorrect theme when the page loads, you can add an optional blocking script to your `app.html`:
+For users with `theme='system'`, the server cannot always detect their OS preference on the first visit. The server hook can inject a blocking script in `<head>` to prevent a flash of incorrect theme.
 
-**Option 1: Inline Script (Recommended for Performance)**
+> **First-visit note:** If the browser does not send `sec-ch-prefers-color-scheme`, the server may guess wrong on the very first request and the client will correct on hydration. The blocking script avoids this mismatch by using `matchMedia` before paint.
+
+### Hook-Injected (Recommended)
+
+```typescript
+import { createThemeHooks } from '@goobits/themes/server';
+import { themeConfig } from '$lib/config/theme';
+
+const { transform } = createThemeHooks(themeConfig, {
+    blockingScript: {
+        enabled: true,
+        // nonce: '...' // Optional CSP nonce
+    }
+});
+
+export const handle = transform;
+```
+
+### Manual Inline Script (Optional)
 
 Add the script directly in your `app.html` before any stylesheets:
 
@@ -280,10 +302,11 @@ Add the script directly in your `app.html` before any stylesheets:
 For better maintainability, you can import the script from the library:
 
 ```typescript
-import { themeBlockingScript, themeBlockingScriptTag } from '@goobits/themes/server';
+import { createThemeBlockingScriptTag, themeBlockingScript } from '@goobits/themes/server';
 
 // Use themeBlockingScript for the raw script content
-// Use themeBlockingScriptTag for the complete <script> tag
+// Use createThemeBlockingScriptTag for a complete <script> tag
+const scriptTag = createThemeBlockingScriptTag({ nonce: '...' });
 ```
 
 > **Note:** This blocking script is optional but recommended if you support `theme='system'`. It runs synchronously before page render to detect the user's OS theme preference and apply the correct classes immediately, eliminating FOUC on initial page load.

@@ -3,6 +3,11 @@ import type { Handle } from '@sveltejs/kit'
 import type { ThemeConfig } from '../core/config'
 import { resolveTheme } from '../core/constants'
 import type { ThemeMode, ThemeScheme } from '../core/types'
+import {
+	createThemeBlockingScriptTag,
+	themeBlockingScript,
+	themeBlockingScriptMarker
+} from './blocking-script'
 import { loadThemePreferences } from './preferences'
 
 /**
@@ -25,6 +30,24 @@ export interface ThemeLocals {
 		theme: ThemeMode
 		themeScheme: ThemeScheme
 	}
+}
+
+export type ThemeBlockingScriptOption =
+	| boolean
+	| {
+		enabled?: boolean
+		nonce?: string
+		marker?: string
+	}
+
+export interface ThemeHooksOptions {
+	blockingScript?: ThemeBlockingScriptOption
+}
+
+interface ResolvedBlockingScriptOptions {
+	enabled: boolean
+	nonce?: string
+	marker: string
 }
 
 /**
@@ -86,12 +109,18 @@ function escapeHtml(str: string): string {
  * - Injects classes like 'theme-light', 'theme-dark', 'scheme-default', 'theme-system-light', etc.
  * - Injects data-theme="light" or data-theme="dark" for CSS targeting
  * - Must be combined with other hooks using SvelteKit's sequence() if you have multiple hooks
+ * - Optionally injects a blocking script to prevent flash when theme is "system"
  *
  * @see {@link applyThemeWithScheme} for client-side theme application
  * @see {@link createThemeConfig} for configuration setup
  * @see {@link ThemeLocals} for TypeScript type definitions
  */
-export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
+export function createThemeHooks(
+	config: ThemeConfig,
+	{ blockingScript = true }: ThemeHooksOptions = {}
+): { transform: Handle } {
+	const blockingScriptOptions = resolveBlockingScriptOptions(blockingScript)
+
 	const themeTransform: Handle = async({ event, resolve }) => {
 		const preferences = loadThemePreferences(event.cookies, config)
 
@@ -117,7 +146,7 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
 					const userAgent = event.request.headers.get('user-agent')?.toLowerCase() || ''
 
 					prefersDark =
-                        prefersColorScheme === 'dark' || userAgent.includes('dark') || false
+						prefersColorScheme === 'dark' || userAgent.includes('dark') || false
 					themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light'
 				}
 
@@ -135,6 +164,11 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
 					`<html$1 data-theme="${ safeResolved }">`
 				)
 
+				// Inject blocking script if enabled and not already present
+				if (blockingScriptOptions.enabled && !hasBlockingScript(result, blockingScriptOptions)) {
+					result = injectBlockingScript(result, blockingScriptOptions)
+				}
+
 				return result
 			}
 		})
@@ -145,4 +179,49 @@ export function createThemeHooks(config: ThemeConfig): { transform: Handle } {
 	return {
 		transform: themeTransform
 	}
+}
+
+function resolveBlockingScriptOptions(
+	blockingScript: ThemeBlockingScriptOption
+): ResolvedBlockingScriptOptions {
+	if (typeof blockingScript === 'boolean') {
+		return {
+			enabled: blockingScript,
+			marker: themeBlockingScriptMarker
+		}
+	}
+
+	return {
+		enabled: blockingScript?.enabled ?? true,
+		nonce: blockingScript?.nonce,
+		marker: blockingScript?.marker ?? themeBlockingScriptMarker
+	}
+}
+
+function hasBlockingScript(
+	html: string,
+	{ marker }: ResolvedBlockingScriptOptions
+): boolean {
+	if (marker && html.includes(marker)) {
+		return true
+	}
+
+	return html.includes(themeBlockingScript)
+}
+
+function injectBlockingScript(
+	html: string,
+	{ nonce, marker }: ResolvedBlockingScriptOptions
+): string {
+	const scriptTag = createThemeBlockingScriptTag({ nonce, marker })
+
+	if (html.includes('%sveltekit.head%')) {
+		return html.replace('%sveltekit.head%', `${ scriptTag }%sveltekit.head%`)
+	}
+
+	if (/<head[\s\S]*?>/i.test(html)) {
+		return html.replace(/<head([\s\S]*?)>/i, `<head$1>${ scriptTag }`)
+	}
+
+	return `${ scriptTag }${ html }`
 }

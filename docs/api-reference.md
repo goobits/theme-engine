@@ -246,7 +246,7 @@ interface ThemeStore {
 
 SvelteKit server-side hooks and utilities.
 
-### `createThemeHooks(config)`
+### `createThemeHooks(config, options?)`
 
 Creates SvelteKit hooks for server-side theme handling.
 
@@ -254,7 +254,12 @@ Creates SvelteKit hooks for server-side theme handling.
 import { createThemeHooks } from '@goobits/themes/server';
 import { themeConfig } from '$lib/config/theme';
 
-const { transform } = createThemeHooks(themeConfig);
+const { transform } = createThemeHooks(themeConfig, {
+    blockingScript: {
+        enabled: true,
+        // nonce: '...' // Optional CSP nonce
+    }
+});
 
 export const handle = transform;
 ```
@@ -262,6 +267,11 @@ export const handle = transform;
 **Parameters:**
 
 - `config` (ThemeConfig) - Theme configuration
+- `options` (ThemeHooksOptions, optional)
+  - `blockingScript` (boolean or object) - Injects the blocking script into `<head>`
+    - `enabled` (boolean) - Defaults to `true`
+    - `nonce` (string) - Optional CSP nonce
+    - `marker` (string) - Optional marker comment override
 
 **Returns:** `{ transform: Handle }`
 

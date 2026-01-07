@@ -1,0 +1,12 @@
+/**
+ * @goobits/themes - Full Preset Bundle
+ *
+ * Includes base tokens plus all included presets.
+ *
+ * Usage:
+ *   import '@goobits/themes/themes/bundle.css';
+ */
+
+@import './base/index.css';
+@import './presets/default.css';
+@import './presets/spells.css';
