@@ -15,6 +15,7 @@ const config = {
 
     kit: {
         adapter: adapter(),
+        outDir: '.artifacts/svelte-kit/demo',
     },
 };
 

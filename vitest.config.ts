@@ -8,6 +8,9 @@ const __dirname = fileURLToPath(new URL('.', import.meta.url));
 export default defineConfig({
     plugins: [svelte({ hot: !process.env.VITEST })],
     test: {
+        cache: {
+            dir: '.artifacts/vitest',
+        },
         globals: true,
         environment: 'jsdom',
         setupFiles: ['./vitest.setup.ts'],
