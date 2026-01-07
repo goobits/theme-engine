@@ -1,16 +1,11 @@
 <script lang="ts">
-	import { useTheme } from '@goobits/themes/svelte'
+	import { ThemeToggle, useTheme } from '../../../../src/lib/svelte/index.js'
 
 	const theme = useTheme()
 	const activeScheme = $derived(theme.scheme)
-
-	const schemes = [
-		{ key: 'default', label: 'Default' },
-		{ key: 'midnight', label: 'Midnight' },
-		{ key: 'spells', label: 'Spells' },
-		{ key: 'forest', label: 'Forest' },
-		{ key: 'rose', label: 'Rose' }
-	]
+	const schemes = $derived([ ...theme.availableSchemes ].sort((a, b) =>
+		a.displayName.localeCompare(b.displayName)
+	))
 
 	function setScheme(scheme: string) {
 		theme.setScheme(scheme)
@@ -21,17 +16,20 @@
 	<header class="showcase__header">
 		<h1>Theme Engine</h1>
 		<p>Pick a theme. Watch it breathe.</p>
+		<div class="showcase__actions">
+			<ThemeToggle />
+		</div>
 	</header>
 
 	<div class="showcase__tabs">
 		{#each schemes as scheme}
 			<button
 				class="tab"
-				class:active={activeScheme === scheme.key}
-				onclick={() => setScheme(scheme.key)}
+				class:active={activeScheme === scheme.name}
+				onclick={() => setScheme(scheme.name)}
 				type="button"
 			>
-				{scheme.label}
+				{scheme.displayName}
 			</button>
 		{/each}
 	</div>
@@ -102,6 +100,12 @@
 		color: var(--text-secondary);
 		font-size: 1.125rem;
 		line-height: 1.6;
+	}
+
+	.showcase__actions {
+		margin-top: 1.25rem;
+		display: flex;
+		justify-content: center;
 	}
 
 	.showcase__tabs {

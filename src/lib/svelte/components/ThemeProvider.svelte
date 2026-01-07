@@ -54,11 +54,14 @@
 		() => serverPreferences ?? $page.data?.preferences
 	)
 
-	// Apply server preferences if provided
+	let appliedServerPreferences = $state(false)
+
+	// Apply server preferences once to seed client state without overriding user changes
 	$effect(() => {
-		if (resolvedPreferences) {
+		if (resolvedPreferences && !appliedServerPreferences) {
 			themeStore.setTheme(resolvedPreferences.theme)
 			themeStore.setScheme(resolvedPreferences.themeScheme)
+			appliedServerPreferences = true
 		}
 	})
 

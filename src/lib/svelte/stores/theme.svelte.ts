@@ -11,7 +11,7 @@ import type { ThemeConfig } from '../../core/config'
 import type { SchemeConfig } from '../../core/config'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import { isBrowser } from '../../utils/browser'
-import { loadThemePreferences,saveThemePreferences } from './themePersistence'
+import { loadThemePreferences, saveThemePreferences } from './themePersistence'
 
 /**
  * Internal theme settings structure.
@@ -97,13 +97,13 @@ class ThemeStoreImpl implements ThemeStore {
 	#subscribers = new Set<(value: ThemeStoreSnapshot) => void>()
 
 	// Reactive state fields - tracked across component boundaries
-	#theme = $state<ThemeMode>('system')
-	#scheme = $state<ThemeScheme>('default')
+	theme = $state<ThemeMode>('system')
+	scheme = $state<ThemeScheme>('default')
 
 	constructor(config: ThemeConfig) {
 		this.#config = config
 		const defaultScheme = Object.keys(config.schemes)[0] || 'default'
-		this.#scheme = defaultScheme
+		this.scheme = defaultScheme
 
 		// Load saved preferences on initialization (browser only)
 		if (isBrowser()) {
@@ -112,10 +112,10 @@ class ThemeStoreImpl implements ThemeStore {
 				// Use 'in' check to preserve explicit null values (matches spread behavior)
 				// while using defaults for missing/undefined properties
 				if ('theme' in saved) {
-					this.#theme = saved.theme
+					this.theme = saved.theme
 				}
 				if ('themeScheme' in saved) {
-					this.#scheme = saved.themeScheme
+					this.scheme = saved.themeScheme
 				}
 			}
 		}
@@ -123,17 +123,9 @@ class ThemeStoreImpl implements ThemeStore {
 
 	get settings(): ThemeSettings {
 		return {
-			theme: this.#theme,
-			themeScheme: this.#scheme
+			theme: this.theme,
+			themeScheme: this.scheme
 		}
-	}
-
-	get theme(): ThemeMode {
-		return this.#theme
-	}
-
-	get scheme(): ThemeScheme {
-		return this.#scheme
 	}
 
 	get availableSchemes(): SchemeConfig[] {
@@ -141,20 +133,20 @@ class ThemeStoreImpl implements ThemeStore {
 	}
 
 	setTheme(newTheme: ThemeMode): void {
-		this.#theme = newTheme
+		this.theme = newTheme
 		saveThemePreferences(this.settings)
 		this.#notifySubscribers()
 	}
 
 	setScheme(newScheme: ThemeScheme): void {
-		this.#scheme = newScheme
+		this.scheme = newScheme
 		saveThemePreferences(this.settings)
 		this.#notifySubscribers()
 	}
 
 	cycleMode(): void {
 		const modes: ThemeMode[] = [ 'light', 'dark', 'system' ]
-		const currentIndex = modes.indexOf(this.#theme)
+		const currentIndex = modes.indexOf(this.theme)
 		const nextIndex = (currentIndex + 1) % modes.length
 		this.setTheme(modes[nextIndex])
 	}
@@ -165,8 +157,8 @@ class ThemeStoreImpl implements ThemeStore {
 		// Immediately call the subscriber with current value
 		fn({
 			settings: this.settings,
-			theme: this.#theme,
-			scheme: this.#scheme
+			theme: this.theme,
+			scheme: this.scheme
 		})
 		return () => {
 			this.#subscribers.delete(fn)
@@ -176,8 +168,8 @@ class ThemeStoreImpl implements ThemeStore {
 	#notifySubscribers(): void {
 		const snapshot: ThemeStoreSnapshot = {
 			settings: this.settings,
-			theme: this.#theme,
-			scheme: this.#scheme
+			theme: this.theme,
+			scheme: this.scheme
 		}
 		this.#subscribers.forEach(fn => fn(snapshot))
 	}

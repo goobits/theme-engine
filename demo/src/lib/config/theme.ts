@@ -1,56 +1,33 @@
-import type { ThemeConfig } from '@goobits/themes'
+import type { ThemeConfig } from '../../../../src/lib/core/config.js'
+import { themePairs } from '../../../../src/lib/goo/presets.js'
+
+const toDisplayName = (name: string): string =>
+	name
+		.replace(/([a-z])([A-Z])/g, '$1 $2')
+		.replace(/-/g, ' ')
+		.replace(/\b\w/g, char => char.toUpperCase())
+
+const gooSchemes: ThemeConfig['schemes'] = Object.fromEntries(
+	Object.entries(themePairs).map(([ base, pair ]) => {
+		const name = `goo-${ base }`
+		const displayName = toDisplayName(base)
+
+		return [
+			name,
+			{
+				name,
+				displayName,
+				description: `Goo preset: ${ displayName }`,
+				preview: {
+					primary: pair.dark.accent,
+					accent: pair.dark.secondary || pair.dark.accent,
+					background: pair.dark.bg
+				}
+			}
+		]
+	})
+)
 
 export const themeConfig: ThemeConfig = {
-	schemes: {
-		default: {
-			name: 'default',
-			displayName: 'Default',
-			description: 'Clean, professional design',
-			preview: {
-				primary: '#3b82f6',
-				accent: '#60a5fa',
-				background: '#ffffff'
-			}
-		},
-		midnight: {
-			name: 'midnight',
-			displayName: 'Midnight',
-			description: 'Deep noir with electric accent',
-			preview: {
-				primary: '#2997ff',
-				accent: '#66b7ff',
-				background: '#1d1d1f'
-			}
-		},
-		spells: {
-			name: 'spells',
-			displayName: 'Spells',
-			description: 'Magical purple theme',
-			preview: {
-				primary: '#8b5cf6',
-				accent: '#a78bfa',
-				background: '#0f0a1e'
-			}
-		},
-		forest: {
-			name: 'forest',
-			displayName: 'Forest',
-			description: 'Soft greens and natural contrast',
-			preview: {
-				primary: '#2d8a2d',
-				accent: '#48b048',
-				background: '#f8faf8'
-			}
-		},
-		rose: {
-			name: 'rose',
-			displayName: 'Rose',
-			description: 'Warm blush palette with bold accents',
-			preview: {
-				primary: '#e85d75',
-				accent: '#f07f93',
-				background: '#fefbfb'
-			}
-		}
-	}
+	schemes: gooSchemes
 }
