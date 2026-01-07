@@ -5,8 +5,8 @@
 
 import type { Cookies } from '@sveltejs/kit'
 
-import { PREFERENCE_COOKIE_NAMES } from '../core/constants'
 import type { ThemeConfig } from '../core/config'
+import { PREFERENCE_COOKIE_NAMES } from '../core/constants'
 import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry'
 
 /** Valid theme mode values for validation */
