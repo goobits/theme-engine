@@ -101,6 +101,7 @@
         "package": "svelte-package",
         "build": "svelte-package",
         "prepublishOnly": "pnpm run generate:goo && pnpm run package",
+        "release": "pnpm version patch && pnpm run lint && pnpm run prepublishOnly && pnpm publish --access public",
         "test": "vitest run",
         "test:watch": "vitest watch",
         "test:ui": "vitest --ui",
