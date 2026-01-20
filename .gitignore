@@ -66,6 +66,9 @@ yarn.lock
 .vite/
 demo/node_modules/.vite/
 
+# Generated type outputs
+test/*.d.ts
+
 # Local development
 .local/
 
