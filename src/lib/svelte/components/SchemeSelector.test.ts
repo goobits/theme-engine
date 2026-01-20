@@ -10,13 +10,13 @@ import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 import { createMockThemeStore } from '../../../../test/testUtils'
 import type { SchemeConfig } from '../../core/config'
 import type { ThemeScheme } from '../../core/schemeRegistry'
-import type { ThemeStore } from '../stores/theme.svelte'
+import type { ThemeStore } from '../stores/theme.svelte.js'
 
 // Mock useTheme hook
 let mockThemeStore: ThemeStore
 const useThemeMock = vi.fn()
 
-vi.mock('../hooks/useTheme.svelte', () => ({
+vi.mock('../hooks/useTheme.svelte.js', () => ({
 	useTheme: () => useThemeMock()
 }))
 

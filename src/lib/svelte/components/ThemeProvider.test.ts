@@ -42,7 +42,7 @@ vi.mock('$app/environment', () => ({
 	browser: false
 }))
 
-vi.mock('../stores/theme.svelte', () => ({
+vi.mock('../stores/theme.svelte.js', () => ({
 	createThemeStore: vi.fn()
 }))
 
@@ -63,7 +63,7 @@ describe('ThemeProvider', () => {
 		const svelteModule = await import('svelte')
 		setContextMock = vi.mocked(svelteModule.setContext)
 
-		const themeStoreModule = await import('../stores/theme.svelte')
+		const themeStoreModule = await import('../stores/theme.svelte.js')
 		createThemeStoreMock = vi.mocked(themeStoreModule.createThemeStore)
 
 		const themeManagerModule = await import('../../core/themeManager')

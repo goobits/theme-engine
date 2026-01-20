@@ -28,7 +28,7 @@
 	import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry.js'
 	import { applyRouteTheme, initializeTheme } from '../../core/themeManager.js'
 	import { isBrowser } from '../../utils/browser.js'
-	import { createThemeStore } from '../stores/theme.svelte'
+	import { createThemeStore } from '../stores/theme.svelte.js'
 
 	const {
 		children,

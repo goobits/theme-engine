@@ -23,7 +23,7 @@
   ```
 -->
 <script lang="ts">
-    import { useTheme } from '../hooks/useTheme.svelte'
+    import { useTheme } from '../hooks/useTheme.svelte.js'
 
     const theme = useTheme()
     const currentScheme = $derived(theme.scheme)

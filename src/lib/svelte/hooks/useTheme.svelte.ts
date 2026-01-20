@@ -1,7 +1,7 @@
 // packages/svelte-themes/src/svelte/hooks/useTheme.svelte.ts
 import { getContext } from 'svelte'
 
-import type { ThemeStore } from '../stores/theme.svelte'
+import type { ThemeStore } from '../stores/theme.svelte.js'
 
 /**
  * Access the theme store from any component.
@@ -26,7 +26,7 @@ import type { ThemeStore } from '../stores/theme.svelte'
  * ```typescript
  * // In a Svelte component
  * <script lang="ts">
- *   import { useTheme } from '$lib/svelte/hooks/useTheme.svelte';
+ *   import { useTheme } from '$lib/svelte/hooks/useTheme.svelte.js';
  *
  *   const { theme, scheme, setTheme, setScheme, cycleMode } = useTheme();
  * </script>

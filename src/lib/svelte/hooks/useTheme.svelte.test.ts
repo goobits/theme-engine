@@ -8,8 +8,8 @@
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
-import type { ThemeStore } from '../stores/theme.svelte'
-import { useTheme } from './useTheme.svelte'
+import type { ThemeStore } from '../stores/theme.svelte.js'
+import { useTheme } from './useTheme.svelte.js'
 
 // Mock the svelte module
 vi.mock('svelte', () => ({

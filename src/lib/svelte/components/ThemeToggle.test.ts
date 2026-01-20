@@ -10,7 +10,7 @@ import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { createMockThemeStore } from '../../../../test/testUtils'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
-import type { ThemeStore } from '../stores/theme.svelte'
+import type { ThemeStore } from '../stores/theme.svelte.js'
 
 // Mock lucide-svelte icons (individual imports for tree-shaking)
 const MockSun = vi.fn()
@@ -25,7 +25,7 @@ vi.mock('@lucide/svelte/icons/monitor', () => ({ default: MockMonitor }))
 let mockThemeStore: ThemeStore
 const useThemeMock = vi.fn()
 
-vi.mock('../hooks/useTheme.svelte', () => ({
+vi.mock('../hooks/useTheme.svelte.js', () => ({
 	useTheme: () => useThemeMock()
 }))
 

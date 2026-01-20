@@ -9,7 +9,7 @@ import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../../core/config'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
-import { createThemeStore } from './theme.svelte'
+import { createThemeStore } from './theme.svelte.js'
 
 // Mock the $app/environment module
 vi.mock('$app/environment', () => ({

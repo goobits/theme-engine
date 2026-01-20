@@ -28,7 +28,7 @@
     import Sun from '@lucide/svelte/icons/sun'
 
     import { ARIA_ANNOUNCEMENT_DURATION_MS } from '../../core/constants.js'
-    import { useTheme } from '../hooks/useTheme.svelte'
+    import { useTheme } from '../hooks/useTheme.svelte.js'
 
     const theme = useTheme()
     const currentTheme = $derived(theme.theme)
