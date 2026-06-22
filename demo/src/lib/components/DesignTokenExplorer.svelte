@@ -1,4 +1,5 @@
 <script>
+    import { untrack } from 'svelte';
     import { useTheme } from '@goobits/themes/svelte';
 
     let { category = 'all' } = $props();
@@ -38,7 +39,8 @@
         ],
     };
 
-    let selectedCategory = $state(category);
+    // Seed local state from the prop's initial value without subscribing to it
+    let selectedCategory = $state(untrack(() => category));
     let searchQuery = $state('');
     let copiedToken = $state('');
 
