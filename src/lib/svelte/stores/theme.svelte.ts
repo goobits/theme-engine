@@ -111,10 +111,10 @@ class ThemeStoreImpl implements ThemeStore {
 			if (saved) {
 				// Use 'in' check to preserve explicit null values (matches spread behavior)
 				// while using defaults for missing/undefined properties
-				if ('theme' in saved) {
+				if ('theme' in saved && saved.theme !== undefined) {
 					this.theme = saved.theme
 				}
-				if ('themeScheme' in saved) {
+				if ('themeScheme' in saved && saved.themeScheme !== undefined) {
 					this.scheme = saved.themeScheme
 				}
 			}

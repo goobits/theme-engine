@@ -251,9 +251,11 @@ export function mockDocumentCookie(cookieString: string): void {
  */
 export function resetDOMMocks(): void {
 	// Reset matchMedia
-	if (typeof window !== 'undefined' && window.matchMedia) {
-		const mutableWindow = window as Window & { matchMedia?: typeof window.matchMedia }
-		delete mutableWindow.matchMedia
+	if (typeof window !== 'undefined') {
+		const mutableWindow = window as Omit<Window, 'matchMedia'> & { matchMedia?: Window['matchMedia'] }
+		if (mutableWindow.matchMedia) {
+			delete mutableWindow.matchMedia
+		}
 	}
 
 	// Reset document.cookie

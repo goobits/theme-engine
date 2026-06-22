@@ -85,9 +85,11 @@ export function toTitleCase(name: string): string {
 // Icon SVG Generation
 // ============================================================================
 
+type IconChild = [ string, Record<string, string> ]
+
 // Lucide icon data (pre-extracted to avoid runtime dependency)
 // These match the lucide library format: [[tag, attrs], ...]
-const LUCIDE_ICONS = {
+const LUCIDE_ICONS: Record<string, IconChild[]> = {
 	Sun: [
 		[ 'circle', { cx: '12', cy: '12', r: '4' } ],
 		[ 'path', { d: 'M12 2v2' } ],

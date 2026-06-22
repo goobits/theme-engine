@@ -437,7 +437,7 @@ describe('integration scenarios', () => {
 
 		// Save to localStorage
 		if (loaded) {
-			saveThemePreferences(loaded)
+			saveThemePreferences(loaded as ThemePersistenceData)
 		}
 
 		// Now should load from localStorage

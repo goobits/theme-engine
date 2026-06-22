@@ -6,6 +6,11 @@
     const theme = useTheme();
     const currentMode = $derived(theme.theme);
 
+    /**
+     * @typedef {{ name: string, description: string, category?: string, value?: string }} DesignToken
+     */
+
+    /** @type {Record<string, DesignToken[]>} */
     const tokens = {
         colors: [
             { name: '--bg-primary', description: 'Primary background', category: 'Background' },
@@ -54,18 +59,21 @@
         return items;
     });
 
+    /** @param {string} tokenName */
     function getComputedValue(tokenName) {
         if (typeof window === 'undefined') return '';
         const value = getComputedStyle(document.documentElement).getPropertyValue(tokenName).trim();
         return value || 'not set';
     }
 
+    /** @param {string} tokenName */
     function copyToken(tokenName) {
         navigator.clipboard.writeText(`var(${tokenName})`);
         copiedToken = tokenName;
         setTimeout(() => (copiedToken = ''), 2000);
     }
 
+    /** @param {string} tokenName */
     function isColorToken(tokenName) {
         return (
             tokenName.includes('bg-') ||

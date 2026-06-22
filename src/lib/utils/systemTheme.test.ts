@@ -35,19 +35,37 @@ function setupMatchMedia() {
 	}
 }
 
-// Helper to create mock MediaQueryList
-function createMockMediaQueryList(matches: boolean): MediaQueryList {
-	const listeners: Array<(e: MediaQueryListEvent | MediaQueryList) => void> = []
+// Listener signature accepted by both the modern and legacy mock APIs
+type MockMediaQueryListener = (e: MediaQueryListEvent | MediaQueryList) => void
 
-	const mql = {
+// Mock shape for MediaQueryList with a writable `matches` and a test-only
+// `_triggerChange` helper. Cast to MediaQueryList only at the boundary where
+// the mock is handed to the code under test.
+interface MockMediaQueryList {
+	matches: boolean
+	media: string
+	addEventListener: ReturnType<typeof vi.fn>
+	removeEventListener: ReturnType<typeof vi.fn>
+	addListener: ReturnType<typeof vi.fn>
+	removeListener: ReturnType<typeof vi.fn>
+	dispatchEvent: ReturnType<typeof vi.fn>
+	onchange: null
+	_triggerChange(newMatches: boolean): void
+}
+
+// Helper to create mock MediaQueryList
+function createMockMediaQueryList(matches: boolean): MockMediaQueryList {
+	const listeners: MockMediaQueryListener[] = []
+
+	const mql: MockMediaQueryList = {
 		matches,
 		media: DARK_MODE_MEDIA_QUERY,
-		addEventListener: vi.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
+		addEventListener: vi.fn((event: string, handler: MockMediaQueryListener) => {
 			if (event === 'change') {
 				listeners.push(handler)
 			}
 		}),
-		removeEventListener: vi.fn((event: string, handler: (e: MediaQueryListEvent) => void) => {
+		removeEventListener: vi.fn((event: string, handler: MockMediaQueryListener) => {
 			if (event === 'change') {
 				const index = listeners.indexOf(handler)
 				if (index > -1) {
@@ -55,10 +73,10 @@ function createMockMediaQueryList(matches: boolean): MediaQueryList {
 				}
 			}
 		}),
-		addListener: vi.fn((handler: (e: MediaQueryList) => void) => {
+		addListener: vi.fn((handler: MockMediaQueryListener) => {
 			listeners.push(handler)
 		}),
-		removeListener: vi.fn((handler: (e: MediaQueryList) => void) => {
+		removeListener: vi.fn((handler: MockMediaQueryListener) => {
 			const index = listeners.indexOf(handler)
 			if (index > -1) {
 				listeners.splice(index, 1)
@@ -74,7 +92,7 @@ function createMockMediaQueryList(matches: boolean): MediaQueryList {
 				listener({ matches: newMatches } as MediaQueryListEvent)
 			})
 		}
-	} as MediaQueryList & { _triggerChange: (matches: boolean) => void }
+	}
 
 	return mql
 }
@@ -119,7 +137,7 @@ describe('getDarkModeMediaQuery', () => {
 
 		it('should return MediaQueryList when in browser', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = getDarkModeMediaQuery()
 
@@ -130,7 +148,7 @@ describe('getDarkModeMediaQuery', () => {
 
 		it('should call window.matchMedia with correct query', () => {
 			const mockMQL = createMockMediaQueryList(true)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			getDarkModeMediaQuery()
 
@@ -139,7 +157,7 @@ describe('getDarkModeMediaQuery', () => {
 
 		it('should return MediaQueryList with matches property', () => {
 			const mockMQL = createMockMediaQueryList(true)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = getDarkModeMediaQuery()
 
@@ -177,7 +195,7 @@ describe('prefersDarkMode', () => {
 
 		it('should return true when dark mode is preferred', () => {
 			const mockMQL = createMockMediaQueryList(true)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = prefersDarkMode()
 
@@ -186,7 +204,7 @@ describe('prefersDarkMode', () => {
 
 		it('should return false when light mode is preferred', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = prefersDarkMode()
 
@@ -195,7 +213,7 @@ describe('prefersDarkMode', () => {
 
 		it('should query the correct media query', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			const matchMediaSpy = vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			const matchMediaSpy = vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			prefersDarkMode()
 
@@ -232,7 +250,7 @@ describe('getSystemThemePreference', () => {
 
 		it('should return "dark" when dark mode is preferred', () => {
 			const mockMQL = createMockMediaQueryList(true)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = getSystemThemePreference()
 
@@ -241,7 +259,7 @@ describe('getSystemThemePreference', () => {
 
 		it('should return "light" when light mode is preferred', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = getSystemThemePreference()
 
@@ -250,7 +268,7 @@ describe('getSystemThemePreference', () => {
 
 		it('should always return either "light" or "dark"', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = getSystemThemePreference()
 
@@ -299,7 +317,7 @@ describe('resolveThemeMode', () => {
 
 		it('should resolve "system" to "dark" when dark mode is preferred', () => {
 			const mockMQL = createMockMediaQueryList(true)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = resolveThemeMode('system')
 
@@ -308,7 +326,7 @@ describe('resolveThemeMode', () => {
 
 		it('should resolve "system" to "light" when light mode is preferred', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const result = resolveThemeMode('system')
 
@@ -317,7 +335,7 @@ describe('resolveThemeMode', () => {
 
 		it('should always return either "light" or "dark"', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const modes: Array<'light' | 'dark' | 'system'> = [ 'light', 'dark', 'system' ]
 			modes.forEach(mode => {
@@ -369,7 +387,7 @@ describe('watchSystemTheme', () => {
 
 		it('should set up event listener when in browser', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			watchSystemTheme(callback)
@@ -379,7 +397,7 @@ describe('watchSystemTheme', () => {
 
 		it('should call callback when system theme changes to dark', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			watchSystemTheme(callback)
@@ -392,7 +410,7 @@ describe('watchSystemTheme', () => {
 
 		it('should call callback when system theme changes to light', () => {
 			const mockMQL = createMockMediaQueryList(true)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			watchSystemTheme(callback)
@@ -405,7 +423,7 @@ describe('watchSystemTheme', () => {
 
 		it('should call callback multiple times for multiple changes', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			watchSystemTheme(callback)
@@ -422,7 +440,7 @@ describe('watchSystemTheme', () => {
 
 		it('should remove event listener when cleanup is called', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			const cleanup = watchSystemTheme(callback)
@@ -436,7 +454,7 @@ describe('watchSystemTheme', () => {
 
 		it('should not call callback after cleanup', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			const cleanup = watchSystemTheme(callback)
@@ -450,7 +468,7 @@ describe('watchSystemTheme', () => {
 
 		it('should be safe to call cleanup multiple times', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			const cleanup = watchSystemTheme(callback)
@@ -540,7 +558,7 @@ describe('watchSystemTheme', () => {
 
 		it('should handle multiple watchers independently', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			const callback1 = vi.fn()
 			const callback2 = vi.fn()
@@ -567,7 +585,7 @@ describe('watchSystemTheme', () => {
 
 		it('should pass boolean value to callback', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 			const callback = vi.fn()
 
 			watchSystemTheme(callback)
@@ -588,7 +606,7 @@ describe('integration tests', () => {
 
 	it('should provide consistent results across all functions', () => {
 		const mockMQL = createMockMediaQueryList(true)
-		vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+		vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 		const mql = getDarkModeMediaQuery()
 		const prefers = prefersDarkMode()
@@ -603,7 +621,7 @@ describe('integration tests', () => {
 
 	it('should handle theme mode resolution correctly', () => {
 		const mockMQL = createMockMediaQueryList(false)
-		vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+		vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 		expect(resolveThemeMode('light')).toBe('light')
 		expect(resolveThemeMode('dark')).toBe('dark')
@@ -616,7 +634,7 @@ describe('integration tests', () => {
 
 	it('should properly sync watcher with preference check', () => {
 		const mockMQL = createMockMediaQueryList(false)
-		vi.mocked(window.matchMedia).mockReturnValue(mockMQL)
+		vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 		const callback = vi.fn()
 		watchSystemTheme(callback)

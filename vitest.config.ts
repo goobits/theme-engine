@@ -6,7 +6,7 @@ import { resolve } from 'node:path';
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
-    plugins: [svelte({ hot: !process.env.VITEST })],
+    plugins: [svelte()],
     test: {
         cache: {
             dir: '.artifacts/vitest',

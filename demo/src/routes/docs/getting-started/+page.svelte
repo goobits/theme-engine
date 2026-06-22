@@ -9,7 +9,7 @@
 
             buttons.forEach(button => {
                 button.addEventListener('click', () => {
-                    const targetTab = button.dataset.tab;
+                    const targetTab = /** @type {HTMLElement} */ (button).dataset.tab;
 
                     // Remove active class from all buttons and contents in this group
                     buttons.forEach(btn => btn.classList.remove('active'));
@@ -227,7 +227,7 @@ export function load({ cookies }) {
   import '@goobits/themes/themes/spells.css';
 
   const { data, children } = $props();
-</script>
+<\/script>
 
 <ThemeProvider config={themeConfig} serverPreferences={data.preferences}>
   {@render children?.()}
@@ -241,7 +241,7 @@ export function load({ cookies }) {
     <pre><code class="language-svelte"
             >{`<script>
   import { ThemeToggle, SchemeSelector } from '@goobits/themes/svelte';
-</script>
+<\/script>
 
 <!-- Quick light/dark toggle -->
 <ThemeToggle />
@@ -268,7 +268,7 @@ export function load({ cookies }) {
     const newMode = currentMode === 'dark' ? 'light' : 'dark';
     theme.setTheme(newMode);
   }
-</script>
+<\/script>
 
 <button onclick={toggleTheme}>
   {currentMode === 'dark' ? '🌙' : '☀️'} Toggle Theme

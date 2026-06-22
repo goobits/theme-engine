@@ -24,3 +24,7 @@ export * from './logger.js'
 export * from './routeThemes.js'
 export * from './systemTheme.js'
 export * from './validation.js'
+
+// `getHtmlElement` is defined in both browser and dom; dom's version (returning `| null`)
+// is the one used internally, so re-export it explicitly to resolve the ambiguity.
+export { getHtmlElement } from './dom.js'

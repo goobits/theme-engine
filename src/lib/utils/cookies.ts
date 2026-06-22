@@ -58,6 +58,11 @@ function setCookie(name: string, value: string | boolean, options: typeof COOKIE
 	document.cookie = `${ name }=${ value }; path=${ options.path }; max-age=${ options.maxAge }; SameSite=${ options.sameSite }`
 }
 
+/** Assigns a parsed cookie value to the preferences object, preserving the key/parser type correlation */
+function assignPreference<K extends keyof UserPreferences>(target: Partial<UserPreferences>, key: K, rawValue: string): void {
+	target[key] = PREFERENCE_PARSERS[key](rawValue)
+}
+
 /**
  * Reads user preferences from browser cookies.
  * Returns empty object on server or when no cookies are set.
@@ -69,10 +74,10 @@ function setCookie(name: string, value: string | boolean, options: typeof COOKIE
 export function readPreferenceCookies(): Partial<UserPreferences> {
 	if (!isBrowser()) return {}
 	const preferences: Partial<UserPreferences> = {}
-	for (const [ key, parser ] of Object.entries(PREFERENCE_PARSERS)) {
+	for (const key of Object.keys(PREFERENCE_PARSERS) as (keyof UserPreferences)[]) {
 		const value = getCookie(key)
 		if (value !== undefined) {
-			preferences[key as keyof UserPreferences] = parser(value)
+			assignPreference(preferences, key, value)
 		}
 	}
 	return preferences

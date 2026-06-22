@@ -88,9 +88,9 @@
         "LICENSE"
     ],
     "peerDependencies": {
+        "@lucide/svelte": ">=0.400.0",
         "@sveltejs/kit": "^2.0.0",
-        "svelte": "^5.0.0",
-        "@lucide/svelte": ">=0.400.0"
+        "svelte": "^5.0.0"
     },
     "peerDependenciesMeta": {
         "@lucide/svelte": {
@@ -113,30 +113,30 @@
         "check:goo": "tsx scripts/checkGooPresets.ts"
     },
     "devDependencies": {
-        "@eslint/js": "^9.39.2",
-        "@stylistic/eslint-plugin": "^5.6.1",
-        "@lucide/svelte": "^0.562.0",
-        "@sveltejs/adapter-auto": "^7.0.0",
-        "@sveltejs/kit": "^2.49.3",
-        "@sveltejs/package": "^2.5.7",
-        "@sveltejs/vite-plugin-svelte": "^6.2.3",
+        "@eslint/js": "^10.0.1",
+        "@lucide/svelte": "^1.21.0",
+        "@stylistic/eslint-plugin": "^5.10.0",
+        "@sveltejs/adapter-auto": "^7.0.1",
+        "@sveltejs/kit": "^2.67.0",
+        "@sveltejs/package": "^2.5.8",
+        "@sveltejs/vite-plugin-svelte": "^7.1.2",
         "@testing-library/jest-dom": "^6.9.1",
-        "@testing-library/svelte": "^5.3.1",
-        "@types/node": "^25.0.3",
-        "@typescript-eslint/eslint-plugin": "^8.52.0",
-        "@typescript-eslint/parser": "^8.52.0",
-        "@vitest/coverage-v8": "^4.0.16",
-        "@vitest/ui": "^4.0.16",
-        "eslint": "^9.39.2",
-        "eslint-plugin-svelte": "^3.13.1",
-        "eslint-plugin-simple-import-sort": "^12.1.1",
-        "jsdom": "^27.4.0",
-        "svelte": "^5.46.1",
-        "svelte-eslint-parser": "^1.4.1",
-        "typescript": "^5.9.3",
-        "tsx": "^4.19.2",
-        "vite": "^7.3.1",
-        "vitest": "^4.0.16"
+        "@testing-library/svelte": "^5.4.1",
+        "@types/node": "^26.0.0",
+        "@typescript-eslint/eslint-plugin": "^8.62.0",
+        "@typescript-eslint/parser": "^8.62.0",
+        "@vitest/coverage-v8": "^4.1.9",
+        "@vitest/ui": "^4.1.9",
+        "eslint": "^10.5.0",
+        "eslint-plugin-simple-import-sort": "^13.0.0",
+        "eslint-plugin-svelte": "^3.19.0",
+        "jsdom": "^29.1.1",
+        "svelte": "^5.56.3",
+        "svelte-eslint-parser": "^1.8.0",
+        "tsx": "^4.22.4",
+        "typescript": "^6.0.3",
+        "vite": "^8.0.16",
+        "vitest": "^4.1.9"
     },
     "keywords": [
         "svelte",
@@ -163,6 +163,13 @@
     },
     "overrides": {
         "cookie": "^0.7.0"
+    },
+    "pnpm": {
+        "peerDependencyRules": {
+            "allowedVersions": {
+                "@lucide/svelte": "1"
+            }
+        }
     },
     "publishConfig": {
         "access": "public"

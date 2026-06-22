@@ -55,7 +55,7 @@ export function saveThemePreferences(data: ThemePersistenceData): void {
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
 		writePreferenceCookies({
 			theme: data.theme,
-			themeScheme: data.themeScheme
+			themeScheme: data.themeScheme as UserPreferences['themeScheme']
 		})
 	} catch(err) {
 		console.error('Failed to save theme settings to localStorage', err)

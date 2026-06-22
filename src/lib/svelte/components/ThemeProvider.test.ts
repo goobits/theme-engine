@@ -190,16 +190,16 @@ describe('ThemeProvider', () => {
 		})
 
 		it('should handle config with routeThemes', async() => {
-			const routeThemes = {
-				'/admin': { theme: 'dark' as ThemeMode, themeScheme: 'default' as ThemeScheme },
-				'/public': { theme: 'light' as ThemeMode, themeScheme: 'spells' as ThemeScheme }
+			const routeThemes: NonNullable<ThemeConfig['routeThemes']> = {
+				'/admin': { theme: { base: 'dark', scheme: 'default' }, override: true },
+				'/public': { theme: { base: 'light', scheme: 'spells' }, override: false }
 			}
 			const config = createMockConfig({ routeThemes })
 
 			expect(config.routeThemes).toBeDefined()
 			expect(config.routeThemes?.['/admin']).toEqual({
-				theme: 'dark',
-				themeScheme: 'default'
+				theme: { base: 'dark', scheme: 'default' },
+				override: true
 			})
 
 			createThemeStoreMock(config)
