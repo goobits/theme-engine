@@ -7,11 +7,11 @@
  * @module config
  */
 
-import { DEV } from 'esm-env'
-
 import { logger } from '../utils/logger.js'
 import type { RouteThemeConfig } from '../utils/routeThemes.js'
 import { isValidHexColor } from '../utils/validation.js'
+import { PREFERENCE_COOKIE_NAMES, STORAGE_KEY } from './constants.js'
+import type { ThemeMode, ThemeScheme } from './schemeRegistry.js'
 
 /**
  * Default preview colors for schemes that don't specify their own
@@ -76,6 +76,36 @@ export interface SchemeConfig {
 
 	/** Optional path to additional CSS file for this scheme */
 	cssFile?: string
+
+	/** Optional light/dark mode enforced whenever this scheme is active */
+	fixedMode?: Exclude<ThemeMode, 'system'>
+}
+
+/** Input accepted by {@link createThemeConfig} before defaults are applied. */
+export type SchemeConfigInput = Partial<Omit<SchemeConfig, 'name'>> & { name?: string }
+
+/** Browser persistence names used by the theme engine. */
+export interface ThemePersistenceConfig {
+
+	/** Local-storage key containing the canonical JSON preference object */
+	storageKey?: string
+
+	/** Cookie containing the light/dark/system mode */
+	themeCookie?: string
+
+	/** Cookie containing the active scheme */
+	schemeCookie?: string
+
+	/** Optional legacy local-storage key containing only a scheme identifier */
+	legacySchemeStorageKey?: string
+}
+
+/** Fully resolved browser persistence names. */
+export interface ResolvedThemePersistenceConfig {
+	storageKey: string
+	themeCookie: string
+	schemeCookie: string
+	legacySchemeStorageKey?: string
 }
 
 /**
@@ -111,6 +141,51 @@ export interface ThemeConfig {
 
 	/** Optional route-specific theme configurations */
 	routeThemes?: Record<string, RouteThemeConfig>;
+
+	/** Default light/dark/system mode when no valid preference exists */
+	defaultMode?: ThemeMode
+
+	/** Default scheme when no valid preference exists */
+	defaultScheme?: ThemeScheme
+
+	/** Historical scheme identifiers mapped to their canonical identifiers */
+	schemeAliases?: Record<string, ThemeScheme>
+
+	/** Browser storage and cookie names */
+	persistence?: ThemePersistenceConfig
+}
+
+/** Input shape accepted by {@link createThemeConfig}. */
+export interface ThemeConfigInput extends Omit<ThemeConfig, 'schemes'> {
+	schemes: Record<string, SchemeConfigInput>
+}
+
+/** Stable package defaults used when consumers do not provide a custom config. */
+export const DEFAULT_THEME_CONFIG: ThemeConfig = {
+	schemes: {
+		default: {
+			name: 'default',
+			displayName: 'Default',
+			description: '',
+			preview: {
+				primary: '#3b82f6',
+				accent: '#8b5cf6',
+				background: '#ffffff'
+			}
+		},
+		spells: {
+			name: 'spells',
+			displayName: 'Grimoire',
+			description: 'Magical purple theme',
+			preview: {
+				primary: '#7c3aed',
+				accent: '#a78bfa',
+				background: '#0a0a0f'
+			}
+		}
+	},
+	defaultMode: 'system',
+	defaultScheme: 'default'
 }
 
 /**
@@ -221,6 +296,10 @@ function validateScheme(key: string, scheme: unknown): SchemeConfig | null {
 		result.cssFile = schemeObj.cssFile
 	}
 
+	if (schemeObj.fixedMode === 'light' || schemeObj.fixedMode === 'dark') {
+		result.fixedMode = schemeObj.fixedMode
+	}
+
 	return result
 }
 
@@ -249,6 +328,10 @@ function validateSchemes(schemes: unknown): Record<string, SchemeConfig> {
 	// Validate and transform each scheme
 	const validatedSchemes: Record<string, SchemeConfig> = {}
 	for (const [ key, scheme ] of Object.entries(schemes)) {
+		if (!/^[a-zA-Z0-9_-]+$/.test(key)) {
+			logger.warn(`[themes] Ignoring unsafe scheme identifier "${ key }"`)
+			continue
+		}
 		const validatedScheme = validateScheme(key, scheme)
 		if (validatedScheme) {
 			validatedSchemes[key] = validatedScheme
@@ -282,33 +365,125 @@ function validateRouteThemes(routeThemes: unknown): void {
 	}
 }
 
-/**
- * Validates and transforms theme configuration in development mode
- */
-function validateConfig(config: ThemeConfig): ThemeConfig {
-	// Skip validation in production for performance
-	if (!DEV) {
-		return config
+const THEME_MODES: readonly ThemeMode[] = [ 'light', 'dark', 'system' ]
+const SAFE_PERSISTENCE_NAME = /^[a-zA-Z0-9._:-]+$/
+
+/** Returns the configured default scheme, falling back to the first available scheme. */
+export function getDefaultThemeScheme(config: ThemeConfig): ThemeScheme {
+	if (config.defaultScheme && config.schemes[config.defaultScheme]) {
+		return config.defaultScheme
 	}
+	return Object.keys(config.schemes)[0] || 'default'
+}
 
-	const validatedSchemes = validateSchemes(config.schemes)
+/** Returns the configured default mode. */
+export function getDefaultThemeMode(config: ThemeConfig): ThemeMode {
+	return config.defaultMode && THEME_MODES.includes(config.defaultMode)
+		? config.defaultMode
+		: 'system'
+}
 
+/** Resolves browser persistence names with stable package defaults. */
+export function getThemePersistenceConfig(config: ThemeConfig): ResolvedThemePersistenceConfig {
+	const persistence = config.persistence
+	const validName = (value: string | undefined, fallback: string) =>
+		value && SAFE_PERSISTENCE_NAME.test(value) ? value : fallback
+	const legacySchemeStorageKey =
+		persistence?.legacySchemeStorageKey &&
+		SAFE_PERSISTENCE_NAME.test(persistence.legacySchemeStorageKey)
+			? persistence.legacySchemeStorageKey
+			: undefined
+
+	return {
+		storageKey: validName(persistence?.storageKey, STORAGE_KEY),
+		themeCookie: validName(persistence?.themeCookie, PREFERENCE_COOKIE_NAMES.theme),
+		schemeCookie: validName(persistence?.schemeCookie, PREFERENCE_COOKIE_NAMES.themeScheme),
+		...(legacySchemeStorageKey ? { legacySchemeStorageKey } : {})
+	}
+}
+
+/** Resolves a persisted or historical scheme identifier to a configured scheme. */
+export function resolveThemeScheme(
+	config: ThemeConfig,
+	value: unknown
+): ThemeScheme {
+	const requested = typeof value === 'string' ? value : ''
+	const canonical = config.schemeAliases?.[requested] ?? requested
+	return config.schemes[canonical] ? canonical : getDefaultThemeScheme(config)
+}
+
+/** Resolves a mode and applies any mode enforced by the active scheme. */
+export function resolveThemeMode(
+	config: ThemeConfig,
+	value: unknown,
+	scheme: ThemeScheme
+): ThemeMode {
+	const fixedMode = config.schemes[scheme]?.fixedMode
+	if (fixedMode) return fixedMode
+	return typeof value === 'string' && THEME_MODES.includes(value as ThemeMode)
+		? value as ThemeMode
+		: getDefaultThemeMode(config)
+}
+
+/** Normalizes untrusted or partial preferences against the configured schemes. */
+export function resolveThemePreferences(
+	config: ThemeConfig,
+	preferences: { theme?: unknown; themeScheme?: unknown }
+): { theme: ThemeMode; themeScheme: ThemeScheme } {
+	const themeScheme = resolveThemeScheme(config, preferences.themeScheme)
+	return {
+		theme: resolveThemeMode(config, preferences.theme, themeScheme),
+		themeScheme
+	}
+}
+
+function validateAliases(
+	aliases: Record<string, ThemeScheme> | undefined,
+	schemes: Record<string, SchemeConfig>
+): Record<string, ThemeScheme> | undefined {
+	if (!aliases) return undefined
+	const validated = Object.fromEntries(
+		Object.entries(aliases).filter(([ alias, target ]) => {
+			const valid = /^[a-zA-Z0-9_-]+$/.test(alias) && Boolean(schemes[target])
+			if (!valid) {
+				logger.warn(`[themes] Ignoring invalid scheme alias "${ alias }"`)
+			}
+			return valid
+		})
+	)
+	return Object.keys(validated).length > 0 ? validated : undefined
+}
+
+function validateConfig(config: ThemeConfigInput): ThemeConfig {
+	const schemes = validateSchemes(config.schemes)
 	if (config.routeThemes) {
 		validateRouteThemes(config.routeThemes)
 	}
 
+	const defaultScheme =
+		config.defaultScheme && schemes[config.defaultScheme]
+			? config.defaultScheme
+			: Object.keys(schemes)[0] || 'default'
+	const defaultMode =
+		config.defaultMode && THEME_MODES.includes(config.defaultMode)
+			? config.defaultMode
+			: 'system'
+
 	return {
 		...config,
-		schemes: validatedSchemes
+		schemes,
+		defaultMode,
+		defaultScheme,
+		schemeAliases: validateAliases(config.schemeAliases, schemes),
+		persistence: getThemePersistenceConfig({ ...config, schemes })
 	}
 }
 
 /**
  * Creates and validates a theme configuration.
  *
- * In development mode, this function performs comprehensive validation, applies
- * defaults for missing fields, and logs warnings for configuration issues.
- * In production, validation is skipped for performance.
+ * This function performs validation and applies defaults in every environment,
+ * so server and browser runtimes always receive the same normalized contract.
  *
  * @param config - The theme configuration object
  * @returns The validated and normalized configuration with defaults applied
@@ -354,11 +529,8 @@ function validateConfig(config: ThemeConfig): ThemeConfig {
  * - Color values are case-insensitive
  * - Examples: `#3b82f6` ✅ | `#fff` ❌ | `#FFFFFF` ✅
  *
- * **Validation Behavior:**
- * - Validation runs only in development mode (detected via esm-env)
- * - In production builds, validation is skipped for performance
- * - Invalid configurations log warnings but do not throw errors
+ * Invalid configurations log warnings and fall back to safe defaults.
  */
-export function createThemeConfig(config: ThemeConfig): ThemeConfig {
+export function createThemeConfig(config: ThemeConfigInput): ThemeConfig {
 	return validateConfig(config)
 }

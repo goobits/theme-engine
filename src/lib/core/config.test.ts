@@ -7,7 +7,11 @@
 import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from './config'
-import { createThemeConfig } from './config'
+import {
+	createThemeConfig,
+	getThemePersistenceConfig,
+	resolveThemePreferences
+} from './config'
 
 // Mock esm-env to enable DEV mode for testing
 vi.mock('esm-env', () => ({
@@ -260,5 +264,41 @@ describe('createThemeConfig', () => {
 		})
 
 		expect(consoleWarnSpy).toHaveBeenCalled()
+	})
+
+	it('normalizes defaults, aliases, persistence, and fixed scheme modes', () => {
+		const config = createThemeConfig({
+			schemes: {
+				day: { fixedMode: 'light' },
+				night: { fixedMode: 'dark' }
+			},
+			defaultMode: 'system',
+			defaultScheme: 'day',
+			schemeAliases: {
+				classic: 'night',
+				broken: 'missing'
+			},
+			persistence: {
+				storageKey: 'example-theme',
+				themeCookie: 'example-mode',
+				schemeCookie: 'example-scheme',
+				legacySchemeStorageKey: 'old-theme'
+			}
+		})
+
+		expect(resolveThemePreferences(config, {
+			theme: 'light',
+			themeScheme: 'classic'
+		})).toEqual({
+			theme: 'dark',
+			themeScheme: 'night'
+		})
+		expect(config.schemeAliases).toEqual({ classic: 'night' })
+		expect(getThemePersistenceConfig(config)).toEqual({
+			storageKey: 'example-theme',
+			themeCookie: 'example-mode',
+			schemeCookie: 'example-scheme',
+			legacySchemeStorageKey: 'old-theme'
+		})
 	})
 })

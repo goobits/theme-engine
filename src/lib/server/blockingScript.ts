@@ -1,97 +1,99 @@
 /**
- * Blocking Script for Theme Initialization
+ * Blocking theme initialization for flash-free server-rendered pages.
  *
- * This script should be included in the <head> of your app.html before any stylesheets.
- * It synchronously detects the user's theme preference and applies classes to prevent
- * flash of unstyled content (FOUC) when using theme='system'.
- *
- * @module server/blockingScript
- *
- * @example
- * ```html
- * <!-- In app.html -->
- * <head>
- *   <script>
- *     // Paste the themeBlockingScript content here
- *   </script>
- *   %sveltekit.head%
- * </head>
- * ```
- *
- * @example
- * ```typescript
- * // Or import and use programmatically
- * import { themeBlockingScriptTag } from '@goobits/themes/server';
- * ```
+ * The generated script embeds only public theme configuration, validates every
+ * persisted value, and mutates only classes owned by the theme engine.
  */
 
-/**
- * Minified blocking script that detects theme preference before page render.
- *
- * This script:
- * 1. Reads theme from localStorage (theme-preferences key)
- * 2. Falls back to cookies if localStorage unavailable
- * 3. Detects system preference via matchMedia for 'system' theme
- * 4. Applies appropriate classes and data-theme attribute to <html>
- */
-export const themeBlockingScript = '(function(){try{var d=document.documentElement,s=localStorage.getItem(\'theme-preferences\'),p=s?JSON.parse(s):{},t=p.theme||(document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/)||[])[1]||\'system\',c=p.themeScheme||(document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/)||[])[1]||\'default\',r=t;if(t===\'system\'){r=window.matchMedia(\'(prefers-color-scheme:dark)\').matches?\'dark\':\'light\'}d.setAttribute(\'data-theme\',r);d.className=\'theme-\'+t+\' scheme-\'+c+(t===\'system\'?\' theme-system-\'+r:\'\')}catch(e){}})();'
+import {
+	DEFAULT_THEME_CONFIG,
+	getDefaultThemeMode,
+	getDefaultThemeScheme,
+	getThemePersistenceConfig,
+	type ThemeConfig
+} from '../core/config.js'
 
-/**
- * Marker comment used to detect the blocking script in HTML.
- */
-export const themeBlockingScriptMarker = '<!-- @goobits/themes-blocking -->'
+interface BlockingRuntimeConfig {
+	defaultMode: 'light' | 'dark' | 'system'
+	defaultScheme: string
+	schemes: string[]
+	fixedModes: Record<string, 'light' | 'dark'>
+	aliases: Record<string, string>
+	storageKey: string
+	themeCookie: string
+	schemeCookie: string
+	legacySchemeStorageKey?: string
+}
 
-/**
- * Create a ready-to-use script tag containing the blocking script.
- * Can be injected directly into HTML.
- */
-export function createThemeBlockingScriptTag(
-	{ nonce, marker = themeBlockingScriptMarker }: { nonce?: string; marker?: string } = {}
-): string {
-	const markerPrefix = marker ? `${ marker }` : ''
-	const nonceAttribute = nonce ? ` nonce="${ nonce }"` : ''
-	return `${ markerPrefix }<script${ nonceAttribute }>${ themeBlockingScript }</script>`
+function createRuntimeConfig(config: ThemeConfig): BlockingRuntimeConfig {
+	const persistence = getThemePersistenceConfig(config)
+	const fixedModes = Object.fromEntries(
+		Object.entries(config.schemes)
+			.filter((entry): entry is [ string, typeof entry[1] & { fixedMode: 'light' | 'dark' } ] =>
+				Boolean(entry[1].fixedMode)
+			)
+			.map(([ name, scheme ]) => [ name, scheme.fixedMode ])
+	)
+
+	return {
+		defaultMode: getDefaultThemeMode(config),
+		defaultScheme: getDefaultThemeScheme(config),
+		schemes: Object.keys(config.schemes),
+		fixedModes,
+		aliases: config.schemeAliases ?? {},
+		storageKey: persistence.storageKey,
+		themeCookie: persistence.themeCookie,
+		schemeCookie: persistence.schemeCookie,
+		...(persistence.legacySchemeStorageKey
+			? { legacySchemeStorageKey: persistence.legacySchemeStorageKey }
+			: {})
+	}
+}
+
+function serializeInline(value: unknown): string {
+	return JSON.stringify(value)
+		.replaceAll('<', '\\u003c')
+		.replaceAll('>', '\\u003e')
+		.replaceAll('&', '\\u0026')
+		.replaceAll('\u2028', '\\u2028')
+		.replaceAll('\u2029', '\\u2029')
 }
 
 /**
- * Ready-to-use script tag containing the blocking script.
- * Can be injected directly into HTML.
+ * Generates the synchronous browser script for a specific theme configuration.
  */
+export function createThemeBlockingScript(
+	config: ThemeConfig = DEFAULT_THEME_CONFIG
+): string {
+	const runtimeConfig = serializeInline(createRuntimeConfig(config))
+	return `(function(c){var d=document.documentElement,p={},m=false;function r(n){var a=document.cookie?document.cookie.split(';'):[];for(var i=a.length-1;i>=0;i--){var v=a[i].trim(),x=v.indexOf('=');if(x>0&&v.slice(0,x)===n){try{return decodeURIComponent(v.slice(x+1))}catch(e){return v.slice(x+1)}}}}function w(n,v){document.cookie=n+'='+encodeURIComponent(v)+'; path=/; max-age=31536000; SameSite=lax'+(location.protocol==='https:'?'; Secure':'')}try{var q=localStorage.getItem(c.storageKey);if(q)p=JSON.parse(q)||{}}catch(e){}var t=p.theme||r(c.themeCookie)||c.defaultMode,s=p.themeScheme||r(c.schemeCookie);if(!s&&c.legacySchemeStorageKey){try{s=localStorage.getItem(c.legacySchemeStorageKey);m=!!s}catch(e){}}var o=s;s=c.aliases[s]||s;if(c.schemes.indexOf(s)<0)s=c.defaultScheme;if(['light','dark','system'].indexOf(t)<0)t=c.defaultMode;t=c.fixedModes[s]||t;var h=typeof matchMedia==='function'&&matchMedia('(prefers-color-scheme: dark)').matches,z=t==='system'?(h?'dark':'light'):t;if(m||o!==s){var j=JSON.stringify({theme:t,themeScheme:s}),k=false;try{localStorage.setItem(c.storageKey,j);k=true}catch(e){}if(k&&c.legacySchemeStorageKey){try{localStorage.removeItem(c.legacySchemeStorageKey)}catch(e){}}try{w(c.themeCookie,t);w(c.schemeCookie,s)}catch(e){}}var a=Array.from(d.classList),u=['theme-light','theme-dark','theme-system','theme-system-light','theme-system-dark'];for(var i=0;i<a.length;i++){if(u.indexOf(a[i])>=0||a[i].indexOf('scheme-')===0)d.classList.remove(a[i])}d.classList.add('theme-'+t,'scheme-'+s);if(t==='system')d.classList.add('theme-system-'+z);d.setAttribute('data-theme',z)})(${ runtimeConfig });`
+}
+
+/** Default blocking script for the built-in default scheme. */
+export const themeBlockingScript = createThemeBlockingScript()
+
+/** Marker used to prevent duplicate script injection. */
+export const themeBlockingScriptMarker = '<!-- @goobits/themes-blocking -->'
+
+/** Creates a ready-to-inject blocking script tag. */
+export function createThemeBlockingScriptTag(
+	{
+		config = DEFAULT_THEME_CONFIG,
+		nonce,
+		marker = themeBlockingScriptMarker
+	}: {
+		config?: ThemeConfig
+		nonce?: string
+		marker?: string
+	} = {}
+): string {
+	const markerPrefix = marker ? `${ marker }` : ''
+	const nonceAttribute = nonce ? ` nonce="${ nonce }"` : ''
+	return `${ markerPrefix }<script${ nonceAttribute }>${ createThemeBlockingScript(config) }</script>`
+}
+
+/** Default ready-to-inject script tag. */
 export const themeBlockingScriptTag = createThemeBlockingScriptTag()
 
-/**
- * Unminified version of the blocking script for debugging.
- * Use themeBlockingScript for production.
- */
-export const themeBlockingScriptReadable = `
-(function() {
-  try {
-    var html = document.documentElement;
-
-    // Try localStorage first
-    var stored = localStorage.getItem('theme-preferences');
-    var prefs = stored ? JSON.parse(stored) : {};
-
-    // Get theme from localStorage or cookies
-    var theme = prefs.theme ||
-      (document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/) || [])[1] ||
-      'system';
-    var scheme = prefs.themeScheme ||
-      (document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/) || [])[1] ||
-      'default';
-
-    // Resolve system theme
-    var resolved = theme;
-    if (theme === 'system') {
-      resolved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-
-    // Apply to HTML element
-    html.setAttribute('data-theme', resolved);
-    html.className = 'theme-' + theme + ' scheme-' + scheme +
-      (theme === 'system' ? ' theme-system-' + resolved : '');
-  } catch(e) {
-    // Fail silently - SSR classes will be used
-  }
-})();
-`
+/** Readable alias retained as the non-minified source is generated from one owner. */
+export const themeBlockingScriptReadable = themeBlockingScript

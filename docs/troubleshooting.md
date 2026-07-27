@@ -681,8 +681,8 @@ console.log(styles.getPropertyValue('--bg-primary'));
 
 ### Still Stuck?
 
-1. Check [GitHub Issues](https://github.com/goobits/goobits-themes/issues) for similar problems
-2. Search [GitHub Discussions](https://github.com/goobits/goobits-themes/discussions)
+1. Check [GitHub Issues](https://github.com/goobits/theme-engine/issues) for similar problems
+2. Search [GitHub Discussions](https://github.com/goobits/theme-engine/discussions)
 3. Create a minimal reproduction
 4. Open a new issue with:
     - Package version

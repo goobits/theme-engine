@@ -10,11 +10,13 @@ export { PREFERENCE_COOKIE_NAMES }
 
 export interface UserPreferences {
 	theme: 'light' | 'dark' | 'system';
-	themeScheme: 'default' | 'spells';
+	themeScheme: string;
 	language: string;
-	languageTheme: 'default' | 'spells';
+	languageTheme: string;
 	showSidebar: boolean;
 }
+
+export type PreferenceCookieNames = Partial<Record<keyof UserPreferences, string>>
 
 export const COOKIE_OPTIONS = {
 	path: '/',
@@ -55,7 +57,8 @@ function getCookie(name: string): string | undefined {
 
 /** Sets a single cookie with the specified options */
 function setCookie(name: string, value: string | boolean, options: typeof COOKIE_OPTIONS): void {
-	document.cookie = `${ name }=${ value }; path=${ options.path }; max-age=${ options.maxAge }; SameSite=${ options.sameSite }`
+	const secure = window.location.protocol === 'https:' ? '; Secure' : ''
+	document.cookie = `${ name }=${ encodeURIComponent(String(value)) }; path=${ options.path }; max-age=${ options.maxAge }; SameSite=${ options.sameSite }${ secure }`
 }
 
 /** Assigns a parsed cookie value to the preferences object, preserving the key/parser type correlation */
@@ -71,11 +74,15 @@ function assignPreference<K extends keyof UserPreferences>(target: Partial<UserP
  * const prefs = readPreferenceCookies();
  * // { theme: 'dark', themeScheme: 'spells', showSidebar: true }
  */
-export function readPreferenceCookies(): Partial<UserPreferences> {
+export function readPreferenceCookies(
+	cookieNames: PreferenceCookieNames = PREFERENCE_COOKIE_NAMES
+): Partial<UserPreferences> {
 	if (!isBrowser()) return {}
 	const preferences: Partial<UserPreferences> = {}
 	for (const key of Object.keys(PREFERENCE_PARSERS) as (keyof UserPreferences)[]) {
-		const value = getCookie(key)
+		const cookieName = cookieNames[key]
+		if (!cookieName) continue
+		const value = getCookie(cookieName)
 		if (value !== undefined) {
 			assignPreference(preferences, key, value)
 		}
@@ -91,14 +98,32 @@ export function readPreferenceCookies(): Partial<UserPreferences> {
  * writePreferenceCookies({ theme: 'dark', themeScheme: 'spells' });
  * writePreferenceCookies({ showSidebar: false });
  */
-export function writePreferenceCookies(preferences: Partial<UserPreferences>): void {
+export function writePreferenceCookies(
+	preferences: Partial<UserPreferences>,
+	cookieNames: PreferenceCookieNames = PREFERENCE_COOKIE_NAMES
+): void {
 	if (!isBrowser()) return
 	for (const [ key, value ] of Object.entries(preferences)) {
+		const cookieName = cookieNames[key as keyof UserPreferences]
+		if (!cookieName) continue
 		if (key === 'showSidebar') {
-			if (value !== undefined) setCookie(key, value as boolean, COOKIE_OPTIONS)
+			if (value !== undefined) setCookie(cookieName, value as boolean, COOKIE_OPTIONS)
 		} else {
-			if (value) setCookie(key, value as string, COOKIE_OPTIONS)
+			if (value) setCookie(cookieName, value as string, COOKIE_OPTIONS)
 		}
+	}
+}
+
+/** Expires selected preference cookies immediately. */
+export function clearPreferenceCookies(
+	keys: readonly (keyof UserPreferences)[],
+	cookieNames: PreferenceCookieNames = PREFERENCE_COOKIE_NAMES
+): void {
+	if (!isBrowser()) return
+	for (const key of keys) {
+		const cookieName = cookieNames[key]
+		if (!cookieName) continue
+		document.cookie = `${ cookieName }=; path=/; max-age=0; SameSite=lax`
 	}
 }
 

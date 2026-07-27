@@ -7,7 +7,10 @@ import { beforeEach,describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../core/config'
 import type { ThemeScheme } from '../core/schemeRegistry'
-import { themeBlockingScript, themeBlockingScriptMarker } from './blockingScript'
+import {
+	createThemeBlockingScript,
+	themeBlockingScriptMarker
+} from './blockingScript'
 import { createThemeHooks } from './hooks'
 import * as preferences from './preferences'
 
@@ -212,7 +215,7 @@ describe('createThemeHooks', () => {
 			})
 
 			expect(result.body).toContain(themeBlockingScriptMarker)
-			expect(result.body).toContain(themeBlockingScript)
+			expect(result.body).toContain(createThemeBlockingScript(config))
 		})
 
 		it('should not inject when disabled', async() => {
@@ -241,7 +244,7 @@ describe('createThemeHooks', () => {
 			})
 
 			expect(result.body).not.toContain(themeBlockingScriptMarker)
-			expect(result.body).not.toContain(themeBlockingScript)
+			expect(result.body).not.toContain(createThemeBlockingScript(config))
 		})
 
 		it('should not inject when marker is already present', async() => {
@@ -601,8 +604,8 @@ describe('createThemeHooks', () => {
 		})
 	})
 
-	describe('user-agent based theme detection', () => {
-		it("should detect dark mode from user-agent containing 'dark'", async() => {
+	describe('user-agent handling', () => {
+		it("should ignore incidental 'dark' text in the user-agent", async() => {
 			const config = createMockConfig([ 'default' ])
 			const event = createMockRequestEvent({
 				'user-agent': 'Mozilla/5.0 (dark mode enabled)'
@@ -629,10 +632,11 @@ describe('createThemeHooks', () => {
 				resolve: mockResolve as any
 			})
 
-			expect(result.body).toContain('theme-system-dark')
+			expect(result.body).toContain('theme-system-light')
+			expect(result.body).not.toContain('theme-system-dark')
 		})
 
-		it("should detect dark mode from user-agent with 'Dark' (case insensitive)", async() => {
+		it("should ignore incidental 'Dark' text regardless of case", async() => {
 			const config = createMockConfig([ 'default' ])
 			const event = createMockRequestEvent({
 				'user-agent': 'Mozilla/5.0 (Dark Theme)'
@@ -659,7 +663,8 @@ describe('createThemeHooks', () => {
 				resolve: mockResolve as any
 			})
 
-			expect(result.body).toContain('theme-system-dark')
+			expect(result.body).toContain('theme-system-light')
+			expect(result.body).not.toContain('theme-system-dark')
 		})
 
 		it("should default to light when user-agent does not contain 'dark'", async() => {
@@ -721,7 +726,7 @@ describe('createThemeHooks', () => {
 			expect(result.body).toContain('theme-system-light')
 		})
 
-		it('should use OR logic for dark mode detection', async() => {
+		it('should honor the client-hint header over user-agent text', async() => {
 			const config = createMockConfig([ 'default' ])
 			const event = createMockRequestEvent({
 				'sec-ch-prefers-color-scheme': 'light',
@@ -749,9 +754,8 @@ describe('createThemeHooks', () => {
 				resolve: mockResolve as any
 			})
 
-			// Uses OR logic: header is 'light' but user-agent has 'dark', so result is dark
-			expect(result.body).toContain('theme-system-dark')
-			expect(result.body).not.toContain('theme-system-light')
+			expect(result.body).toContain('theme-system-light')
+			expect(result.body).not.toContain('theme-system-dark')
 		})
 	})
 

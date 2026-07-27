@@ -40,45 +40,20 @@
 		serverPreferences?: { theme: ThemeMode; themeScheme: ThemeScheme }
 	} = $props()
 
-	// Use untrack to explicitly capture initial config value - the store is created once
-	// and doesn't need to react to config prop changes during the component's lifetime
-	const themeStore = untrack(() => createThemeStore(config))
-	setContext('theme', themeStore)
-
-	let initialized = $state(false)
-	const fallbackPreferences: { theme: ThemeMode; themeScheme: ThemeScheme } = {
-		theme: 'system',
-		themeScheme: 'default'
-	}
-	const resolvedPreferences = $derived.by(
+	const initialPreferences = untrack(
 		() => serverPreferences ?? $page.data?.preferences
 	)
 
-	// Seed SSR render with server preferences so UI matches initial classes
-	// Use untrack since we only need initial value during SSR (no reactivity needed)
-	if (!isBrowser()) {
-		const prefs = untrack(() => resolvedPreferences)
-		if (prefs) {
-			themeStore.setTheme(prefs.theme)
-			themeStore.setScheme(prefs.themeScheme)
-		}
-	}
+	// The store resolves browser persistence over the SSR seed during construction,
+	// matching the blocking script and preventing hydration from restoring stale cookies.
+	const themeStore = untrack(() => createThemeStore(config, initialPreferences))
+	setContext('theme', themeStore)
 
-	let appliedServerPreferences = $state(false)
-
-	// Apply server preferences once to seed client state without overriding user changes
-	$effect(() => {
-		if (resolvedPreferences && !appliedServerPreferences) {
-			themeStore.setTheme(resolvedPreferences.theme)
-			themeStore.setScheme(resolvedPreferences.themeScheme)
-			appliedServerPreferences = true
-		}
-	})
+	let initialized = $state(false)
 
 	// Initialize theme on the client
 	onMount(() => {
-		const preferences = resolvedPreferences ?? themeStore.settings ?? fallbackPreferences
-		const cleanup = initializeTheme(preferences.theme, preferences.themeScheme)
+		const cleanup = initializeTheme(themeStore.theme, themeStore.scheme)
 		initialized = true
 		return cleanup
 	})

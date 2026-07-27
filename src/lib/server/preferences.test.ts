@@ -78,6 +78,29 @@ describe('loadThemePreferences', () => {
 			expect(result).toHaveProperty('themeScheme')
 			expect(Object.keys(result)).toHaveLength(2)
 		})
+
+		it('uses configured cookies, aliases, defaults, and fixed scheme modes', () => {
+			const cookies = createMockCookies({
+				'bandamp-mode': 'system',
+				'bandamp-scheme': 'classic'
+			})
+			const config = createMockConfig([ 'cassette' ])
+			config.schemes.cassette.fixedMode = 'dark'
+			config.defaultMode = 'light'
+			config.defaultScheme = 'cassette'
+			config.schemeAliases = { classic: 'cassette' }
+			config.persistence = {
+				themeCookie: 'bandamp-mode',
+				schemeCookie: 'bandamp-scheme'
+			}
+
+			expect(loadThemePreferences(cookies, config)).toEqual({
+				theme: 'dark',
+				themeScheme: 'cassette'
+			})
+			expect(cookies.get).toHaveBeenCalledWith('bandamp-mode')
+			expect(cookies.get).toHaveBeenCalledWith('bandamp-scheme')
+		})
 	})
 
 	describe('default values', () => {

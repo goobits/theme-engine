@@ -7,8 +7,11 @@
  * @module stores/theme
  */
 
-import type { ThemeConfig } from '../../core/config.js'
-import type { SchemeConfig } from '../../core/config.js'
+import {
+	resolveThemePreferences,
+	type SchemeConfig,
+	type ThemeConfig
+} from '../../core/config.js'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry.js'
 import { isBrowser } from '../../utils/browser.js'
 import { loadThemePreferences, saveThemePreferences } from './themePersistence.js'
@@ -100,23 +103,21 @@ class ThemeStoreImpl implements ThemeStore {
 	theme = $state<ThemeMode>('system')
 	scheme = $state<ThemeScheme>('default')
 
-	constructor(config: ThemeConfig) {
+	constructor(
+		config: ThemeConfig,
+		initialPreferences?: Partial<ThemeSettings>
+	) {
 		this.#config = config
-		const defaultScheme = Object.keys(config.schemes)[0] || 'default'
-		this.scheme = defaultScheme
+		const initial = resolveThemePreferences(config, initialPreferences ?? {})
+		this.theme = initial.theme
+		this.scheme = initial.themeScheme
 
 		// Load saved preferences on initialization (browser only)
 		if (isBrowser()) {
-			const saved = loadThemePreferences()
+			const saved = loadThemePreferences(config)
 			if (saved) {
-				// Use 'in' check to preserve explicit null values (matches spread behavior)
-				// while using defaults for missing/undefined properties
-				if ('theme' in saved && saved.theme !== undefined) {
-					this.theme = saved.theme
-				}
-				if ('themeScheme' in saved && saved.themeScheme !== undefined) {
-					this.scheme = saved.themeScheme
-				}
+				this.theme = saved.theme
+				this.scheme = saved.themeScheme
 			}
 		}
 	}
@@ -133,14 +134,24 @@ class ThemeStoreImpl implements ThemeStore {
 	}
 
 	setTheme(newTheme: ThemeMode): void {
-		this.theme = newTheme
-		saveThemePreferences(this.settings)
+		const resolved = resolveThemePreferences(this.#config, {
+			theme: newTheme,
+			themeScheme: this.scheme
+		})
+		this.theme = resolved.theme
+		this.scheme = resolved.themeScheme
+		saveThemePreferences(this.settings, this.#config)
 		this.#notifySubscribers()
 	}
 
 	setScheme(newScheme: ThemeScheme): void {
-		this.scheme = newScheme
-		saveThemePreferences(this.settings)
+		const resolved = resolveThemePreferences(this.#config, {
+			theme: this.theme,
+			themeScheme: newScheme
+		})
+		this.theme = resolved.theme
+		this.scheme = resolved.themeScheme
+		saveThemePreferences(this.settings, this.#config)
 		this.#notifySubscribers()
 	}
 
@@ -208,6 +219,9 @@ class ThemeStoreImpl implements ThemeStore {
  * - All changes are persisted automatically
  * - The store is designed for use with Svelte 5 runes
  */
-export function createThemeStore(config: ThemeConfig): ThemeStore {
-	return new ThemeStoreImpl(config)
+export function createThemeStore(
+	config: ThemeConfig,
+	initialPreferences?: Partial<ThemeSettings>
+): ThemeStore {
+	return new ThemeStoreImpl(config, initialPreferences)
 }

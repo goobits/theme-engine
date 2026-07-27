@@ -7,7 +7,8 @@ Theme management for SvelteKit applications with Svelte 5 runes support.
 - Light, dark, and system theme modes with zero-flash SSR
 - Custom color schemes with extensible configuration
 - Reactive theme state using Svelte 5 runes
-- Cookie-based preference persistence
+- Namespaced local-storage and cookie persistence
+- Fixed light/dark schemes and one-step legacy scheme migration
 - Route-specific theme overrides
 
 ## Quick Start
@@ -26,7 +27,14 @@ import { createThemeConfig } from '@goobits/themes/core';
 export const themeConfig = createThemeConfig({
     schemes: {
         default: {}, // All fields optional!
-        dark: { displayName: 'Dark Mode' },
+        dark: { displayName: 'Dark Mode', fixedMode: 'dark' },
+    },
+    defaultMode: 'system',
+    defaultScheme: 'default',
+    persistence: {
+        storageKey: 'my-app-theme',
+        themeCookie: 'my-app-theme-mode',
+        schemeCookie: 'my-app-theme-scheme',
     },
 });
 ```
@@ -64,10 +72,13 @@ export function load({ locals }) {
     import { themeConfig } from '$lib/config/theme';
     import '@goobits/themes/themes/bundle.css';
 
-    const { children } = $props();
+    const { children, data } = $props();
 </script>
 
-<ThemeProvider config={themeConfig}>
+<ThemeProvider
+    config={themeConfig}
+    serverPreferences={data.preferences}
+>
     {@render children?.()}
 </ThemeProvider>
 ```
@@ -133,6 +144,14 @@ The theme engine applies classes and attributes to `<html>`:
     --accent: #7c3aed;
 }
 ```
+
+`data-theme` always contains the resolved `light` or `dark` mode. Scheme
+identity belongs exclusively in `.scheme-*` classes.
+
+For a one-time migration from an older local-storage value that contained only
+a scheme ID, configure `legacySchemeStorageKey` and optional `schemeAliases`.
+The blocking script canonicalizes the value before paint and removes the old
+key after the new preference is saved.
 
 ## License
 

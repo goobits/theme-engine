@@ -3,7 +3,7 @@
 Complete documentation for the @goobits/themes package.
 
 > **Interactive Demo Available**
-> Check out the [demo app](https://github.com/goobits/goobits-themes/tree/main/demo) to see these docs with interactive features like code tabs, design token explorer, and live theme showcase.
+> Check out the [demo app](https://github.com/goobits/theme-engine/tree/main/demo) to see these docs with interactive features like code tabs, design token explorer, and live theme showcase.
 
 ## Quick Navigation
 

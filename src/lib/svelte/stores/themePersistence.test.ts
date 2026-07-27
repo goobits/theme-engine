@@ -99,10 +99,16 @@ describe('saveThemePreferences', () => {
 		const data: ThemePersistenceData = { theme: 'light', themeScheme: 'default' }
 		saveThemePreferences(data)
 
-		expect(writePreferenceCookies).toHaveBeenCalledWith({
-			theme: 'light',
-			themeScheme: 'default'
-		})
+		expect(writePreferenceCookies).toHaveBeenCalledWith(
+			{
+				theme: 'light',
+				themeScheme: 'default'
+			},
+			{
+				theme: 'theme',
+				themeScheme: 'themeScheme'
+			}
+		)
 	})
 
 	it('should handle localStorage errors gracefully', async() => {
@@ -114,12 +120,14 @@ describe('saveThemePreferences', () => {
 		globalThis.localStorage = mockStorage as any
 
 		const data: ThemePersistenceData = { theme: 'dark', themeScheme: 'spells' }
+		const { writePreferenceCookies } = await import('../../utils/cookies')
 
 		expect(() => saveThemePreferences(data)).not.toThrow()
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
 			'Failed to save theme settings to localStorage',
 			expect.any(Error)
 		)
+		expect(writePreferenceCookies).toHaveBeenCalled()
 	})
 
 	it('should save different theme modes correctly', async() => {
@@ -152,9 +160,12 @@ describe('saveThemePreferences', () => {
 
 		const data: ThemePersistenceData = { theme: 'dark', themeScheme: 'spells' }
 
-		// Should still throw because the entire try-catch wraps both operations
 		expect(() => saveThemePreferences(data)).not.toThrow()
-		expect(consoleErrorSpy).toHaveBeenCalled()
+		expect(mockStorage.setItem).toHaveBeenCalled()
+		expect(consoleErrorSpy).toHaveBeenCalledWith(
+			'Failed to save theme settings to cookies',
+			expect.any(Error)
+		)
 	})
 })
 
@@ -277,7 +288,7 @@ describe('loadThemePreferences', () => {
 		expect(result).toBeNull()
 	})
 
-	it('should return partial data when localStorage data is incomplete', async() => {
+	it('should normalize partial localStorage data with configured defaults', async() => {
 		await setBrowserMode(true)
 		const mockStorage = mockLocalStorage()
 		mockStorage.setItem('app_theme_v1', JSON.stringify({ theme: 'dark' }))
@@ -288,10 +299,10 @@ describe('loadThemePreferences', () => {
 
 		const result = loadThemePreferences()
 
-		expect(result).toEqual({ theme: 'dark' })
+		expect(result).toEqual({ theme: 'dark', themeScheme: 'default' })
 	})
 
-	it('should return null when cookies data is incomplete', async() => {
+	it('should normalize partial cookie data with configured defaults', async() => {
 		await setBrowserMode(true)
 		const mockStorage = mockLocalStorage()
 		globalThis.localStorage = mockStorage as any
@@ -305,7 +316,7 @@ describe('loadThemePreferences', () => {
 
 		const result = loadThemePreferences()
 
-		expect(result).toBeNull()
+		expect(result).toEqual({ theme: 'dark', themeScheme: 'default' })
 	})
 
 	it('should handle localStorage getItem throwing error', async() => {

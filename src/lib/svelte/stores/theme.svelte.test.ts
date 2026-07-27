@@ -245,10 +245,16 @@ describe('createThemeStore', () => {
 
 			store.setTheme('dark')
 
-			expect(writePreferenceCookies).toHaveBeenCalledWith({
-				theme: 'dark',
-				themeScheme: 'default'
-			})
+			expect(writePreferenceCookies).toHaveBeenCalledWith(
+				{
+					theme: 'dark',
+					themeScheme: 'default'
+				},
+				{
+					theme: 'theme',
+					themeScheme: 'themeScheme'
+				}
+			)
 		})
 
 		it('should update all theme modes correctly', async() => {
@@ -330,10 +336,16 @@ describe('createThemeStore', () => {
 
 			store.setScheme('spells')
 
-			expect(writePreferenceCookies).toHaveBeenCalledWith({
-				theme: 'system',
-				themeScheme: 'spells'
-			})
+			expect(writePreferenceCookies).toHaveBeenCalledWith(
+				{
+					theme: 'system',
+					themeScheme: 'spells'
+				},
+				{
+					theme: 'theme',
+					themeScheme: 'themeScheme'
+				}
+			)
 		})
 
 		it('should handle different scheme types', async() => {
@@ -349,6 +361,23 @@ describe('createThemeStore', () => {
 			schemes.forEach(scheme => {
 				store.setScheme(scheme)
 				expect(store.scheme).toBe(scheme)
+			})
+		})
+
+		it('applies the mode enforced by a selected scheme', async() => {
+			await setBrowserMode(true)
+			const mockStorage = mockLocalStorage()
+			globalThis.localStorage = mockStorage as any
+			const config = createMockConfig()
+			config.schemes.spells.fixedMode = 'dark'
+			const store = createThemeStore(config)
+
+			store.setScheme('spells')
+			store.setTheme('light')
+
+			expect(store.settings).toEqual({
+				theme: 'dark',
+				themeScheme: 'spells'
 			})
 		})
 	})
@@ -558,7 +587,7 @@ describe('createThemeStore', () => {
 			})
 		})
 
-		it('should only use cookies when both theme and themeScheme are present', async() => {
+		it('should combine a partial cookie preference with configured defaults', async() => {
 			await setBrowserMode(true)
 			const mockStorage = mockLocalStorage()
 			globalThis.localStorage = mockStorage as any
@@ -573,9 +602,8 @@ describe('createThemeStore', () => {
 			const config = createMockConfig()
 			const store = createThemeStore(config)
 
-			// Should use defaults because themeScheme is missing from cookies
 			expect(store.settings).toEqual({
-				theme: 'system',
+				theme: 'dark',
 				themeScheme: 'default'
 			})
 		})
@@ -786,11 +814,7 @@ describe('createThemeStore', () => {
 			const config = createMockConfig()
 			const store = createThemeStore(config)
 
-			// The spread operator doesn't override null with defaults
-			// null values are explicitly set, so they override defaults
-			expect(store.settings.theme).toBe(null)
-
-			// undefined values are not serialized to JSON, so default is used
+			expect(store.settings.theme).toBe('system')
 			expect(store.settings.themeScheme).toBe('default')
 		})
 	})
@@ -833,7 +857,11 @@ describe('createThemeStore', () => {
 				expect.stringContaining('"theme":"light"')
 			)
 			expect(mockWriteCookies).toHaveBeenCalledWith(
-				expect.objectContaining({ theme: 'light' })
+				expect.objectContaining({ theme: 'light' }),
+				{
+					theme: 'theme',
+					themeScheme: 'themeScheme'
+				}
 			)
 		})
 

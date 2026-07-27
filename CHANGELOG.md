@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Configurable default mode, default scheme, persistence names, scheme aliases,
+  fixed-mode schemes, and legacy scheme-key migration.
+- Complete Goo base-token defaults for every token consumed by Goo primitives.
+- Source-facing Svelte and TypeScript exports for linked workspace development.
+
+### Changed
+
+- Theme configuration is normalized consistently in every environment.
+- SSR and blocking-script initialization now share configured defaults,
+  persistence names, aliases, and fixed modes.
+- Package metadata now points to `goobits/theme-engine`.
+
+### Fixed
+
+- Blocking initialization preserves unrelated `<html>` classes.
+- Cookie persistence continues when local storage is unavailable, and vice versa.
+- Client initialization no longer overwrites newer local preferences with stale
+  SSR cookies during hydration.
+- Invalid persisted modes and schemes now fall back to configured defaults.
+
 ## [1.3.0] - 2026-01-07
 
 ### Added

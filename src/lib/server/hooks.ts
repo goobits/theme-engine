@@ -4,8 +4,8 @@ import type { ThemeConfig } from '../core/config.js'
 import { resolveTheme } from '../core/constants.js'
 import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry.js'
 import {
+	createThemeBlockingScript,
 	createThemeBlockingScriptTag,
-	themeBlockingScript,
 	themeBlockingScriptMarker
 } from './blockingScript.js'
 import { loadThemePreferences } from './preferences.js'
@@ -105,7 +105,7 @@ function escapeHtml(str: string): string {
  * - Must be registered in your SvelteKit hooks.server.ts or hooks.client.ts
  * - Automatically populates event.locals.themePreferences for use in load functions
  * - Uses 'sec-ch-prefers-color-scheme' header for system theme detection when available
- * - Falls back to user-agent detection for older browsers without the preference header
+ * - Resolves system mode to light when the client-hint header is unavailable
  * - Injects classes like 'theme-light', 'theme-dark', 'scheme-default', 'theme-system-light', etc.
  * - Injects data-theme="light" or data-theme="dark" for CSS targeting
  * - Must be combined with other hooks using SvelteKit's sequence() if you have multiple hooks
@@ -143,10 +143,7 @@ export function createThemeHooks(
 					const prefersColorScheme = event.request.headers.get(
 						'sec-ch-prefers-color-scheme'
 					)
-					const userAgent = event.request.headers.get('user-agent')?.toLowerCase() || ''
-
-					prefersDark =
-						prefersColorScheme === 'dark' || userAgent.includes('dark') || false
+					prefersDark = prefersColorScheme === 'dark'
 					themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light'
 				}
 
@@ -159,14 +156,24 @@ export function createThemeHooks(
 				// Inject data-theme attribute into <html> tag
 				// This adds data-theme="light" or data-theme="dark" based on resolved theme
 				const safeResolved = escapeHtml(resolved)
-				result = result.replace(
-					/<html([\s\S]*?)>/i,
-					`<html$1 data-theme="${ safeResolved }">`
-				)
+				if (/<html[^>]*\sdata-theme=(['"]).*?\1/i.test(result)) {
+					result = result.replace(
+						/(<html[^>]*\sdata-theme=)(['"]).*?\2/i,
+						`$1"${ safeResolved }"`
+					)
+				} else {
+					result = result.replace(
+						/<html([\s\S]*?)>/i,
+						`<html$1 data-theme="${ safeResolved }">`
+					)
+				}
 
 				// Inject blocking script if enabled and not already present
-				if (blockingScriptOptions.enabled && !hasBlockingScript(result, blockingScriptOptions)) {
-					result = injectBlockingScript(result, blockingScriptOptions)
+				if (
+					blockingScriptOptions.enabled &&
+					!hasBlockingScript(result, blockingScriptOptions, config)
+				) {
+					result = injectBlockingScript(result, blockingScriptOptions, config)
 				}
 
 				return result
@@ -200,20 +207,22 @@ function resolveBlockingScriptOptions(
 
 function hasBlockingScript(
 	html: string,
-	{ marker }: ResolvedBlockingScriptOptions
+	{ marker }: ResolvedBlockingScriptOptions,
+	config: ThemeConfig
 ): boolean {
 	if (marker && html.includes(marker)) {
 		return true
 	}
 
-	return html.includes(themeBlockingScript)
+	return html.includes(createThemeBlockingScript(config))
 }
 
 function injectBlockingScript(
 	html: string,
-	{ nonce, marker }: ResolvedBlockingScriptOptions
+	{ nonce, marker }: ResolvedBlockingScriptOptions,
+	config: ThemeConfig
 ): string {
-	const scriptTag = createThemeBlockingScriptTag({ nonce, marker })
+	const scriptTag = createThemeBlockingScriptTag({ config, nonce, marker })
 
 	if (html.includes('%sveltekit.head%')) {
 		return html.replace('%sveltekit.head%', `${ scriptTag }%sveltekit.head%`)

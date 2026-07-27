@@ -5,49 +5,12 @@
 
 import type { Cookies } from '@sveltejs/kit'
 
-import type { ThemeConfig } from '../core/config.js'
-import { PREFERENCE_COOKIE_NAMES } from '../core/constants.js'
+import {
+	getThemePersistenceConfig,
+	resolveThemePreferences,
+	type ThemeConfig
+} from '../core/config.js'
 import type { ThemeMode, ThemeScheme } from '../core/schemeRegistry.js'
-
-/** Valid theme mode values for validation */
-const VALID_THEME_MODES: ThemeMode[] = [ 'light', 'dark', 'system' ]
-
-/**
- * Validates and sanitizes a theme mode value.
- * Returns the value if valid, otherwise returns the default.
- */
-function validateThemeMode(value: string | undefined, defaultValue: ThemeMode): ThemeMode {
-	if (value && VALID_THEME_MODES.includes(value as ThemeMode)) {
-		return value as ThemeMode
-	}
-	return defaultValue
-}
-
-/**
- * Validates and sanitizes a theme scheme value.
- * Only allows alphanumeric characters, hyphens, and underscores.
- * Returns the value if valid, otherwise returns the default.
- */
-function validateThemeScheme(
-	value: string | undefined,
-	validSchemes: string[],
-	defaultValue: ThemeScheme
-): ThemeScheme {
-	if (!value) return defaultValue
-
-	// Only allow safe characters: alphanumeric, hyphen, underscore
-	const safePattern = /^[a-zA-Z0-9_-]+$/
-	if (!safePattern.test(value)) {
-		return defaultValue
-	}
-
-	// Check if it's a known scheme
-	if (validSchemes.includes(value)) {
-		return value
-	}
-
-	return defaultValue
-}
 
 /**
  * Loads theme preferences from cookies on the server side.
@@ -81,23 +44,9 @@ export function loadThemePreferences(
 	cookies: Cookies,
 	config: ThemeConfig
 ): { theme: ThemeMode; themeScheme: ThemeScheme } {
-	const validSchemes = Object.keys(config.schemes)
-	const defaultScheme = validSchemes[0] || 'default'
-
-	const defaults = {
-		theme: 'system' as ThemeMode,
-		themeScheme: defaultScheme
-	}
-
-	return {
-		theme: validateThemeMode(
-			cookies.get(PREFERENCE_COOKIE_NAMES.theme),
-			defaults.theme
-		),
-		themeScheme: validateThemeScheme(
-			cookies.get(PREFERENCE_COOKIE_NAMES.themeScheme),
-			validSchemes,
-			defaults.themeScheme
-		)
-	}
+	const persistence = getThemePersistenceConfig(config)
+	return resolveThemePreferences(config, {
+		theme: cookies.get(persistence.themeCookie),
+		themeScheme: cookies.get(persistence.schemeCookie)
+	})
 }

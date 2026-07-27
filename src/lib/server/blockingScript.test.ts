@@ -1,118 +1,191 @@
-import { describe, expect,it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 
+import type { ThemeConfig } from '../core/config.js'
 import {
+	createThemeBlockingScript,
 	createThemeBlockingScriptTag,
 	themeBlockingScript,
 	themeBlockingScriptMarker,
 	themeBlockingScriptReadable,
 	themeBlockingScriptTag
-} from './blockingScript'
+} from './blockingScript.js'
 
-describe('blockingScript', () => {
-	describe('themeBlockingScript', () => {
-		it('should be a non-empty string', () => {
-			expect(themeBlockingScript).toBeDefined()
-			expect(typeof themeBlockingScript).toBe('string')
-			expect(themeBlockingScript.length).toBeGreaterThan(0)
+function scheme(
+	name: string,
+	fixedMode?: 'light' | 'dark'
+): ThemeConfig['schemes'][string] {
+	return {
+		name,
+		displayName: name,
+		description: '',
+		preview: {
+			primary: '#000000',
+			accent: '#111111',
+			background: '#ffffff'
+		},
+		...(fixedMode ? { fixedMode } : {})
+	}
+}
+
+function executeScript(
+	script: string,
+	{
+		cookies = '',
+		initialClasses = [ 'app-shell' ],
+		matchDark = false,
+		storage = new Map<string, string>()
+	}: {
+		cookies?: string
+		initialClasses?: string[]
+		matchDark?: boolean
+		storage?: Map<string, string>
+	} = {}
+) {
+	const classes = new Set(initialClasses)
+	const attributes = new Map<string, string>()
+	const cookieWrites: string[] = []
+	const documentMock = {
+		documentElement: {
+			classList: {
+				[Symbol.iterator]: () => classes.values(),
+				add: (...values: string[]) => values.forEach(value => classes.add(value)),
+				remove: (...values: string[]) => values.forEach(value => classes.delete(value))
+			},
+			setAttribute: (name: string, value: string) => attributes.set(name, value)
+		}
+	}
+	Object.defineProperty(documentMock, 'cookie', {
+		get: () => cookies,
+		set: (value: string) => {
+			cookieWrites.push(value)
+		}
+	})
+	const localStorageMock = {
+		getItem: vi.fn((key: string) => storage.get(key) ?? null),
+		setItem: vi.fn((key: string, value: string) => storage.set(key, value)),
+		removeItem: vi.fn((key: string) => storage.delete(key))
+	}
+	const run = Function(
+		'document',
+		'localStorage',
+		'location',
+		'matchMedia',
+		script
+	)
+	run(
+		documentMock,
+		localStorageMock,
+		{ protocol: 'https:' },
+		() => ({ matches: matchDark })
+	)
+	return { attributes, classes, cookieWrites, localStorageMock, storage }
+}
+
+describe('blocking theme script', () => {
+	it('keeps one compact generated script owner', () => {
+		expect(themeBlockingScript).toContain('app_theme_v1')
+		expect(themeBlockingScript).toContain('prefers-color-scheme')
+		expect(themeBlockingScript).toContain('data-theme')
+		expect(themeBlockingScript).not.toContain('.className=')
+		expect(themeBlockingScriptReadable).toBe(themeBlockingScript)
+	})
+
+	it('applies defaults without replacing unrelated root classes', () => {
+		const result = executeScript(themeBlockingScript, {
+			initialClasses: [ 'app-shell', 'theme-dark', 'scheme-old' ]
 		})
 
-		it('should be minified (no unnecessary whitespace)', () => {
-			// Minified code should not have significant whitespace runs
-			expect(themeBlockingScript).not.toMatch(/\n\s+/)
-			expect(themeBlockingScript).not.toMatch(/  +/)
-		})
+		expect(result.classes).toContain('app-shell')
+		expect(result.classes).toContain('theme-system')
+		expect(result.classes).toContain('theme-system-light')
+		expect(result.classes).toContain('scheme-default')
+		expect(result.classes).not.toContain('theme-dark')
+		expect(result.classes).not.toContain('scheme-old')
+		expect(result.attributes.get('data-theme')).toBe('light')
+	})
 
-		it('should be valid JavaScript that does not throw when evaluated', () => {
-			// Create a mock environment
-			const mockWindow = {
-				matchMedia: (query: string) => ({
-					matches: false,
-					media: query,
-					addEventListener: () => {},
-					removeEventListener: () => {}
-				})
+	it('migrates and canonicalizes a legacy fixed-mode scheme', () => {
+		const config: ThemeConfig = {
+			schemes: {
+				cassette: scheme('cassette', 'dark')
+			},
+			defaultMode: 'system',
+			defaultScheme: 'cassette',
+			schemeAliases: { classic: 'cassette' },
+			persistence: {
+				storageKey: 'bandamp-theme-preferences',
+				themeCookie: 'bandamp-theme-mode',
+				schemeCookie: 'bandamp-theme-scheme',
+				legacySchemeStorageKey: 'bandamp-theme'
 			}
+		}
+		const storage = new Map([ [ 'bandamp-theme', 'classic' ] ])
+		const result = executeScript(createThemeBlockingScript(config), { storage })
 
-			// Wrap the script in a function to provide mocks
-			const testScript = `
-				(function() {
-					var window = ${ JSON.stringify(mockWindow) };
-					var document = {
-						documentElement: { setAttribute: function() {}, className: '' },
-						cookie: ''
-					};
-					var localStorage = { getItem: function() { return null; } };
-
-					${ themeBlockingScript }
-				})();
-			`
-
-			// Should not throw
-			expect(() => eval(testScript)).not.toThrow()
-		})
-
-		it('should contain key functionality keywords', () => {
-			expect(themeBlockingScript).toContain('theme-preferences')
-			expect(themeBlockingScript).toContain('prefers-color-scheme')
-			expect(themeBlockingScript).toContain('data-theme')
-			expect(themeBlockingScript).toContain('localStorage')
-		})
+		expect(result.classes).toContain('theme-dark')
+		expect(result.classes).toContain('scheme-cassette')
+		expect(result.storage.get('bandamp-theme-preferences')).toBe(
+			JSON.stringify({ theme: 'dark', themeScheme: 'cassette' })
+		)
+		expect(result.storage.has('bandamp-theme')).toBe(false)
+		expect(result.cookieWrites).toHaveLength(2)
 	})
 
-	describe('themeBlockingScriptTag', () => {
-		it('should contain a script tag', () => {
-			expect(themeBlockingScriptTag).toContain('<script>')
-			expect(themeBlockingScriptTag).toContain('</script>')
-		})
+	it('uses cookies when local storage is unavailable', () => {
+		const config: ThemeConfig = {
+			schemes: {
+				default: scheme('default'),
+				cassette: scheme('cassette', 'dark')
+			},
+			persistence: {
+				themeCookie: 'mode',
+				schemeCookie: 'scheme'
+			}
+		}
+		const script = createThemeBlockingScript(config)
+		const classes = new Set<string>()
+		const attributes = new Map<string, string>()
+		const run = Function(
+			'document',
+			'localStorage',
+			'location',
+			'matchMedia',
+			script
+		)
 
-		it('should include the marker comment', () => {
-			expect(themeBlockingScriptTag).toContain(themeBlockingScriptMarker)
-		})
-
-		it('should wrap the blocking script', () => {
-			expect(themeBlockingScriptTag).toContain(themeBlockingScript)
-		})
-
-		it('should be a complete script tag', () => {
-			expect(themeBlockingScriptTag).toMatch(
-				/^<!-- @goobits\/themes-blocking --><script>.*<\/script>$/
+		expect(() =>
+			run(
+				{
+					cookie: 'mode=light; scheme=cassette',
+					documentElement: {
+						classList: {
+							[Symbol.iterator]: () => classes.values(),
+							add: (...values: string[]) => values.forEach(value => classes.add(value)),
+							remove: (...values: string[]) => values.forEach(value => classes.delete(value))
+						},
+						setAttribute: (name: string, value: string) => attributes.set(name, value)
+					}
+				},
+				{
+					getItem: () => {
+						throw new Error('blocked')
+					}
+				},
+				{ protocol: 'https:' },
+				() => ({ matches: false })
 			)
-		})
+		).not.toThrow()
+		expect(classes).toContain('theme-dark')
+		expect(classes).toContain('scheme-cassette')
+		expect(attributes.get('data-theme')).toBe('dark')
 	})
 
-	describe('createThemeBlockingScriptTag', () => {
-		it('should include nonce attribute when provided', () => {
-			const tag = createThemeBlockingScriptTag({ nonce: 'nonce-123' })
-			expect(tag).toContain('nonce="nonce-123"')
-		})
-
-		it('should allow marker override', () => {
-			const tag = createThemeBlockingScriptTag({ marker: '<!-- custom -->' })
-			expect(tag).toContain('<!-- custom -->')
-		})
-	})
-
-	describe('themeBlockingScriptReadable', () => {
-		it('should be a non-empty string', () => {
-			expect(themeBlockingScriptReadable).toBeDefined()
-			expect(typeof themeBlockingScriptReadable).toBe('string')
-			expect(themeBlockingScriptReadable.length).toBeGreaterThan(0)
-		})
-
-		it('should have readable formatting (contains newlines and indentation)', () => {
-			expect(themeBlockingScriptReadable).toMatch(/\n/)
-			expect(themeBlockingScriptReadable).toMatch(/\s{2,}/)
-		})
-
-		it('should contain comments for debugging', () => {
-			expect(themeBlockingScriptReadable).toContain('//')
-		})
-
-		it('should contain same key functionality as minified version', () => {
-			expect(themeBlockingScriptReadable).toContain('theme-preferences')
-			expect(themeBlockingScriptReadable).toContain('prefers-color-scheme')
-			expect(themeBlockingScriptReadable).toContain('data-theme')
-			expect(themeBlockingScriptReadable).toContain('localStorage')
-		})
+	it('creates marked tags with optional CSP nonces', () => {
+		expect(themeBlockingScriptTag).toContain(themeBlockingScriptMarker)
+		expect(themeBlockingScriptTag).toContain(themeBlockingScript)
+		expect(createThemeBlockingScriptTag({ nonce: 'nonce-123' }))
+			.toContain('nonce="nonce-123"')
+		expect(createThemeBlockingScriptTag({ marker: '<!-- custom -->' }))
+			.toContain('<!-- custom -->')
 	})
 })

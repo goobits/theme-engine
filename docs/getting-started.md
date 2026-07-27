@@ -146,7 +146,7 @@ export const themeConfig = createThemeConfig({
 });
 ```
 
-> **Tip:** Check out the [interactive demo](https://github.com/goobits/goobits-themes/tree/main/demo) to see these features in action with tabs and visual enhancements!
+> **Tip:** Check out the [interactive demo](https://github.com/goobits/theme-engine/tree/main/demo) to see these features in action with tabs and visual enhancements!
 
 ### Step 2: Add Server-Side Rendering Support
 
@@ -260,68 +260,25 @@ const { transform } = createThemeHooks(themeConfig, {
 export const handle = transform;
 ```
 
-### Manual Inline Script (Optional)
+### Manual Injection (Optional)
 
-Add the script directly in your `app.html` before any stylesheets:
-
-```html
-<!DOCTYPE html>
-<html lang="en" class="%sveltekit.theme%">
-    <head>
-        <meta charset="utf-8" />
-        <script>
-            (function () {
-                try {
-                    var d = document.documentElement,
-                        s = localStorage.getItem('theme-preferences'),
-                        p = s ? JSON.parse(s) : {},
-                        t =
-                            p.theme ||
-                            (document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/) || [])[1] ||
-                            'system',
-                        c =
-                            p.themeScheme ||
-                            (document.cookie.match(/(?:^|;\\s*)themeScheme=([^;]*)/) || [])[1] ||
-                            'default',
-                        r = t;
-                    if (t === 'system') {
-                        r = window.matchMedia('(prefers-color-scheme:dark)').matches
-                            ? 'dark'
-                            : 'light';
-                    }
-                    d.setAttribute('data-theme', r);
-                    d.className =
-                        'theme-' +
-                        t +
-                        ' scheme-' +
-                        c +
-                        (t === 'system' ? ' theme-system-' + r : '');
-                } catch (e) {}
-            })();
-        </script>
-        <link rel="icon" href="%sveltekit.assets%/favicon.png" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        %sveltekit.head%
-    </head>
-    <body data-sveltekit-preload-data="hover">
-        <div style="display: contents">%sveltekit.body%</div>
-    </body>
-</html>
-```
-
-**Option 2: Import Programmatically**
-
-For better maintainability, you can import the script from the library:
+If another server integration owns HTML transforms, generate the script from the same
+configuration instead of maintaining an inline copy:
 
 ```typescript
-import { createThemeBlockingScriptTag, themeBlockingScript } from '@goobits/themes/server';
+import { createThemeBlockingScriptTag } from '@goobits/themes/server';
+import { themeConfig } from '$lib/config/theme';
 
-// Use themeBlockingScript for the raw script content
-// Use createThemeBlockingScriptTag for a complete <script> tag
-const scriptTag = createThemeBlockingScriptTag({ nonce: '...' });
+const scriptTag = createThemeBlockingScriptTag({
+    config: themeConfig,
+    nonce: '...',
+});
 ```
 
-> **Note:** This blocking script is optional but recommended if you support `theme='system'`. It runs synchronously before page render to detect the user's OS theme preference and apply the correct classes immediately, eliminating FOUC on initial page load.
+Insert the generated tag in `<head>` before stylesheets. The generator keeps scheme
+validation, persistence keys, aliases, and fixed modes aligned with the runtime store.
+
+> **Note:** The blocking script is optional but recommended if you support `theme='system'`. It runs synchronously before page render to detect the user's OS theme preference and apply the correct classes immediately, eliminating FOUC on initial page load.
 
 ## Using Theme Controls
 

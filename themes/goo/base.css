@@ -35,6 +35,8 @@
 	--goo-theme-positive-fg: #000000;
 	--goo-theme-negative: #ef4444;
 	--goo-theme-negative-fg: #ffffff;
+	--goo-theme-danger: var(--goo-theme-negative);
+	--goo-theme-danger-fg: var(--goo-theme-negative-fg);
 	--goo-theme-warning: #f59e0b;
 	--goo-theme-warning-fg: #000000;
 
@@ -42,6 +44,8 @@
 	--goo-theme-hover-bg: color-mix(in srgb, var(--goo-theme-accent) 15%, var(--goo-theme-bg));
 	--goo-theme-active: color-mix(in srgb, var(--goo-theme-accent) 25%, var(--goo-theme-bg));
 	--goo-theme-focus-ring: color-mix(in srgb, var(--goo-theme-accent) 40%, transparent);
+	--goo-theme-focus-ring-width: 2px;
+	--goo-theme-disabled-opacity: 0.5;
 	--goo-theme-accent-subtle: color-mix(in srgb, var(--goo-theme-accent) 15%, var(--goo-theme-bg));
 
 	/* Surfaces - layered backgrounds for UI depth */
@@ -77,6 +81,7 @@
 	--goo-theme-radius-full: 9999px;
 
 	/* Spacing */
+	--goo-theme-space-2xs: 0.125rem;
 	--goo-theme-space-xs: 0.25rem;
 	--goo-theme-space-sm: 0.5rem;
 	--goo-theme-space-md: 0.75rem;
@@ -91,6 +96,12 @@
 	--goo-theme-font-size-md: 0.875rem;   /* 14px - body text */
 	--goo-theme-font-size-lg: 1rem;       /* 16px - headings */
 	--goo-theme-font-size-xl: 1.125rem;   /* 18px - large headings */
+	--goo-theme-font-weight-medium: 500;
+	--goo-theme-font-weight-semibold: 600;
+	--goo-theme-font-weight-bold: 700;
+	--goo-theme-line-height-tight: 1.2;
+	--goo-theme-line-height-base: 1.4;
+	--goo-theme-line-height-loose: 1.6;
 
 	/* Transitions */
 	--goo-theme-transition-fast: 0.1s ease;
@@ -98,6 +109,7 @@
 	--goo-theme-transition-slow: 0.3s ease;
 
 	/* Icon sizes */
+	--goo-theme-icon-xs: 0.75rem;  /* 12px */
 	--goo-theme-icon-sm: 0.875rem;  /* 14px */
 	--goo-theme-icon-md: 1rem;      /* 16px */
 	--goo-theme-icon-lg: 1.25rem;   /* 20px */
@@ -107,6 +119,14 @@
 	--goo-theme-control-height-md: 2rem;    /* 32px */
 	--goo-theme-control-height: var(--goo-theme-control-height-md);
 	--goo-theme-control-height-lg: 2.5rem;  /* 40px */
+	--goo-theme-control-height-touch: 2.75rem; /* 44px */
+
+	/* Overlay layers */
+	--goo-theme-layer-dropdown: 1000;
+	--goo-theme-layer-popout: 1100;
+	--goo-theme-layer-modal: 1200;
+	--goo-theme-layer-toast: 1300;
+	--goo-theme-layer-system: 1400;
 
 	/* Control sizing + label styling */
 	--goo-theme-control-padding-sm: 0 var(--goo-theme-space-sm);

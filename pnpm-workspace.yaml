@@ -1,3 +1,11 @@
 packages:
   - "."
   - "demo"
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+
+peerDependencyRules:
+  allowedVersions:
+    "@lucide/svelte": "1"
