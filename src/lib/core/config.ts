@@ -137,10 +137,10 @@ export interface ResolvedThemePersistenceConfig {
 export interface ThemeConfig {
 
 	/** Available color schemes keyed by scheme identifier */
-	schemes: Record<string, SchemeConfig>;
+	schemes: Record<string, SchemeConfig>
 
 	/** Optional route-specific theme configurations */
-	routeThemes?: Record<string, RouteThemeConfig>;
+	routeThemes?: Record<string, RouteThemeConfig>
 
 	/** Default light/dark/system mode when no valid preference exists */
 	defaultMode?: ThemeMode
@@ -203,11 +203,7 @@ function validatePreviewColors(
 	const { primary, accent, background } = colors
 
 	// Check that all colors are strings
-	if (
-		typeof primary !== 'string' ||
-        typeof accent !== 'string' ||
-        typeof background !== 'string'
-	) {
+	if (typeof primary !== 'string' || typeof accent !== 'string' || typeof background !== 'string') {
 		return null
 	}
 
@@ -217,7 +213,7 @@ function validatePreviewColors(
 	if (!isValidHexColor(primary)) {
 		logger.warn(
 			`[themes] Warning: Invalid primary color for scheme "${ name }": "${ primary }". ` +
-                'Expected 6-digit hex format like "#3b82f6". Using default.'
+				'Expected 6-digit hex format like "#3b82f6". Using default.'
 		)
 		hasInvalidColor = true
 	}
@@ -225,7 +221,7 @@ function validatePreviewColors(
 	if (!isValidHexColor(accent)) {
 		logger.warn(
 			`[themes] Warning: Invalid accent color for scheme "${ name }": "${ accent }". ` +
-                'Expected 6-digit hex format like "#8b5cf6". Using default.'
+				'Expected 6-digit hex format like "#8b5cf6". Using default.'
 		)
 		hasInvalidColor = true
 	}
@@ -233,7 +229,7 @@ function validatePreviewColors(
 	if (!isValidHexColor(background)) {
 		logger.warn(
 			`[themes] Warning: Invalid background color for scheme "${ name }": "${ background }". ` +
-                'Expected 6-digit hex format like "#ffffff". Using default.'
+				'Expected 6-digit hex format like "#ffffff". Using default.'
 		)
 		hasInvalidColor = true
 	}
@@ -258,22 +254,22 @@ function validateScheme(key: string, scheme: unknown): SchemeConfig | null {
 	const schemeObj = scheme as Record<string, unknown>
 
 	// Warn if name doesn't match key (but use key as the source of truth)
-	if (schemeObj.name && schemeObj.name !== key) {
+	if (schemeObj['name'] && schemeObj['name'] !== key) {
 		logger.warn(
-			`[themes] Warning: Scheme key "${ key }" doesn't match scheme.name "${ schemeObj.name }". ` +
-			`Using key "${ key }" as the scheme name.`
+			`[themes] Warning: Scheme key "${ key }" doesn't match scheme.name "${ schemeObj['name'] }". ` +
+				`Using key "${ key }" as the scheme name.`
 		)
 	}
 
 	// Apply defaults for optional fields
 	const displayName =
-		typeof schemeObj.displayName === 'string'
-			? schemeObj.displayName
+		typeof schemeObj['displayName'] === 'string'
+			? schemeObj['displayName']
 			: key.charAt(0).toUpperCase() + key.slice(1) // Capitalize name as default
 
-	const description = typeof schemeObj.description === 'string' ? schemeObj.description : ''
+	const description = typeof schemeObj['description'] === 'string' ? schemeObj['description'] : ''
 
-	const preview = validatePreviewColors(key, schemeObj.preview) ?? DEFAULT_PREVIEW_COLORS
+	const preview = validatePreviewColors(key, schemeObj['preview']) ?? DEFAULT_PREVIEW_COLORS
 
 	// Build complete scheme config with defaults applied
 	const result: SchemeConfig = {
@@ -284,20 +280,20 @@ function validateScheme(key: string, scheme: unknown): SchemeConfig | null {
 	}
 
 	// Preserve optional fields if provided
-	if (typeof schemeObj.icon === 'string') {
-		result.icon = schemeObj.icon
+	if (typeof schemeObj['icon'] === 'string') {
+		result.icon = schemeObj['icon']
 	}
 
-	if (typeof schemeObj.title === 'string') {
-		result.title = schemeObj.title
+	if (typeof schemeObj['title'] === 'string') {
+		result.title = schemeObj['title']
 	}
 
-	if (typeof schemeObj.cssFile === 'string') {
-		result.cssFile = schemeObj.cssFile
+	if (typeof schemeObj['cssFile'] === 'string') {
+		result.cssFile = schemeObj['cssFile']
 	}
 
-	if (schemeObj.fixedMode === 'light' || schemeObj.fixedMode === 'dark') {
-		result.fixedMode = schemeObj.fixedMode
+	if (schemeObj['fixedMode'] === 'light' || schemeObj['fixedMode'] === 'dark') {
+		result.fixedMode = schemeObj['fixedMode']
 	}
 
 	return result
@@ -310,7 +306,7 @@ function validateSchemes(schemes: unknown): Record<string, SchemeConfig> {
 	if (!schemes || typeof schemes !== 'object') {
 		logger.warn(
 			'[themes] Invalid config: "schemes" must be an object. ' +
-                'Example: { schemes: { default: {} } }'
+				'Example: { schemes: { default: {} } }'
 		)
 		return {}
 	}
@@ -319,8 +315,8 @@ function validateSchemes(schemes: unknown): Record<string, SchemeConfig> {
 	if (schemeKeys.length === 0) {
 		logger.warn(
 			'[themes] Warning: No schemes defined in config. ' +
-                'Your theme system will not work without at least one scheme. ' +
-                'Add a scheme like: { schemes: { default: {} } }'
+				'Your theme system will not work without at least one scheme. ' +
+				'Add a scheme like: { schemes: { default: {} } }'
 		)
 		return {}
 	}
@@ -356,10 +352,10 @@ function validateRouteThemes(routeThemes: unknown): void {
 		}
 
 		const config = routeConfig as Record<string, unknown>
-		if (!config.theme) {
+		if (!config['theme']) {
 			logger.warn(
 				`[themes] Warning: Route theme for "${ route }" missing "theme" property. ` +
-                    'Add: theme: { base: "dark", scheme: "default" }'
+					'Add: theme: { base: "dark", scheme: "default" }'
 			)
 		}
 	}
@@ -403,10 +399,7 @@ export function getThemePersistenceConfig(config: ThemeConfig): ResolvedThemePer
 }
 
 /** Resolves a persisted or historical scheme identifier to a configured scheme. */
-export function resolveThemeScheme(
-	config: ThemeConfig,
-	value: unknown
-): ThemeScheme {
+export function resolveThemeScheme(config: ThemeConfig, value: unknown): ThemeScheme {
 	const requested = typeof value === 'string' ? value : ''
 	const canonical = config.schemeAliases?.[requested] ?? requested
 	return config.schemes[canonical] ? canonical : getDefaultThemeScheme(config)
@@ -421,7 +414,7 @@ export function resolveThemeMode(
 	const fixedMode = config.schemes[scheme]?.fixedMode
 	if (fixedMode) return fixedMode
 	return typeof value === 'string' && THEME_MODES.includes(value as ThemeMode)
-		? value as ThemeMode
+		? (value as ThemeMode)
 		: getDefaultThemeMode(config)
 }
 
@@ -455,27 +448,29 @@ function validateAliases(
 }
 
 function validateConfig(config: ThemeConfigInput): ThemeConfig {
-	const schemes = validateSchemes(config.schemes)
-	if (config.routeThemes) {
-		validateRouteThemes(config.routeThemes)
+	const { schemeAliases: inputSchemeAliases, ...configWithoutAliases } = config
+	const schemes = validateSchemes(configWithoutAliases.schemes)
+	if (configWithoutAliases.routeThemes) {
+		validateRouteThemes(configWithoutAliases.routeThemes)
 	}
 
 	const defaultScheme =
-		config.defaultScheme && schemes[config.defaultScheme]
-			? config.defaultScheme
+		configWithoutAliases.defaultScheme && schemes[configWithoutAliases.defaultScheme]
+			? configWithoutAliases.defaultScheme
 			: Object.keys(schemes)[0] || 'default'
 	const defaultMode =
-		config.defaultMode && THEME_MODES.includes(config.defaultMode)
-			? config.defaultMode
+		configWithoutAliases.defaultMode && THEME_MODES.includes(configWithoutAliases.defaultMode)
+			? configWithoutAliases.defaultMode
 			: 'system'
+	const schemeAliases = validateAliases(inputSchemeAliases, schemes)
 
 	return {
-		...config,
+		...configWithoutAliases,
 		schemes,
 		defaultMode,
 		defaultScheme,
-		schemeAliases: validateAliases(config.schemeAliases, schemes),
-		persistence: getThemePersistenceConfig({ ...config, schemes })
+		...(schemeAliases ? { schemeAliases } : {}),
+		persistence: getThemePersistenceConfig({ ...configWithoutAliases, schemes })
 	}
 }
 

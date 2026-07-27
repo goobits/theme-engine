@@ -238,7 +238,7 @@ export function applyFullTheme(fullTheme: FullTheme): void {
 	logger.info('Full theme applied successfully', {
 		fullTheme,
 		appliedClasses,
-		dataTheme: html.dataset.theme,
+		dataTheme: html.dataset['theme'],
 		htmlElement: html.tagName
 	})
 }

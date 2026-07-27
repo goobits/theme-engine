@@ -7,11 +7,7 @@
  * @module stores/theme
  */
 
-import {
-	resolveThemePreferences,
-	type SchemeConfig,
-	type ThemeConfig
-} from '../../core/config.js'
+import { resolveThemePreferences, type SchemeConfig, type ThemeConfig } from '../../core/config.js'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry.js'
 import { isBrowser } from '../../utils/browser.js'
 import { loadThemePreferences, saveThemePreferences } from './themePersistence.js'
@@ -24,10 +20,10 @@ import { loadThemePreferences, saveThemePreferences } from './themePersistence.j
 export interface ThemeSettings {
 
 	/** Current theme mode preference */
-	theme: ThemeMode;
+	theme: ThemeMode
 
 	/** Current color scheme identifier */
-	themeScheme: ThemeScheme;
+	themeScheme: ThemeScheme
 }
 
 /**
@@ -39,13 +35,13 @@ export interface ThemeSettings {
 export interface ThemeStoreSnapshot {
 
 	/** Complete settings object */
-	settings: ThemeSettings;
+	settings: ThemeSettings
 
 	/** Current theme mode */
-	theme: ThemeMode;
+	theme: ThemeMode
 
 	/** Current color scheme */
-	scheme: ThemeScheme;
+	scheme: ThemeScheme
 }
 
 /**
@@ -64,28 +60,28 @@ export interface ThemeStoreSnapshot {
 export interface ThemeStore {
 
 	/** Subscribe to store changes (for non-runes compatibility) */
-	subscribe: (fn: (value: ThemeStoreSnapshot) => void) => () => void;
+	subscribe: (fn: (value: ThemeStoreSnapshot) => void) => () => void
 
 	/** Current settings object (reactive) */
-	readonly settings: ThemeSettings;
+	readonly settings: ThemeSettings
 
 	/** Current theme mode (reactive) */
-	readonly theme: ThemeMode;
+	readonly theme: ThemeMode
 
 	/** Current color scheme (reactive) */
-	readonly scheme: ThemeScheme;
+	readonly scheme: ThemeScheme
 
 	/** Available color schemes from config */
-	readonly availableSchemes: SchemeConfig[];
+	readonly availableSchemes: SchemeConfig[]
 
 	/** Set the theme mode */
-	setTheme(theme: ThemeMode): void;
+	setTheme(theme: ThemeMode): void
 
 	/** Set the color scheme */
-	setScheme(scheme: ThemeScheme): void;
+	setScheme(scheme: ThemeScheme): void
 
 	/** Cycle through modes: light → dark → system → light */
-	cycleMode(): void;
+	cycleMode(): void
 }
 
 /**
@@ -103,10 +99,7 @@ class ThemeStoreImpl implements ThemeStore {
 	theme = $state<ThemeMode>('system')
 	scheme = $state<ThemeScheme>('default')
 
-	constructor(
-		config: ThemeConfig,
-		initialPreferences?: Partial<ThemeSettings>
-	) {
+	constructor(config: ThemeConfig, initialPreferences?: Partial<ThemeSettings>) {
 		this.#config = config
 		const initial = resolveThemePreferences(config, initialPreferences ?? {})
 		this.theme = initial.theme
@@ -159,7 +152,7 @@ class ThemeStoreImpl implements ThemeStore {
 		const modes: ThemeMode[] = [ 'light', 'dark', 'system' ]
 		const currentIndex = modes.indexOf(this.theme)
 		const nextIndex = (currentIndex + 1) % modes.length
-		this.setTheme(modes[nextIndex])
+		this.setTheme(modes[nextIndex] ?? 'light')
 	}
 
 	subscribe(fn: (value: ThemeStoreSnapshot) => void): () => void {

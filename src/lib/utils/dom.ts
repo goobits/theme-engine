@@ -285,7 +285,7 @@ export function applySchemeClass(element: HTMLElement, scheme: string): void {
  * - This attribute is commonly used in CSS selectors: `[data-theme="dark"] { ... }`
  */
 export function setDataThemeAttribute(element: HTMLElement, theme: string): void {
-	element.dataset.theme = theme
+	element.dataset['theme'] = theme
 }
 
 /**
@@ -324,5 +324,5 @@ export function setDataThemeAttribute(element: HTMLElement, theme: string): void
  * - Use this to read the resolved theme value, not the user's preference
  */
 export function getDataThemeAttribute(element: HTMLElement): string | null {
-	return element.dataset.theme ?? null
+	return element.dataset['theme'] ?? null
 }

@@ -140,9 +140,7 @@ export function createThemeHooks(
 				// Detect dark mode preference for system theme
 				let prefersDark = false
 				if (preferences.theme === 'system') {
-					const prefersColorScheme = event.request.headers.get(
-						'sec-ch-prefers-color-scheme'
-					)
+					const prefersColorScheme = event.request.headers.get('sec-ch-prefers-color-scheme')
 					prefersDark = prefersColorScheme === 'dark'
 					themeClasses += prefersDark ? ' theme-system-dark' : ' theme-system-light'
 				}
@@ -157,15 +155,9 @@ export function createThemeHooks(
 				// This adds data-theme="light" or data-theme="dark" based on resolved theme
 				const safeResolved = escapeHtml(resolved)
 				if (/<html[^>]*\sdata-theme=(['"]).*?\1/i.test(result)) {
-					result = result.replace(
-						/(<html[^>]*\sdata-theme=)(['"]).*?\2/i,
-						`$1"${ safeResolved }"`
-					)
+					result = result.replace(/(<html[^>]*\sdata-theme=)(['"]).*?\2/i, `$1"${ safeResolved }"`)
 				} else {
-					result = result.replace(
-						/<html([\s\S]*?)>/i,
-						`<html$1 data-theme="${ safeResolved }">`
-					)
+					result = result.replace(/<html([\s\S]*?)>/i, `<html$1 data-theme="${ safeResolved }">`)
 				}
 
 				// Inject blocking script if enabled and not already present
@@ -198,10 +190,11 @@ function resolveBlockingScriptOptions(
 		}
 	}
 
+	const nonce = blockingScript?.nonce
 	return {
 		enabled: blockingScript?.enabled ?? true,
-		nonce: blockingScript?.nonce,
-		marker: blockingScript?.marker ?? themeBlockingScriptMarker
+		marker: blockingScript?.marker ?? themeBlockingScriptMarker,
+		...(nonce === undefined ? {} : { nonce })
 	}
 }
 
@@ -222,7 +215,11 @@ function injectBlockingScript(
 	{ nonce, marker }: ResolvedBlockingScriptOptions,
 	config: ThemeConfig
 ): string {
-	const scriptTag = createThemeBlockingScriptTag({ config, nonce, marker })
+	const scriptTag = createThemeBlockingScriptTag({
+		config,
+		marker,
+		...(nonce === undefined ? {} : { nonce })
+	})
 
 	if (html.includes('%sveltekit.head%')) {
 		return html.replace('%sveltekit.head%', `${ scriptTag }%sveltekit.head%`)

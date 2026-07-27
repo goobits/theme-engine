@@ -40,9 +40,7 @@
 		serverPreferences?: { theme: ThemeMode; themeScheme: ThemeScheme }
 	} = $props()
 
-	const initialPreferences = untrack(
-		() => serverPreferences ?? $page.data?.preferences
-	)
+	const initialPreferences = untrack(() => serverPreferences ?? $page.data?.['preferences'])
 
 	// The store resolves browser persistence over the SSR seed during construction,
 	// matching the blocking script and preventing hydration from restoring stale cookies.
