@@ -218,6 +218,39 @@ describe('createThemeHooks', () => {
 			expect(result.body).toContain(createThemeBlockingScript(config))
 		})
 
+		it('should preserve an existing charset declaration before the blocking script', async() => {
+			const config = createMockConfig([ 'default' ])
+			const event = createMockRequestEvent()
+
+			vi.mocked(preferences.loadThemePreferences).mockReturnValue({
+				theme: 'light',
+				themeScheme: 'default'
+			})
+
+			const hooks = createThemeHooks(config)
+			const mockResolve = vi.fn(async(_, options) => {
+				const html =
+					'<!doctype html><html><head><meta charset="utf-8" /><title>BandAMP</title></head></html>'
+				const transformed = options?.transformPageChunk?.({ html }) || html
+				return {
+					status: 200,
+					headers: new Headers(),
+					body: transformed
+				}
+			})
+
+			const result = await hooks.transform({
+				event,
+				resolve: mockResolve as any
+			})
+			const body = result.body as unknown as string
+
+			expect(body.indexOf('<meta charset="utf-8" />')).toBeLessThan(
+				body.indexOf(themeBlockingScriptMarker)
+			)
+			expect(body.indexOf(themeBlockingScriptMarker)).toBeLessThan(body.indexOf('<title>'))
+		})
+
 		it('should not inject when disabled', async() => {
 			const config = createMockConfig([ 'default' ])
 			const event = createMockRequestEvent()

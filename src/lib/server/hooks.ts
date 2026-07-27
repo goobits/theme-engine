@@ -221,6 +221,11 @@ function injectBlockingScript(
 		...(nonce === undefined ? {} : { nonce })
 	})
 
+	const charsetDeclaration = /<meta\s+charset(?:\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+))?[^>]*>/i
+	if (charsetDeclaration.test(html)) {
+		return html.replace(charsetDeclaration, `$&${ scriptTag }`)
+	}
+
 	if (html.includes('%sveltekit.head%')) {
 		return html.replace('%sveltekit.head%', `${ scriptTag }%sveltekit.head%`)
 	}
