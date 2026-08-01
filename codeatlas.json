@@ -1,0 +1,10 @@
+{
+    "root": ".",
+    "projects": [
+        {
+            "id": "themes",
+            "root": ".",
+            "require_complete": true
+        }
+    ]
+}
