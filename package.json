@@ -105,8 +105,8 @@
         }
     },
     "scripts": {
-        "package": "svelte-package",
-        "build": "svelte-package",
+        "package": "pnpm run build",
+        "build": "svelte-package && tsx scripts/prunePackageOutput.ts",
         "prepublishOnly": "pnpm run generate:goo && pnpm run package",
         "release": "pnpm run lint && pnpm run generate:goo && pnpm version patch --no-git-tag-version && pnpm run package && git add package.json pnpm-lock.yaml themes/goo && node scripts/commitRelease.cjs && pnpm publish --access public",
         "test": "vitest run",
