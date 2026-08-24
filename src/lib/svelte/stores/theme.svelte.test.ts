@@ -5,15 +5,14 @@
  * with localStorage and cookie persistence.
  */
 
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from '../../core/config'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 import { createThemeStore } from './theme.svelte.js'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+vi.mock('esm-env', () => ({
+	BROWSER: false
 }))
 
 // Mock the cookies utilities
@@ -24,8 +23,8 @@ vi.mock('../../utils/cookies', () => ({
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 // Helper to create mock ThemeConfig
@@ -856,13 +855,10 @@ describe('createThemeStore', () => {
 				'app_theme_v1',
 				expect.stringContaining('"theme":"light"')
 			)
-			expect(mockWriteCookies).toHaveBeenCalledWith(
-				expect.objectContaining({ theme: 'light' }),
-				{
-					theme: 'theme',
-					themeScheme: 'themeScheme'
-				}
-			)
+			expect(mockWriteCookies).toHaveBeenCalledWith(expect.objectContaining({ theme: 'light' }), {
+				theme: 'theme',
+				themeScheme: 'themeScheme'
+			})
 		})
 
 		it('should handle migration from cookies to localStorage', async() => {

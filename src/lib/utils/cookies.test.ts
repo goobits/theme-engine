@@ -2,7 +2,7 @@
  * Tests for Cookie Utilities
  */
 
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
 	COOKIE_OPTIONS,
@@ -13,15 +13,14 @@ import {
 	writePreferenceCookies
 } from './cookies'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+vi.mock('esm-env', () => ({
+	BROWSER: false
 }))
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 // Helper to mock document.cookie

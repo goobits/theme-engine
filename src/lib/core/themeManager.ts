@@ -5,13 +5,16 @@
  * to apply theme classes and handle system theme preference changes.
  */
 
+import { createLogger } from '@goobits/logger'
+
 import { isBrowser } from '../utils/browser.js'
 import { getHtmlElement } from '../utils/dom.js'
-import { logger } from '../utils/logger.js'
 import { getRouteTheme, type RouteThemeConfig } from '../utils/routeThemes.js'
 import { prefersDarkMode, watchSystemTheme as watchSystemThemeUtil } from '../utils/systemTheme.js'
 import type { FullTheme, ThemeMode, ThemeScheme } from './schemeRegistry.js'
 import { applyFullTheme } from './schemeRegistry.js'
+
+const logger = createLogger('@goobits/themes:manager')
 
 /**
  * Apply a theme with its associated color scheme to the document.

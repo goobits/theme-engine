@@ -5,7 +5,7 @@
  * route-based theming, and critical memory leak prevention.
  */
 
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { RouteThemeConfig } from '../utils/routeThemes'
 import type { FullTheme } from './schemeRegistry'
@@ -16,19 +16,19 @@ import {
 	watchSystemTheme
 } from './themeManager'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+const logger = vi.hoisted(() => ({
+	debug: vi.fn(),
+	info: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn()
 }))
 
-// Mock the logger utility
-vi.mock('../utils/logger', () => ({
-	logger: {
-		debug: vi.fn(),
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn()
-	}
+vi.mock('esm-env', () => ({
+	BROWSER: false
+}))
+
+vi.mock('@goobits/logger', () => ({
+	createLogger: () => logger
 }))
 
 // Mock the schemeRegistry module
@@ -45,8 +45,8 @@ vi.mock('../utils/routeThemes', () => ({
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 // Helper to create a mock HTML element with classList
@@ -216,10 +216,7 @@ describe('watchSystemTheme', () => {
 
 			watchSystemTheme(callback)
 
-			expect(mediaQuery.addEventListener).toHaveBeenCalledWith(
-				'change',
-				expect.any(Function)
-			)
+			expect(mediaQuery.addEventListener).toHaveBeenCalledWith('change', expect.any(Function))
 		})
 
 		it("should call callback with 'dark' when system prefers dark", () => {
@@ -288,10 +285,7 @@ describe('watchSystemTheme', () => {
 			const cleanup = watchSystemTheme(callback)
 			cleanup()
 
-			expect(mediaQuery.removeEventListener).toHaveBeenCalledWith(
-				'change',
-				expect.any(Function)
-			)
+			expect(mediaQuery.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
 		})
 
 		it('should not trigger callback after cleanup', () => {
@@ -587,10 +581,7 @@ describe('initializeTheme', () => {
 
 			initializeTheme('system', 'default')
 
-			expect(mediaQuery.addEventListener).toHaveBeenCalledWith(
-				'change',
-				expect.any(Function)
-			)
+			expect(mediaQuery.addEventListener).toHaveBeenCalledWith('change', expect.any(Function))
 		})
 
 		it('should return cleanup function that removes listeners', () => {
@@ -722,15 +713,13 @@ describe('applyRouteTheme', () => {
 
 		it('should log debug message when no route theme found', async() => {
 			const { getRouteTheme } = await import('../utils/routeThemes')
-			const { logger } = await import('../utils/logger')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
 			applyRouteTheme('/home', 'light', 'default', {})
 
-			expect(logger.debug).toHaveBeenCalledWith(
-				'No route theme found, using user preferences',
-				{ pathname: '/home' }
-			)
+			expect(logger.debug).toHaveBeenCalledWith('No route theme found, using user preferences', {
+				pathname: '/home'
+			})
 		})
 	})
 
@@ -781,7 +770,6 @@ describe('applyRouteTheme', () => {
 
 		it('should log info message when applying override', async() => {
 			const { getRouteTheme } = await import('../utils/routeThemes')
-			const { logger } = await import('../utils/logger')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'dark', scheme: 'spells' },
@@ -847,7 +835,6 @@ describe('applyRouteTheme', () => {
 
 		it('should log info message when applying suggestion', async() => {
 			const { getRouteTheme } = await import('../utils/routeThemes')
-			const { logger } = await import('../utils/logger')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'dark', scheme: 'spells' },
@@ -870,7 +857,6 @@ describe('applyRouteTheme', () => {
 	describe('logging behavior', () => {
 		it('should log route theme check with all details', async() => {
 			const { getRouteTheme } = await import('../utils/routeThemes')
-			const { logger } = await import('../utils/logger')
 
 			const routeConfig: RouteThemeConfig = {
 				theme: { base: 'dark', scheme: 'spells' },
@@ -898,7 +884,6 @@ describe('applyRouteTheme', () => {
 
 		it('should log null routeConfig when no route matches', async() => {
 			const { getRouteTheme } = await import('../utils/routeThemes')
-			const { logger } = await import('../utils/logger')
 			vi.mocked(getRouteTheme).mockReturnValue(null)
 
 			applyRouteTheme('/home', 'light', 'default', {})

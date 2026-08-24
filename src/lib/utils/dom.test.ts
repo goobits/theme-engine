@@ -2,7 +2,7 @@
  * Tests for DOM Utilities
  */
 
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
 	applySchemeClass,
@@ -14,15 +14,14 @@ import {
 	setDataThemeAttribute
 } from './dom'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+vi.mock('esm-env', () => ({
+	BROWSER: false
 }))
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 // Helper to create a mock HTML element

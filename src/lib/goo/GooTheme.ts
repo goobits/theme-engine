@@ -17,7 +17,8 @@
  * picker.oninput = (e) => GooTheme.set('accent', e.target.value)
  */
 
-import { logger } from '../utils/logger.js'
+import { createLogger } from '@goobits/logger'
+
 import { createEmitter, type Handler as EventCallback } from './_emitter.js'
 import {
 	alpha as alphaColor,
@@ -36,6 +37,8 @@ import {
 } from './color/index.js'
 import { createPersistence, type ThemePersistence } from './persistence.js'
 import { presets, type ThemeColors } from './presets.js'
+
+const logger = createLogger('@goobits/themes:goo')
 
 // =============================================================================
 // Types
@@ -84,12 +87,10 @@ const events = createEmitter(error => logger.error('Theme event handler error:',
 // =============================================================================
 
 /** Convert camelCase to kebab-case for CSS custom property names */
-const toKebabCase = (str: string): string =>
-	str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
+const toKebabCase = (str: string): string => str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase()
 
 /** Resolve a color that may be a theme key */
-const resolveColor = (color: string): string =>
-	current[color as keyof ThemeColors] || color
+const resolveColor = (color: string): string => current[color as keyof ThemeColors] || color
 
 // =============================================================================
 // Core API
@@ -140,9 +141,10 @@ const set = (keyOrObject: string | Partial<ThemeColors>, value?: string): void =
 		root = document.documentElement
 	}
 
-	const changes: Partial<ThemeColors> = typeof keyOrObject === 'string'
-		? { [keyOrObject]: value } as Partial<ThemeColors>
-		: keyOrObject
+	const changes: Partial<ThemeColors> =
+		typeof keyOrObject === 'string'
+			? ({ [keyOrObject]: value } as Partial<ThemeColors>)
+			: keyOrObject
 
 	// Apply changes
 	for (const [ key, val ] of Object.entries(changes)) {
@@ -280,28 +282,23 @@ const bind = (key: string, input: HTMLInputElement): (() => void) => {
 }
 
 /** Add event listener */
-const on = (event: string, callback: EventCallback): (() => void) =>
-	events.on(event, callback)
+const on = (event: string, callback: EventCallback): (() => void) => events.on(event, callback)
 
 /** Remove event listener */
-const off = (event: string, callback: EventCallback): void =>
-	events.off(event, callback)
+const off = (event: string, callback: EventCallback): void => events.off(event, callback)
 
 // =============================================================================
 // Color utilities (resolve theme keys before calling raw functions)
 // =============================================================================
 
 /** Lighten a theme color or CSS color */
-const lighten = (key: string, amount: number): string =>
-	lightenColor(resolveColor(key), amount)
+const lighten = (key: string, amount: number): string => lightenColor(resolveColor(key), amount)
 
 /** Darken a theme color or CSS color */
-const darken = (key: string, amount: number): string =>
-	darkenColor(resolveColor(key), amount)
+const darken = (key: string, amount: number): string => darkenColor(resolveColor(key), amount)
 
 /** Add alpha to a theme color or CSS color */
-const alpha = (key: string, alphaValue: number): string =>
-	alphaColor(resolveColor(key), alphaValue)
+const alpha = (key: string, alphaValue: number): string => alphaColor(resolveColor(key), alphaValue)
 
 /** Calculate contrast between two colors (resolves theme keys) */
 const contrast = (color1: string, color2: string): number =>
@@ -457,7 +454,9 @@ const validatePresets = (log = false): Record<string, ValidationResult> => {
 		const passing = Object.values(results).filter(r => r.valid).length
 		const withWarnings = Object.values(results).filter(r => r.warnings.length > 0).length
 		console.log('\n--- SUMMARY ---')
-		console.log(`Total: ${ total } | Passing: ${ passing } | Failing: ${ total - passing } | With warnings: ${ withWarnings }`)
+		console.log(
+			`Total: ${ total } | Passing: ${ passing } | Failing: ${ total - passing } | With warnings: ${ withWarnings }`
+		)
 	}
 
 	return results
@@ -473,10 +472,16 @@ export const GooTheme = {
 	get,
 	preset,
 	register,
-	get presets() { return getPresets() },
+	get presets() {
+		return getPresets()
+	},
 	auto,
-	get isDark() { return isDark() },
-	get isLight() { return isLight() },
+	get isDark() {
+		return isDark()
+	},
+	get isLight() {
+		return isLight()
+	},
 	persist,
 	restore,
 	clear,

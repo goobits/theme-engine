@@ -2,7 +2,7 @@
  * Tests for System Theme Detection Utilities
  */
 
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
 	DARK_MODE_MEDIA_QUERY,
@@ -13,15 +13,14 @@ import {
 	watchSystemTheme
 } from './systemTheme'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+vi.mock('esm-env', () => ({
+	BROWSER: false
 }))
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 // Setup window.matchMedia mock
@@ -213,7 +212,9 @@ describe('prefersDarkMode', () => {
 
 		it('should query the correct media query', () => {
 			const mockMQL = createMockMediaQueryList(false)
-			const matchMediaSpy = vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
+			const matchMediaSpy = vi
+				.mocked(window.matchMedia)
+				.mockReturnValue(mockMQL as unknown as MediaQueryList)
 
 			prefersDarkMode()
 
@@ -446,10 +447,7 @@ describe('watchSystemTheme', () => {
 			const cleanup = watchSystemTheme(callback)
 			cleanup()
 
-			expect(mockMQL.removeEventListener).toHaveBeenCalledWith(
-				'change',
-				expect.any(Function)
-			)
+			expect(mockMQL.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function))
 		})
 
 		it('should not call callback after cleanup', () => {

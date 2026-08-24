@@ -20,7 +20,6 @@
 export * from './browser.js'
 export * from './cookies.js'
 export * from './dom.js'
-export * from './logger.js'
 export * from './routeThemes.js'
 export * from './systemTheme.js'
 export * from './validation.js'

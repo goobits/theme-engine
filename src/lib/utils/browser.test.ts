@@ -2,7 +2,7 @@
  * Tests for Browser Environment Utilities
  */
 
-import { beforeEach,describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
 	getHtmlElement,
@@ -13,15 +13,14 @@ import {
 	safeWindow
 } from './browser'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+vi.mock('esm-env', () => ({
+	BROWSER: false
 }))
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 describe('isBrowser', () => {
@@ -542,24 +541,22 @@ describe('type safety', () => {
 
 	it('should handle complex generic types in runInBrowser', () => {
 		interface Theme {
-			mode: 'light' | 'dark' | 'system';
-			scheme: string;
+			mode: 'light' | 'dark' | 'system'
+			scheme: string
 		}
 
-		const theme = runInBrowser(
-			(): Theme => ({
-				mode: 'dark',
-				scheme: 'default'
-			})
-		)
+		const theme = runInBrowser((): Theme => ({
+			mode: 'dark',
+			scheme: 'default'
+		}))
 
 		expect(theme).toEqual({ mode: 'dark', scheme: 'default' })
 	})
 
 	it('should preserve fallback types in requireBrowser', () => {
 		interface Config {
-			theme: string;
-			lang: string;
+			theme: string
+			lang: string
 		}
 
 		const config: Config = { theme: 'system', lang: 'en' }

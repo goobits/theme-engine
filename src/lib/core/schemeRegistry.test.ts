@@ -2,36 +2,31 @@
  * Tests for Theme Scheme Management System
  */
 
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { THEME_TRANSITION_DURATION_MS } from './constants'
 import type { FullTheme } from './schemeRegistry'
-import {
-	applyFullTheme,
-	applyThemeScheme,
-	getCurrentScheme,
-	THEME_SCHEMES
-} from './schemeRegistry'
+import { applyFullTheme, applyThemeScheme, getCurrentScheme, THEME_SCHEMES } from './schemeRegistry'
 
-// Mock the $app/environment module
-vi.mock('$app/environment', () => ({
-	browser: false
+const logger = vi.hoisted(() => ({
+	debug: vi.fn(),
+	info: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn()
 }))
 
-// Mock the logger utility
-vi.mock('../utils/logger', () => ({
-	logger: {
-		debug: vi.fn(),
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn()
-	}
+vi.mock('esm-env', () => ({
+	BROWSER: false
+}))
+
+vi.mock('@goobits/logger', () => ({
+	createLogger: () => logger
 }))
 
 // Helper to set browser mode
 async function setBrowserMode(isBrowser: boolean) {
-	const module = await import('$app/environment')
-	vi.mocked(module).browser = isBrowser
+	const module = await import('esm-env')
+	vi.mocked(module).BROWSER = isBrowser
 }
 
 // Helper to create a mock HTML element with classList
@@ -55,8 +50,7 @@ function createMockHtmlElement() {
 			[Symbol.iterator]: () => classes.values(),
 
 			// Support filtering with filter()
-			filter: (predicate: (value: string) => boolean) =>
-				Array.from(classes).filter(predicate),
+			filter: (predicate: (value: string) => boolean) => Array.from(classes).filter(predicate),
 			_getClasses: () => Array.from(classes),
 			_clear: () => classes.clear()
 		},
@@ -413,10 +407,7 @@ describe('applyFullTheme', () => {
 			const theme: FullTheme = { base: 'light', scheme: 'default' }
 			applyFullTheme(theme)
 
-			expect(setTimeoutSpy).toHaveBeenCalledWith(
-				expect.any(Function),
-				THEME_TRANSITION_DURATION_MS
-			)
+			expect(setTimeoutSpy).toHaveBeenCalledWith(expect.any(Function), THEME_TRANSITION_DURATION_MS)
 			expect(mockHtml.dataset.theme).toBe('light')
 		})
 	})

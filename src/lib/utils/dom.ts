@@ -17,7 +17,7 @@
  * ```
  */
 
-import { browser } from '$app/environment'
+import { BROWSER } from 'esm-env'
 
 /**
  * Safely retrieves the document's root HTML element.
@@ -51,7 +51,7 @@ import { browser } from '$app/environment'
  * runtime errors in server-side contexts.
  */
 export function getHtmlElement(): HTMLElement | null {
-	if (!browser || typeof document === 'undefined') return null
+	if (!BROWSER || typeof document === 'undefined') return null
 	return document.documentElement
 }
 

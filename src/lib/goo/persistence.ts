@@ -2,8 +2,11 @@
  * Theme persistence via localStorage
  */
 
-import { logger } from '../utils/logger.js'
+import { createLogger } from '@goobits/logger'
+
 import type { ThemeColors } from './presets.js'
+
+const logger = createLogger('@goobits/themes:persistence')
 
 export interface ThemePersistence {
 	save: (theme: Partial<ThemeColors>) => void

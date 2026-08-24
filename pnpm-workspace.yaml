@@ -1,5 +1,6 @@
 packages:
   - "."
+  - "../logger"
   - "demo"
 
 blockExoticSubdeps: true

@@ -9,9 +9,9 @@
  * theme management functions with the right parameters and in the right order.
  */
 
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { createMockConfig,createMockThemeStore } from '../../../../test/testUtils'
+import { createMockConfig, createMockThemeStore } from '../../../../test/testUtils'
 import type { ThemeConfig } from '../../core/config'
 import type { ThemeMode, ThemeScheme } from '../../core/schemeRegistry'
 
@@ -38,8 +38,8 @@ vi.mock('$app/stores', () => ({
 	}
 }))
 
-vi.mock('$app/environment', () => ({
-	browser: false
+vi.mock('esm-env', () => ({
+	BROWSER: false
 }))
 
 vi.mock('../stores/theme.svelte.js', () => ({

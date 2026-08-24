@@ -7,11 +7,14 @@
  * @module config
  */
 
-import { logger } from '../utils/logger.js'
+import { createLogger } from '@goobits/logger'
+
 import type { RouteThemeConfig } from '../utils/routeThemes.js'
 import { isValidHexColor } from '../utils/validation.js'
 import { PREFERENCE_COOKIE_NAMES, STORAGE_KEY } from './constants.js'
 import type { ThemeMode, ThemeScheme } from './schemeRegistry.js'
+
+const logger = createLogger('@goobits/themes:config')
 
 /**
  * Default preview colors for schemes that don't specify their own

@@ -5,6 +5,8 @@
  * supporting both route-specific automatic application and global user selection.
  */
 
+import { createLogger } from '@goobits/logger'
+
 import {
 	applySchemeClass,
 	getHtmlElement,
@@ -12,10 +14,11 @@ import {
 	removeThemeClasses,
 	setDataThemeAttribute
 } from '../utils/dom.js'
-import { logger } from '../utils/logger.js'
 import { prefersDarkMode } from '../utils/systemTheme.js'
 import type { SchemeConfig } from './config.js'
 import { resolveTheme, THEME_TRANSITION_DURATION_MS } from './constants.js'
+
+const logger = createLogger('@goobits/themes:schemes')
 
 /**
  * Theme mode representing the user's light/dark preference.

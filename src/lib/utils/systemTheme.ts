@@ -9,7 +9,7 @@
  * @module systemTheme
  */
 
-import { browser } from '$app/environment'
+import { BROWSER } from 'esm-env'
 
 import type { ThemeMode } from '../core/schemeRegistry.js'
 
@@ -61,7 +61,7 @@ export const DARK_MODE_MEDIA_QUERY = '(prefers-color-scheme: dark)'
  * @see {@link watchSystemTheme} for monitoring theme changes with a callback
  */
 export function getDarkModeMediaQuery(): MediaQueryList | null {
-	if (!browser || typeof window === 'undefined') return null
+	if (!BROWSER || typeof window === 'undefined') return null
 	return window.matchMedia(DARK_MODE_MEDIA_QUERY)
 }
 
@@ -247,8 +247,8 @@ export function watchSystemTheme(callback: (isDark: boolean) => void): () => voi
 
 	// Legacy API fallback for older browsers
 	interface LegacyMediaQueryList {
-		addListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
-		removeListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void;
+		addListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void
+		removeListener?: (listener: (e: MediaQueryListEvent | MediaQueryList) => void) => void
 	}
 
 	const legacyMQL = mql as MediaQueryList & LegacyMediaQueryList
