@@ -12,5 +12,15 @@ export default defineConfig({
 		},
 		noExternal: ['@lucide/svelte']
 	},
+	server: {
+		host: '0.0.0.0',
+		port: 3410,
+		strictPort: true
+	},
+	preview: {
+		host: '0.0.0.0',
+		port: 3410,
+		strictPort: true
+	},
 	cacheDir: '../.artifacts/vite/demo'
 })

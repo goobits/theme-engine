@@ -293,8 +293,8 @@ When reviewing PRs:
 
 1. Update version in `package.json`
 2. Update `CHANGELOG.md` with changes
-3. Create git tag: `git tag v1.0.0`
-4. Push tag: `git push origin v1.0.0`
+3. Read the release version: `THEMES_VERSION=$(node -p "require('./package.json').version")`
+4. Create and push the tag: `git tag "v${THEMES_VERSION}" && git push origin "v${THEMES_VERSION}"`
 5. Publish to npm: `npm publish`
 6. Create GitHub release with notes
 

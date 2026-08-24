@@ -21,6 +21,8 @@ pnpm run dev
 pnpm run dev --open
 ```
 
+Development and preview servers use `http://localhost:3410` and fail if that port is occupied.
+
 ## Building
 
 To create a production version of your app:
