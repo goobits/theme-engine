@@ -4,7 +4,7 @@
  * Tests validation, normalization, and default application for theme configurations.
  */
 
-import { afterEach,beforeEach, describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ThemeConfig } from './config'
 import {
@@ -13,20 +13,25 @@ import {
 	resolveThemePreferences
 } from './config'
 
+const logger = vi.hoisted(() => ({
+	debug: vi.fn(),
+	info: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn()
+}))
+
+vi.mock('@goobits/logger', () => ({
+	createLogger: () => logger
+}))
+
 // Mock esm-env to enable DEV mode for testing
 vi.mock('esm-env', () => ({
 	DEV: true
 }))
 
 describe('createThemeConfig', () => {
-	let consoleWarnSpy: any
-
 	beforeEach(() => {
-		consoleWarnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
-	})
-
-	afterEach(() => {
-		consoleWarnSpy.mockRestore()
+		logger.warn.mockReset()
 	})
 
 	it('should return config with all fields when fully specified', () => {
@@ -174,8 +179,7 @@ describe('createThemeConfig', () => {
 		const result = createThemeConfig(config)
 
 		expect(result.schemes.ocean.name).toBe('ocean') // Uses key, not provided name
-		expect(consoleWarnSpy).toHaveBeenCalledWith(
-			'[svelte-themes]',
+		expect(logger.warn).toHaveBeenCalledWith(
 			expect.stringContaining("doesn't match scheme.name")
 		)
 	})
@@ -263,7 +267,7 @@ describe('createThemeConfig', () => {
 			background: '#ffffff'
 		})
 
-		expect(consoleWarnSpy).toHaveBeenCalled()
+		expect(logger.warn).toHaveBeenCalled()
 	})
 
 	it('normalizes defaults, aliases, persistence, and fixed scheme modes', () => {
