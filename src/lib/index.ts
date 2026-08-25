@@ -10,6 +10,7 @@ export * from './server/index.js'
 export * from './svelte/index.js'
 export * from './utils/index.js'
 
-// `watchSystemTheme` is defined in both core/themeManager and utils/systemTheme.
-// Re-export the core version explicitly to resolve the ambiguity at the package root.
+// These names also have compatibility exports under utils. The package root
+// consistently exposes the configuration-aware core implementations.
+export { resolveThemeMode } from './core/config.js'
 export { watchSystemTheme } from './core/themeManager.js'

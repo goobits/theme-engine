@@ -128,7 +128,7 @@ export function prefersDarkMode(): boolean {
  * - Useful for resolving 'system' theme mode to an actual theme value
  *
  * @see {@link prefersDarkMode} for a boolean check
- * @see {@link resolveThemeMode} for handling ThemeMode values including 'system'
+ * @see {@link resolveSystemThemeMode} for handling ThemeMode values including 'system'
  */
 export function getSystemThemePreference(): 'light' | 'dark' {
 	return prefersDarkMode() ? 'dark' : 'light'
@@ -146,18 +146,18 @@ export function getSystemThemePreference(): 'light' | 'dark' {
  *
  * @example
  * ```typescript
- * import { resolveThemeMode } from './utils/systemTheme';
+ * import { resolveSystemThemeMode } from './utils/systemTheme';
  *
  * // Direct theme values pass through unchanged
- * resolveThemeMode('light');  // returns 'light'
- * resolveThemeMode('dark');   // returns 'dark'
+ * resolveSystemThemeMode('light');  // returns 'light'
+ * resolveSystemThemeMode('dark');   // returns 'dark'
  *
  * // System mode is resolved to actual preference
- * resolveThemeMode('system'); // returns 'dark' if OS prefers dark, else 'light'
+ * resolveSystemThemeMode('system'); // returns 'dark' if OS prefers dark, else 'light'
  *
  * // Use in theme application
  * const userMode = getUserThemeMode(); // Could be 'system'
- * const actualTheme = resolveThemeMode(userMode);
+ * const actualTheme = resolveSystemThemeMode(userMode);
  * applyTheme(actualTheme); // Always 'light' or 'dark'
  * ```
  *
@@ -169,11 +169,16 @@ export function getSystemThemePreference(): 'light' | 'dark' {
  * @see {@link getSystemThemePreference} for getting system preference directly
  * @see {@link watchSystemTheme} for monitoring system preference changes
  */
-export function resolveThemeMode(theme: ThemeMode): 'light' | 'dark' {
+export function resolveSystemThemeMode(theme: ThemeMode): 'light' | 'dark' {
 	if (theme === 'system') {
 		return getSystemThemePreference()
 	}
 	return theme
+}
+
+/** @deprecated Use {@link resolveSystemThemeMode}. */
+export function resolveThemeMode(theme: ThemeMode): 'light' | 'dark' {
+	return resolveSystemThemeMode(theme)
 }
 
 /**

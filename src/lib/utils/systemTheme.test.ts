@@ -9,6 +9,7 @@ import {
 	getDarkModeMediaQuery,
 	getSystemThemePreference,
 	prefersDarkMode,
+	resolveSystemThemeMode,
 	resolveThemeMode,
 	watchSystemTheme
 } from './systemTheme'
@@ -278,24 +279,28 @@ describe('getSystemThemePreference', () => {
 	})
 })
 
-describe('resolveThemeMode', () => {
+describe('resolveSystemThemeMode', () => {
+	it('retains the deprecated compatibility alias', () => {
+		expect(resolveThemeMode('light')).toBe(resolveSystemThemeMode('light'))
+	})
+
 	describe('server-side behavior', () => {
 		beforeEach(async() => {
 			await setBrowserMode(false)
 		})
 
 		it('should resolve "system" to "light" on server', () => {
-			const result = resolveThemeMode('system')
+			const result = resolveSystemThemeMode('system')
 			expect(result).toBe('light')
 		})
 
 		it('should pass through "light" unchanged', () => {
-			const result = resolveThemeMode('light')
+			const result = resolveSystemThemeMode('light')
 			expect(result).toBe('light')
 		})
 
 		it('should pass through "dark" unchanged', () => {
-			const result = resolveThemeMode('dark')
+			const result = resolveSystemThemeMode('dark')
 			expect(result).toBe('dark')
 		})
 	})
@@ -307,12 +312,12 @@ describe('resolveThemeMode', () => {
 		})
 
 		it('should pass through "light" unchanged', () => {
-			const result = resolveThemeMode('light')
+			const result = resolveSystemThemeMode('light')
 			expect(result).toBe('light')
 		})
 
 		it('should pass through "dark" unchanged', () => {
-			const result = resolveThemeMode('dark')
+			const result = resolveSystemThemeMode('dark')
 			expect(result).toBe('dark')
 		})
 
@@ -320,7 +325,7 @@ describe('resolveThemeMode', () => {
 			const mockMQL = createMockMediaQueryList(true)
 			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
-			const result = resolveThemeMode('system')
+			const result = resolveSystemThemeMode('system')
 
 			expect(result).toBe('dark')
 		})
@@ -329,7 +334,7 @@ describe('resolveThemeMode', () => {
 			const mockMQL = createMockMediaQueryList(false)
 			vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
-			const result = resolveThemeMode('system')
+			const result = resolveSystemThemeMode('system')
 
 			expect(result).toBe('light')
 		})
@@ -340,7 +345,7 @@ describe('resolveThemeMode', () => {
 
 			const modes: Array<'light' | 'dark' | 'system'> = [ 'light', 'dark', 'system' ]
 			modes.forEach(mode => {
-				const result = resolveThemeMode(mode)
+				const result = resolveSystemThemeMode(mode)
 				expect([ 'light', 'dark' ]).toContain(result)
 			})
 		})
@@ -609,7 +614,7 @@ describe('integration tests', () => {
 		const mql = getDarkModeMediaQuery()
 		const prefers = prefersDarkMode()
 		const theme = getSystemThemePreference()
-		const resolved = resolveThemeMode('system')
+		const resolved = resolveSystemThemeMode('system')
 
 		expect(mql?.matches).toBe(true)
 		expect(prefers).toBe(true)
@@ -621,13 +626,13 @@ describe('integration tests', () => {
 		const mockMQL = createMockMediaQueryList(false)
 		vi.mocked(window.matchMedia).mockReturnValue(mockMQL as unknown as MediaQueryList)
 
-		expect(resolveThemeMode('light')).toBe('light')
-		expect(resolveThemeMode('dark')).toBe('dark')
-		expect(resolveThemeMode('system')).toBe('light')
+		expect(resolveSystemThemeMode('light')).toBe('light')
+		expect(resolveSystemThemeMode('dark')).toBe('dark')
+		expect(resolveSystemThemeMode('system')).toBe('light')
 
 		// Change system preference
 		mockMQL.matches = true
-		expect(resolveThemeMode('system')).toBe('dark')
+		expect(resolveSystemThemeMode('system')).toBe('dark')
 	})
 
 	it('should properly sync watcher with preference check', () => {
