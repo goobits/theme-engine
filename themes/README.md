@@ -345,8 +345,8 @@ Use the built-in theme toggle to switch between schemes:
 ## 📚 Additional Resources
 
 - [Main Package README](../README.md) - Full package documentation
-- [Design Tokens Reference](https://github.com/goobits/goobits-themes/blob/main/docs/design-tokens.md) - Complete variable list
-- [Color Theory Guide](https://github.com/goobits/goobits-themes/blob/main/docs/color-theory.md) - Choosing colors
+- [Design Tokens Reference](https://github.com/goobits/theme-engine/blob/main/docs/design-tokens.md) - Complete variable list
+- [Color Theory Guide](https://github.com/goobits/theme-engine/blob/main/docs/color-theory.md) - Choosing colors
 
 ## 💡 Tips & Tricks
 
@@ -370,4 +370,4 @@ Generate color scales at [palettte.app](https://palettte.app) or [coolors.co](ht
 
 ---
 
-**Need help?** [Open an issue](https://github.com/goobits/goobits-themes/issues) or check the [discussions](https://github.com/goobits/goobits-themes/discussions).
+**Need help?** [Open an issue](https://github.com/goobits/theme-engine/issues) or check the [discussions](https://github.com/goobits/theme-engine/discussions).

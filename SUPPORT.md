@@ -8,14 +8,14 @@ Please check these resources first:
 
 1. **[Documentation](./docs/)** - Comprehensive guides and API reference
 2. **[Troubleshooting Guide](./docs/troubleshooting.md)** - Common issues and solutions
-3. **[GitHub Issues](https://github.com/goobits/goobits-themes/issues)** - Search for similar problems
-4. **[GitHub Discussions](https://github.com/goobits/goobits-themes/discussions)** - Community Q&A
+3. **[GitHub Issues](https://github.com/goobits/theme-engine/issues)** - Search for similar problems
+4. **[GitHub Discussions](https://github.com/goobits/theme-engine/discussions)** - Community Q&A
 
 ## Getting Help
 
 ### Found a Bug?
 
-[Open an issue](https://github.com/goobits/goobits-themes/issues/new) with:
+[Open an issue](https://github.com/goobits/theme-engine/issues/new) with:
 
 - **Package version**: Run `npm list @goobits/themes`
 - **SvelteKit version**: Run `npm list @sveltejs/kit`
@@ -46,7 +46,7 @@ import { ThemeProvider } from '@goobits/themes/svelte';
 
 **Still need help?**
 
-1. Search [GitHub Discussions](https://github.com/goobits/goobits-themes/discussions)
+1. Search [GitHub Discussions](https://github.com/goobits/theme-engine/discussions)
 2. If not found, create a new discussion with:
     - Clear question title
     - Context about what you're trying to achieve
@@ -57,7 +57,7 @@ import { ThemeProvider } from '@goobits/themes/svelte';
 
 We welcome feature suggestions!
 
-1. Check [existing discussions](https://github.com/goobits/goobits-themes/discussions/categories/ideas) first
+1. Check [existing discussions](https://github.com/goobits/theme-engine/discussions/categories/ideas) first
 2. Create a new discussion in the "Ideas" category
 3. Describe:
     - **Use case**: What problem does this solve?
@@ -68,7 +68,7 @@ We welcome feature suggestions!
 
 **Do not open public issues for security vulnerabilities.**
 
-Report security vulnerabilities via [GitHub Security Advisories](https://github.com/goobits/goobits-themes/security/advisories/new).
+Report security vulnerabilities via [GitHub Security Advisories](https://github.com/goobits/theme-engine/security/advisories/new).
 
 ## Response Times
 
@@ -116,9 +116,9 @@ npm run dev
 
 > **Theme flashes white on page load**
 >
-> **Package version**: @goobits/themes@1.0.1
-> **SvelteKit version**: @sveltejs/kit@2.0.0
-> **Node version**: v20.0.0
+> **Package version**: `@goobits/themes@<installed-version>`
+> **SvelteKit version**: `@sveltejs/kit@<installed-version>`
+> **Node version**: `<installed-version>`
 >
 > **Steps to reproduce**:
 >

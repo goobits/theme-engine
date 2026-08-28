@@ -15,8 +15,8 @@ Thank you for considering contributing to @goobits/themes!
 1. **Fork and clone**:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/goobits-themes.git
-cd goobits-themes
+git clone https://github.com/YOUR_USERNAME/theme-engine.git
+cd theme-engine
 ```
 
 2. **Install dependencies**:
@@ -300,8 +300,8 @@ When reviewing PRs:
 
 ## Questions?
 
-- **Development questions**: [GitHub Discussions](https://github.com/goobits/goobits-themes/discussions)
-- **Bug reports**: [GitHub Issues](https://github.com/goobits/goobits-themes/issues)
+- **Development questions**: [GitHub Discussions](https://github.com/goobits/theme-engine/discussions)
+- **Bug reports**: [GitHub Issues](https://github.com/goobits/theme-engine/issues)
 - **General support**: See [SUPPORT.md](./SUPPORT.md)
 
 ## Code of Conduct
