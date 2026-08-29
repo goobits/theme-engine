@@ -113,8 +113,9 @@
         "test:watch": "vitest watch",
         "test:ui": "vitest --ui",
         "test:coverage": "vitest run --coverage",
-        "lint": "eslint . --max-warnings 10",
+        "lint": "eslint . --max-warnings 10 && pnpm run check:css",
         "lint:fix": "eslint . --fix",
+        "check:css": "tsx scripts/checkCssConventions.ts",
         "check": "npm run build && npm run lint && npm run test",
         "generate:goo": "tsx scripts/generateGooPresets.ts",
         "check:goo": "tsx scripts/checkGooPresets.ts"

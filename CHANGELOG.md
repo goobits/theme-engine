@@ -16,6 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Package lint now enforces BEM selector naming across source and published themes.
 - Theme configuration is normalized consistently in every environment.
 - SSR and blocking-script initialization now share configured defaults,
   persistence names, aliases, and fixed modes.
