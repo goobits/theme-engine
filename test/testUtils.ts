@@ -11,78 +11,7 @@
 import { vi } from 'vitest'
 
 import type { SchemeConfig, ThemeConfig } from '../src/lib/core/config'
-import type { ThemeMode, ThemeScheme } from '../src/lib/core/schemeRegistry'
-import type { ThemeStore } from '../src/lib/svelte/stores/theme.svelte'
 import type { RouteThemeConfig } from '../src/lib/utils/routeThemes'
-
-/**
- * Options for creating a mock theme store
- */
-export interface MockThemeStoreOptions {
-
-	/** Theme mode (light, dark, or system). Defaults to 'system' */
-	theme?: ThemeMode
-
-	/** Color scheme identifier. Defaults to 'default' */
-	scheme?: ThemeScheme
-
-	/** Custom list of available schemes. Defaults to default and spells schemes */
-	availableSchemes?: SchemeConfig[]
-}
-
-/**
- * Create a mock ThemeStore for testing components.
- *
- * Consolidates duplicate implementations across test files:
- * - ThemeProvider.test.ts
- * - ThemeToggle.test.ts
- * - SchemeSelector.test.ts
- *
- * @param options - Configuration options for the mock store
- * @returns A mocked ThemeStore with vi.fn() for all methods
- *
- * @example
- * ```typescript
- * const store = createMockThemeStore({
- *   theme: 'dark',
- *   scheme: 'spells'
- * });
- *
- * expect(store.theme).toBe('dark');
- * expect(store.scheme).toBe('spells');
- * ```
- */
-export function createMockThemeStore(options: MockThemeStoreOptions = {}): ThemeStore {
-	const {
-		theme = 'system',
-		scheme = 'default',
-		availableSchemes = [
-			{
-				name: 'default',
-				displayName: 'Default',
-				description: 'Default theme',
-				preview: { primary: '#000', accent: '#fff', background: '#fff' }
-			},
-			{
-				name: 'spells',
-				displayName: 'Spells',
-				description: 'Spells theme',
-				preview: { primary: '#000', accent: '#fff', background: '#fff' }
-			}
-		]
-	} = options
-
-	return {
-		subscribe: vi.fn(),
-		settings: { theme, themeScheme: scheme },
-		theme,
-		scheme,
-		availableSchemes,
-		setTheme: vi.fn(),
-		setScheme: vi.fn(),
-		cycleMode: vi.fn()
-	}
-}
 
 /**
  * Options for creating mock config

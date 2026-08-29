@@ -16,6 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Package verification now enforces coverage floors and renders the public
+  provider, toggle, selector, and sync components through real Svelte context.
 - Package lint now enforces BEM selector naming across source and published themes.
 - Theme configuration is normalized consistently in every environment.
 - SSR and blocking-script initialization now share configured defaults,

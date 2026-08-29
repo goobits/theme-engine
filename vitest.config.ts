@@ -19,9 +19,16 @@ export default defineConfig({
             reporter: ['text', 'json', 'html'],
             include: ['core/**', 'svelte/**', 'server/**', 'utils/**'],
             exclude: ['node_modules/**', 'test/**', '**/*.d.ts', '**/*.config.*', '**/index.ts'],
+            thresholds: {
+                lines: 80,
+                functions: 85,
+                statements: 80,
+                branches: 80,
+            },
         },
     },
     resolve: {
+        conditions: ['browser'],
         alias: {
 			'$app/environment': resolve(__dirname, 'test/mocks/$appEnvironment.ts'),
 			'$app/stores': resolve(__dirname, 'test/mocks/$appStores.ts'),
