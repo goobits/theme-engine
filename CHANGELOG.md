@@ -26,6 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Published deep imports now resolve to emitted JavaScript and declaration files;
+  package verification installs the tarball into an isolated consumer to guard
+  runtime and TypeScript resolution.
 - Blocking initialization preserves unrelated `<html>` classes.
 - Cookie persistence continues when local storage is unavailable, and vice versa.
 - Client initialization no longer overwrites newer local preferences with stale

@@ -26,6 +26,3 @@ terminal:
 host_sync:
   git_config: true
   ai_tools: true
-networking:
-  networks:
-  - spacebase
