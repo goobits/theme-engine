@@ -4,6 +4,7 @@ import adapter from '@sveltejs/adapter-auto';
 const config = {
     kit: {
         adapter: adapter(),
+        outDir: process.env.GOOBITS_THEMES_SVELTEKIT_OUT_DIR || '.svelte-kit',
     },
 };
 

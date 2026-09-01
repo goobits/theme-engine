@@ -1,9 +1,10 @@
 import { readdir, rm } from 'node:fs/promises'
-import { join } from 'node:path'
+import { join,resolve } from 'node:path'
+import process from 'node:process'
 import { fileURLToPath } from 'node:url'
 
 const packageRoot = fileURLToPath(new URL('../', import.meta.url))
-const outputRoot = join(packageRoot, 'dist')
+const outputRoot = process.argv[2] ? resolve(process.argv[2]) : join(packageRoot, 'dist')
 const testArtifactPattern = /\.(?:spec|test)\./
 
 async function pruneTestArtifacts(directory: string): Promise<number> {
